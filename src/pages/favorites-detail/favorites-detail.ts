@@ -4,10 +4,10 @@ import { NavController, NavParams } from 'ionic-angular';
 
 
 @Component({
-  selector: 'item-details-page',
-  templateUrl: 'item-details.html'
+  selector: 'favorites-detail-page',
+  templateUrl: 'favorites-detail.html'
 })
-export class ItemDetailsPage {
+export class FavoritesDetailPage {
   selectedItem: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {

@@ -1,16 +1,18 @@
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
-import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
-import { ItemDetailsPage } from '../pages/item-details/item-details';
-import { ListPage } from '../pages/list/list';
+import { LocalisationPage } from '../pages/localisation/localisation';
+import { AlertesPage } from '../pages/alertes/alertes';
+import { FavoritesDetailPage } from '../pages/favorites-detail/favorites-detail';
+import { FavoritesListPage } from '../pages/favorites-list/favorites-list';
 
 @NgModule({
   declarations: [
     MyApp,
-    HelloIonicPage,
-    ItemDetailsPage,
-    ListPage
+    LocalisationPage,
+    AlertesPage,
+    FavoritesDetailPage,
+    FavoritesListPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -18,9 +20,10 @@ import { ListPage } from '../pages/list/list';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HelloIonicPage,
-    ItemDetailsPage,
-    ListPage
+    LocalisationPage,
+    AlertesPage,
+    FavoritesDetailPage,
+    FavoritesListPage
   ],
   providers: []
 })
