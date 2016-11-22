@@ -29,7 +29,7 @@ export class MyApp {
     this.pages = [
       { title: 'Alertes', component: AlertesPage },
       { title: 'Localisation', component: LocalisationPage },
-      { title: 'Mes favoris', component: FavoritesListPage }
+      { title: 'Mes stations', component: FavoritesListPage }
     ];
   }
 
