@@ -12,17 +12,17 @@ declare var ol: any;
 export class LocalisationPage {
 
   @ViewChild('map') map;
-  movies: Array<any>;
+  stations: Array<any>;
 
   constructor(public http: Http) {
-    this.loadMap();
 
     var url = "https://download.data.grandlyon.com/ws/rdata/jcd_jcdecaux.jcdvelov/all.json";
     this.http.get(url)
         .map(res => res.json())
         .subscribe(data => {
-            this.movies = data.values;
+            this.stations = data.values;
             console.log(data.fields)
+            this.loadMap();
         });
   }
 
@@ -31,13 +31,26 @@ export class LocalisationPage {
           var long = resp.coords.longitude;
           var lat = resp.coords.latitude;
           
-          var iconFeature = new ol.Feature({
+          var featuresStations: Array<any>;
+          featuresStations = [];
+          this.stations.forEach(element => {
+              featuresStations.push(new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat([parseFloat(element.lng), parseFloat(element.lat)])),
+                name: element.name,
+                bikeStands: element.bike_stands,
+                available: element.available_bike_stands
+              }))
+              console.log(element.lng + " / " + element.lat)
+          });
+          console.log(long + " / " + lat)
+          featuresStations.push(new ol.Feature({
             geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat])),
             name: 'Ma position'
-          });
+          }));
 
+          console.log(featuresStations.length)
           var vectorSource = new ol.source.Vector({
-            features: [iconFeature]
+            features: featuresStations
           });
           
           var vectorLayer = new ol.layer.Vector({
@@ -53,7 +66,7 @@ export class LocalisationPage {
             layers: [ mapImg, vectorLayer ],
             view: new ol.View({
               center: ol.proj.fromLonLat([long, lat]),
-              zoom: 15
+              zoom: 12
             })
         })
 
