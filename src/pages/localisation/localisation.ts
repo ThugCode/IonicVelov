@@ -61,14 +61,14 @@ export class LocalisationPage {
             source: new ol.source.OSM() 
           });
           
-          new ol.Map({
+          var map = new ol.Map({
             target: "map",
             layers: [ mapImg, vectorLayer ],
             view: new ol.View({
               center: ol.proj.fromLonLat([long, lat]),
               zoom: 12
             })
-        })
+          })
 
         }).catch((error) => {
           console.log('Error getting location', error);
