@@ -11,6 +11,7 @@ export class AlertesPage {
   
   stations: Array<any>;
   items: Array<string>;
+  length : any;
 
   constructor(public http: Http) {
     var url = "https://download.data.grandlyon.com/ws/rdata/jcd_jcdecaux.jcdvelov/all.json";
@@ -24,6 +25,7 @@ export class AlertesPage {
                 this.items.push(element.name);
               }
             })
+            this.length = this.items.length;
         });
   }
 }

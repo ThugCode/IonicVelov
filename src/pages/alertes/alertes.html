@@ -16,13 +16,13 @@
 </div>
 <div class="center" *ngIf="length > 0">
   <ion-icon name="md-warning"></ion-icon>
-  <h3>{{items.length}} station(s) fermée(s)</h3>
+  <h3>{{length}} station(s) fermée(s)</h3>
 </div>
 <ion-list>
     <ion-item *ngFor="let item of items">
       <ion-icon name="close" item-left></ion-icon>
       {{item}}
     </ion-item>
-  </ion-list>
+</ion-list>
 
 </ion-content>
