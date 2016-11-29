@@ -10,7 +10,7 @@
 
 <ion-content padding>
 <h3>Alertes</h3>
-<div class="center" *ngIf="length == 0">
+<div class="center none-station" *ngIf="length == 0">
   <ion-icon name="md-checkmark-circle"></ion-icon>
   <h3>Aucune station fermée</h3>
 </div>
@@ -20,7 +20,7 @@
 </div>
 <ion-list>
     <ion-item *ngFor="let item of items">
-      <ion-icon name="close" item-left></ion-icon>
+      <ion-icon name="ios-lock" item-left></ion-icon>
       {{item}}
     </ion-item>
 </ion-list>
