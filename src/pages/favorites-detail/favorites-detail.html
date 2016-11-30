@@ -9,10 +9,19 @@
 
 <ion-content>
  <div *ngIf="selectedItem" class="selection">
-    <b>{{selectedItem.title}}</b>
+    <b>{{selectedItem.name}}</b>
     <ion-icon name="{{selectedItem.icon}}"></ion-icon>
     <div>
-      You navigated here from <b>{{selectedItem.title}}</b>
+      Statut <b>{{selectedItem.statut}}</b>
+    </div>
+    <div>
+      Total de vélo : <b>{{selectedItem.bike_stands}}</b>
+    </div>
+    <div>
+      Vélos disponibles : <b>{{selectedItem.available_bikes}}</b>
+    </div>
+    <div>
+      Places libres : <b>{{selectedItem.available_bike_stands}}</b>
     </div>
   </div>
 </ion-content>
