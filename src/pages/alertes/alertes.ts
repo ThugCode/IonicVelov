@@ -1,31 +1,37 @@
-import { Component } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
+import { Component, OnInit } from '@angular/core';
+
+import { StationService } from '../../app/station.service';
+import { Station } from '../../app/station';
 
 @Component({
   selector: 'alertes-page',
   templateUrl: 'alertes.html'
 })
 
-export class AlertesPage {
-  
-  stations: Array<any>;
-  items: Array<string>;
-  length : any;
+export class AlertesPage implements OnInit {
+  stations: Station[];
+  items: string[];
+  length: any;
 
-  constructor(public http: Http) {
-    var url = "https://download.data.grandlyon.com/ws/rdata/jcd_jcdecaux.jcdvelov/all.json";
-    this.http.get(url)
-        .map(res => res.json())
-        .subscribe(data => {
-            this.stations = data.values;
-            this.items = [];
-            this.stations.forEach(element => {
-              if(element.status != "OPEN") {
-                this.items.push(element.name);
-              }
-            })
-            this.length = this.items.length;
-        });
+  constructor(
+    private stationService: StationService
+  ) { }
+
+  getAlertes() {
+    this.stationService.getStations()
+      .subscribe(stations => {
+        this.stations = stations;
+        this.items = [];
+        this.stations.forEach(element => {
+          if (element.status != "OPEN") {
+            this.items.push(element.name);
+          }
+        })
+        this.length = this.items.length;
+      });
+  }
+
+  ngOnInit() {
+    this.getAlertes();
   }
 }
