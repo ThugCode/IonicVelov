@@ -3,6 +3,7 @@ import { Geolocation } from 'ionic-native';
 
 import { StationService } from '../../app/station.service';
 import { Station } from '../../app/station';
+import { LoadingController } from 'ionic-angular';
 
 declare var ol: any;
 
@@ -13,9 +14,11 @@ declare var ol: any;
 export class LocalisationPage implements OnInit {
   @ViewChild('map') map;
   stations: Station[];
+  loader:any;
 
   constructor(
-    private stationService: StationService
+    private stationService: StationService,
+    private loadingCtrl: LoadingController
   ) { }
 
   getStations() {
@@ -27,6 +30,11 @@ export class LocalisationPage implements OnInit {
   }
 
   ngOnInit() {
+    this.loader = this.loadingCtrl.create({
+      content: "Merci de patienter...",
+      duration: 2000
+    });
+    this.loader.present();
     this.getStations();
   }
 
@@ -44,15 +52,14 @@ export class LocalisationPage implements OnInit {
           bikeStands: element.bike_stands,
           available: element.available_bike_stands
         }))
-        console.log(element.lng + " / " + element.lat)
+        
       });
-      console.log(long + " / " + lat)
+      
       featuresStations.push(new ol.Feature({
         geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat])),
         name: 'Ma position'
       }));
-
-      console.log(featuresStations.length)
+      
       var vectorSource = new ol.source.Vector({
         features: featuresStations
       });
@@ -70,9 +77,42 @@ export class LocalisationPage implements OnInit {
         layers: [mapImg, vectorLayer],
         view: new ol.View({
           center: ol.proj.fromLonLat([long, lat]),
-          zoom: 12
+          zoom: 13
         })
       })
+
+      //***************** POPUP *******************//
+      var element = document.getElementById('popup');
+      var popup = new ol.Overlay({
+        element: element,
+        position : [539843.80968133141, 5743312.366279513],
+        positioning: 'center-center',
+        stopEvent: false,
+        offset: [0, -50]
+      });
+      map.addOverlay(popup);
+
+      // display popup on click
+      map.on('click', function(evt) {
+        var feature = map.forEachFeatureAtPixel(evt.pixel,
+            function(feature, layer) {
+              return feature;
+            });
+        if (feature) {
+          var geometry = feature.getGeometry();
+          var coord = geometry.getCoordinates();
+          popup.setPosition(coord);
+          console.log(coord);
+          //console.log(feature.name);
+          //console.log(feature.bikeStands);
+          //console.log(feature.available);
+        } else {
+
+        }
+      });
+
+
+      this.loader.dismiss();
 
     }).catch((error) => {
       console.log('Error getting location', error);

@@ -34,6 +34,8 @@ export class FavoritesListPage implements OnInit {
         var prefered = ["768", "844", "923"];
         stations.forEach(element => {
           if (prefered.indexOf(element.gid) >= 0) {
+            console.log(element);
+            element.status == 'OPEN' ? 'Ouverte' : 'Fermée';
             this.items.push(element);
           }
         })
