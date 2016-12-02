@@ -5,7 +5,7 @@ import { StationService } from '../../app/station.service';
 import { Station } from '../../app/station';
 import { LoadingController } from 'ionic-angular';
 
-declare var ol: any;
+import ol from 'openlayers';
 
 @Component({
   selector: 'localisation-page',
@@ -100,7 +100,8 @@ export class LocalisationPage implements OnInit {
             });
         if (feature) {
           var geometry = feature.getGeometry();
-          var coord = geometry.getCoordinates();
+          //var coord = geometry.getCoordinates();
+          var coord = evt.coordinate;
           popup.setPosition(coord);
           console.log(coord);
           //console.log(feature.name);
