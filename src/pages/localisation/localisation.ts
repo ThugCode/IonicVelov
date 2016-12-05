@@ -110,26 +110,33 @@ export class LocalisationPage implements OnInit {
       var mapImg = new ol.layer.Tile({
         source: new ol.source.OSM()
       });
+      
+      //***************** POPUP *******************//
+      var container = document.getElementById('popup');
+      var content = document.getElementById('popup-content');
+      var closer = document.getElementById('popup-closer');
+
+      var popup = new ol.Overlay({
+        element: container,
+        positioning: 'center-center',
+        stopEvent: false
+      });
+
+      closer.onclick = function() {
+        popup.setPosition(undefined);
+        closer.blur();
+        return false;
+      };
 
       var map = new ol.Map({
         target: "map",
         layers: [mapImg, vL_Closed, vL_Empty, vL_Full, vL_Available, vL_MyPosition],
+        overlays: [popup],
         view: new ol.View({
           center: ol.proj.fromLonLat([long, lat]),
           zoom: 13
         })
       })
-      
-      //***************** POPUP *******************//
-      /*var element = document.getElementById('popup');
-      var popup = new ol.Overlay({
-        element: element,
-        position : [539843.80968133141, 5743312.366279513],
-        positioning: 'center-center',
-        stopEvent: false,
-        offset: [0, -50]
-      });
-      map.addOverlay(popup);
 
       // display popup on click
       map.on('click', function(evt) {
@@ -138,19 +145,16 @@ export class LocalisationPage implements OnInit {
               return feature;
             });
         if (feature) {
-          var geometry = feature.getGeometry();
-          //var coord = geometry.getCoordinates();
           var coord = evt.coordinate;
+          var name = feature.get("name");
+          var status = feature.get("status");
+          var bikestand = feature.get("bikeStands");
+          var available = feature.get("available");
+
+          content.innerHTML = '<p>' + name + '</p><code>'+ status +'</code>';
           popup.setPosition(coord);
-          console.log(coord);
-          //console.log(feature.name);
-          //console.log(feature.bikeStands);
-          //console.log(feature.available);
-        } else {
-
         }
-      });*/
-
+      });
 
       this.loader.dismiss();
 
