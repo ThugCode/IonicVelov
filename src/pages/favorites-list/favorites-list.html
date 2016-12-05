@@ -9,15 +9,22 @@
 
 <ion-content>
   <ion-list>
-    <button ion-item *ngFor="let item of items" (click)="itemTapped($event, item)">
-      <ion-icon name="star" item-left></ion-icon>
-      {{item.name}}
-      <div class="item-note" item-right>
-        {{item.status}}
-      </div>
-    </button>
-  </ion-list>
-  <div *ngIf="selectedItem" padding>
+
+    <ion-item-sliding #itemS *ngFor="let item of items">
+      <button ion-item (click)="itemTapped($event, item)">
+        <ion-icon name="star" item-left></ion-icon>
+        {{item.name}}
+        <div class="item-note" item-right>
+          {{item.status}}
+        </div>
+      </button>
+      <ion-item-options side="right">
+          <button ion-button color="danger" (click)="share(itemS)">
+            <ion-icon name="trash"></ion-icon>Supprimer
+          </button>
+      </ion-item-options>
+    </ion-item-sliding>
     
-  </div>
+  </ion-list>
+  <div *ngIf="selectedItem" padding></div>
 </ion-content>

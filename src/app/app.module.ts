@@ -16,7 +16,9 @@ import { FavoritesListPage } from '../pages/favorites-list/favorites-list';
     FavoritesListPage
   ],
   imports: [
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp, {
+      backButtonText: 'Retour'
+    }, {})
   ],
   bootstrap: [IonicApp],
   entryComponents: [

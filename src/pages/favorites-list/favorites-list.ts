@@ -4,9 +4,11 @@ import { FavoritesDetailPage } from '../favorites-detail/favorites-detail';
 
 import { StationService } from '../../app/station.service';
 import { Station } from '../../app/station';
-//import { File } from 'ionic-native';
+import { File } from 'ionic-native';
+import { Platform } from 'ionic-angular';
+import { ItemSliding } from 'ionic-angular';
 
-//declare var cordova: any; 
+declare var cordova: any; 
 
 @Component({
   selector: 'favorites-list-page',
@@ -15,14 +17,15 @@ import { Station } from '../../app/station';
 
 export class FavoritesListPage implements OnInit {
 
-  //filePath: string;
+  filePath: string;
   selectedItem: any;
   items: Station[];
 
   constructor(
     private navCtrl: NavController,
     private navParams: NavParams,
-    private stationService: StationService
+    private stationService: StationService,
+    private platform: Platform
   ) {
     this.selectedItem = navParams.get('item');
   }
@@ -34,26 +37,36 @@ export class FavoritesListPage implements OnInit {
         var prefered = ["768", "844", "923"];
         stations.forEach(element => {
           if (prefered.indexOf(element.gid) >= 0) {
-            console.log(element);
-            element.status == 'OPEN' ? 'Ouverte' : 'Fermée';
+            element.status = element.status == 'OPEN' ? 'Ouverte' : 'Fermée';
             this.items.push(element);
           }
         })
-        console.log(this.items);
       });
   }
 
   ngOnInit() {
+
+    if (this.platform.is('mobile')) {
+
+      this.filePath = cordova.file.dataDirectory;
+      console.log("Mobile device !");
+    } else if(this.platform.is('core')) {
+
+      this.filePath = "../assets/files/";
+      console.log("Computer device !");
+    }
+    
+    //File.checkDir(this.filePath, 'appliVelov').then(_ => console.log('yay1')).catch(err => console.log('boooh1'));
+    //File.createDir(this.filePath, 'appliVelov', true);
+    //File.checkDir(this.filePath, 'appliVelov').then(_ => console.log('yay2')).catch(err => console.log('boooh2'));
+
     this.getFavoris();
   }
 
-  //this.filePath = cordova.file.dataDirectory;
-  //this.filePath = "../../../../..";
-
-  //File.checkDir(this.filePath, 'appliVelov').then(_ => console.log('yay1')).catch(err => console.log('boooh1'));
-  //File.createDir(this.filePath, 'appliVelov', true);
-  //File.checkDir(this.filePath, 'appliVelov').then(_ => console.log('yay2')).catch(err => console.log('boooh2'));
-
+  share(slidingItem: ItemSliding) {
+    slidingItem.close();
+  }
+  
   itemTapped(event, item) {
     this.navCtrl.push(FavoritesDetailPage, {
       item: item
