@@ -10,12 +10,12 @@ localisation-page {
       background-color: white;
       -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
       filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-      padding: 15px;
+      padding: 10px;
       border-radius: 10px;
       border: 1px solid #cccccc;
       bottom: 12px;
       left: -50px;
-      min-width: 280px;
+      min-width: 180px;
     }
     .ol-popup:after, .ol-popup:before {
       top: 100%;
@@ -39,12 +39,21 @@ localisation-page {
       margin-left: -11px;
     }
     .ol-popup-closer {
-      text-decoration: none;
-      position: absolute;
-      top: 2px;
-      right: 8px;
+      float: right;
     }
-    .ol-popup-closer:after {
-      content: "✖";
+
+    .ol-popup-btn {
+      text-decoration: none;
+      font-size : 20px!important;
+    }
+
+    .popup-content-name {
+      margin-top : 10px;
+      margin-bottom : 10px;
+    }
+    
+    .content-number {
+      float : right;
+      margin-top: -15px;
     }
 }

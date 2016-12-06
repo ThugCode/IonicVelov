@@ -68,6 +68,7 @@ export class LocalisationPage implements OnInit {
       var long = resp.coords.longitude;
       var lat = resp.coords.latitude;
       var tempFeature;
+      var prefered = ["768", "844", "923"];
       
       this.stations.forEach(element => {
 
@@ -76,7 +77,8 @@ export class LocalisationPage implements OnInit {
           name: element.name,
           status: element.status,
           bikeStands: element.bike_stands,
-          available: element.available_bike_stands
+          available: element.available_bike_stands,
+          favorite: prefered.indexOf(element.gid) >= 0
         });
 
         if(element.status == "CLOSED") {
@@ -115,6 +117,8 @@ export class LocalisationPage implements OnInit {
       var container = document.getElementById('popup');
       var content = document.getElementById('popup-content');
       var closer = document.getElementById('popup-closer');
+      var starFull = document.getElementById('star-full');
+      var starEmpty = document.getElementById('star-empty');
 
       var popup = new ol.Overlay({
         element: container,
@@ -147,11 +151,27 @@ export class LocalisationPage implements OnInit {
         if (feature) {
           var coord = evt.coordinate;
           var name = feature.get("name");
-          var status = feature.get("status");
+          var status = feature.get("status") == "OPEN" ? "Ouverte" : "Fermée";
           var bikestand = feature.get("bikeStands");
           var available = feature.get("available");
+          var favorite = feature.get("favorite");
 
-          content.innerHTML = '<p>' + name + '</p><code>'+ status +'</code>';
+          content.innerHTML = '<div class="popup-content-name">' + name + '</div>';
+          if(name != "Ma position") {
+            content.innerHTML += '<div class="popup-content-info">'+ 
+                                    '<div class="content-status">' + status + ' </div> ' + 
+                                    '<div class="content-number">' +available + '/' + bikestand + '</div>' +
+                                  '</div>';
+          }
+          
+          if(favorite) {
+            starFull.style.display = "inline-block";
+            starEmpty.style.display = "none";
+          } else {
+            starFull.style.display = "none";
+            starEmpty.style.display = "inline-block";
+          }
+
           popup.setPosition(coord);
         }
       });

@@ -11,7 +11,15 @@
 <ion-content>
   <div id="map" #map class="map"></div>
   <div id="popup" class="ol-popup">
-      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+      <a href="#" id="popup-favorite" class="ol-popup-btn ol-popup-favorite">
+        <ion-icon id="star-full" name="star" item-left></ion-icon>
+        <ion-icon id="star-empty" name="star-outline" item-left></ion-icon>
+      </a>
+      <a href="#" id="popup-closer" class="ol-popup-btn ol-popup-closer">
+        <ion-icon name="close" item-left></ion-icon>
+      </a>
       <div id="popup-content"></div>
     </div>
 </ion-content>
+
+
