@@ -14,7 +14,7 @@ localisation-page {
       border-radius: 10px;
       border: 1px solid #cccccc;
       bottom: 12px;
-      left: -50px;
+      //left: -50px;
       min-width: 180px;
     }
     .ol-popup:after, .ol-popup:before {
@@ -38,12 +38,13 @@ localisation-page {
       left: 48px;
       margin-left: -11px;
     }
+
     .ol-popup-closer {
       float: right;
     }
 
     .ol-popup-btn {
-      text-decoration: none;
+      background-color: transparent;
       font-size : 20px!important;
     }
 
