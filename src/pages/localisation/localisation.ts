@@ -1,14 +1,15 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { Geolocation } from 'ionic-native';
 
+//import { FileService } from '../../app/file.service';
 import { StationService } from '../../app/station.service';
 import { Station } from '../../app/station';
 import { LoadingController } from 'ionic-angular';
-import { File } from 'ionic-native';
 import { Platform } from 'ionic-angular';
 
 import ol from 'openlayers';
-declare var cordova: any;
+
+const maposition = "Ma position";
 
 @Component({
   selector: 'localisation-page',
@@ -19,12 +20,12 @@ export class LocalisationPage implements OnInit {
   loader: any;                           //Loader
   stations: Station[];                  //Station list
   stationSelected: any;                 //Selected station
-  mapDiv: any;                           //Div of map
-  popupDiv: any;                         //Div of popup
+  mapOl: any;                           //Ol map
 
   constructor(
     private stationService: StationService,
     private loadingCtrl: LoadingController,
+    //private fileService: FileService,
     private platform: Platform
   ) { }
 
@@ -66,6 +67,7 @@ export class LocalisationPage implements OnInit {
     var fS_Full = [];
     var fS_Available = [];
     var fS_MyPosition = [];
+    //var fS_MyPosition2 = [];
 
     this.stations.forEach(element => {
 
@@ -92,42 +94,55 @@ export class LocalisationPage implements OnInit {
       }
     });
 
+    var iconStyle = new ol.style.Style({
+      image: new ol.style.Icon( ({
+        anchor: [128, 20],
+        scale : 0.2,
+        anchorOrigin : "bottom-left",
+        anchorXUnits: 'pixels',
+        anchorYUnits: 'pixels',
+        src: 'assets/img/pin.png'
+      }))
+    });
+
     fS_MyPosition.push(new ol.Feature({
       geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat])),
-      name: 'Ma position'
+      name: maposition
     }));
+
+    /*fS_MyPosition2.push(new ol.Feature({
+      geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat])),
+      name: maposition
+    }));*/
 
     var vS_Closed = new ol.source.Vector({ features: fS_Closed });
     var vS_Empty = new ol.source.Vector({ features: fS_Empty });
     var vS_Full = new ol.source.Vector({ features: fS_Full });
     var vS_Available = new ol.source.Vector({ features: fS_Available });
     var vS_MyPosition = new ol.source.Vector({ features: fS_MyPosition });
+    //var vS_MyPosition2 = new ol.source.Vector({ features: fS_MyPosition2 });
 
     var vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red") });
     var vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange") });
     var vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow") });
     var vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green") });
-    var vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: this.createStyle("blue") });
+    var vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: iconStyle });
+    //var vL_MyPosition2 = new ol.layer.Vector({ source: vS_MyPosition2, style: this.createStyle("blue") });
 
     var mapImg = new ol.layer.Tile({
       source: new ol.source.OSM()
     });
 
-    this.popupDiv = new ol.Overlay({
-      element: document.getElementById('popup')
-    });
-
-    this.mapDiv = new ol.Map({
+    this.mapOl = new ol.Map({
       target: "map",
-      layers: [mapImg, vL_Closed, vL_Empty, vL_Full, vL_Available, vL_MyPosition],
-      overlays: [this.popupDiv],
+      layers: [mapImg, vL_Closed, vL_Empty, vL_Full, vL_Available, vL_MyPosition],//, vL_MyPosition2],
+      overlays: [new ol.Overlay({ element: document.getElementById('popup') })],
       view: new ol.View({
         center: ol.proj.fromLonLat([long, lat]),
         zoom: 15
       })//,
       //controls : [] //Enleve les boutons de controle
     })
-
   }
 
   createStyle(color) {
@@ -147,8 +162,8 @@ export class LocalisationPage implements OnInit {
     console.log("-------------      CATCH      ------------------------");
     console.log(station.gid);
     if (this.platform.is('mobile')) {
-      //this.checkDir(station.gid);
       this.stationSelected.favorite = !this.stationSelected.favorite;
+      //this.fileService.writeFile(station.gid);
     }
   }
 
@@ -158,7 +173,7 @@ export class LocalisationPage implements OnInit {
 
   clickMap(event) {
     var coord = [event.layerX, event.layerY]
-    var feature = this.mapDiv.forEachFeatureAtPixel(coord,
+    var feature = this.mapOl.forEachFeatureAtPixel(coord,
       function (feature, layer) {
         return feature;
       }
@@ -168,7 +183,7 @@ export class LocalisationPage implements OnInit {
   }
 
   showPopup(feature) {
-    if (feature) {
+    if (feature && feature.get("name") != maposition) {
       this.stationSelected = {};
       this.stationSelected.name = feature.get("name");
       this.stationSelected.status = feature.get("status") == "OPEN" ? "Ouverte" : "Fermée";
@@ -177,10 +192,14 @@ export class LocalisationPage implements OnInit {
       this.stationSelected.favorite = feature.get("favorite");
       this.stationSelected.gid = feature.get("gid");
 
-      var lng = parseFloat(feature.get("lng"));
-      var lat = parseFloat(feature.get("lat"));
-      console.log(ol.proj.fromLonLat([lng, lat]));
-      this.popupDiv.setPosition(ol.proj.fromLonLat([lng, lat]));
+      this.mapOl.getView().setCenter(feature.getGeometry().getCoordinates());
+
+      //var lng = parseFloat(feature.get("lng"));
+      //var lat = parseFloat(feature.get("lat"));
+      //console.log(ol.proj.fromLonLat([lng, lat]));
+      //console.log(feature.getGeometry().getCoordinates());
+      //this.mapOl.getOverlayById(0).setPosition(feature.getGeometry().getCoordinates());
+      //this.popupDiv.setPosition(ol.proj.fromLonLat([lng, lat]));
     }
   }
 
