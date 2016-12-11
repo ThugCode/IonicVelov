@@ -1,9 +1,9 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { Geolocation } from 'ionic-native';
 
-//import { FileService } from '../../app/file.service';
-import { StationService } from '../../app/station.service';
-import { Station } from '../../app/station';
+//import { FileService } from '../../services/file.service';
+import { StationService } from '../../services/station.service';
+import { Station } from '../../models/station';
 import { LoadingController } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 

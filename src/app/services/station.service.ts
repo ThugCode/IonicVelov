@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Rx';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
-import { Station } from './station';
+import { Station } from '../models/station';
 
 @Injectable()
 export class StationService {

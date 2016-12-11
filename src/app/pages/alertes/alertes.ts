@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { StationService } from '../../app/station.service';
-import { Station } from '../../app/station';
+import { StationService } from '../../services/station.service';
+import { Station } from '../../models/station';
 
 @Component({
   selector: 'alertes-page',

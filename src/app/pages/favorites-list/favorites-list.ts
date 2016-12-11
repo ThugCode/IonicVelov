@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { FavoritesDetailPage } from '../favorites-detail/favorites-detail';
 
-import { StationService } from '../../app/station.service';
-import { Station } from '../../app/station';
+import { StationService } from '../../services/station.service';
+import { Station } from '../../models/station';
 import { File } from 'ionic-native';
 import { Platform } from 'ionic-angular';
 import { ItemSliding } from 'ionic-angular';

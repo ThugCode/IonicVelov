@@ -4,9 +4,9 @@ import { Platform, MenuController, Nav } from 'ionic-angular';
 
 import { StatusBar } from 'ionic-native';
 
-import { LocalisationPage } from '../pages/localisation/localisation';
-import { AlertesPage } from '../pages/alertes/alertes';
-import { FavoritesListPage } from '../pages/favorites-list/favorites-list';
+import { LocalisationPage } from './pages/localisation/localisation';
+import { AlertesPage } from './pages/alertes/alertes';
+import { FavoritesListPage } from './pages/favorites-list/favorites-list';
 
 
 @Component({
