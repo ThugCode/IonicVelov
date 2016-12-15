@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { Geolocation } from 'ionic-native';
 
-//import { FileService } from '../../services/file.service';
+import { FileService } from '../../services/file.service';
 import { StationService } from '../../services/station.service';
 import { Station } from '../../models/station';
 import { LoadingController } from 'ionic-angular';
@@ -10,6 +10,7 @@ import { Platform } from 'ionic-angular';
 import ol from 'openlayers';
 
 const maposition = "Ma position";
+const selected = "Sélection";
 
 @Component({
   selector: 'localisation-page',
@@ -21,11 +22,13 @@ export class LocalisationPage implements OnInit {
   stations: Station[];                  //Station list
   stationSelected: any;                 //Selected station
   mapOl: any;                           //Ol map
+  targetPoint: ol.Feature;              //Blue point
+  featureSelected: any;
 
   constructor(
     private stationService: StationService,
     private loadingCtrl: LoadingController,
-    //private fileService: FileService,
+    private fileService: FileService,
     private platform: Platform
   ) { }
 
@@ -48,12 +51,22 @@ export class LocalisationPage implements OnInit {
 
   loadMap() {
     Geolocation.getCurrentPosition().then((resp) => {
-      var prefered = ["768", "844", "923"];
-      this.createMap(resp, prefered);
+      this.getPrefered(resp);
       this.loader.dismiss();
     }).catch((error) => {
       console.log('Error getting location', error);
     })
+  }
+
+  getPrefered(resp) {
+    if(this.platform.is('mobile')) {
+      this.fileService.readStationFromFile().then(prefered => {
+        this.createMap(resp, prefered);
+      });
+    } else {
+      var prefered = [];
+      this.createMap(resp, prefered);
+    }
   }
 
   createMap(resp, prefered) {
@@ -67,10 +80,10 @@ export class LocalisationPage implements OnInit {
     var fS_Full = [];
     var fS_Available = [];
     var fS_MyPosition = [];
-    //var fS_MyPosition2 = [];
+    var fS_Target = [];
 
     this.stations.forEach(element => {
-
+      
       tempFeature = new ol.Feature({
         geometry: new ol.geom.Point(ol.proj.fromLonLat([parseFloat(element.lng), parseFloat(element.lat)])),
         name: element.name,
@@ -110,24 +123,24 @@ export class LocalisationPage implements OnInit {
       name: maposition
     }));
 
-    /*fS_MyPosition2.push(new ol.Feature({
-      geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat])),
-      name: maposition
-    }));*/
+    this.targetPoint = new ol.Feature({
+      name: selected
+    });
+    fS_Target.push(this.targetPoint);
 
     var vS_Closed = new ol.source.Vector({ features: fS_Closed });
     var vS_Empty = new ol.source.Vector({ features: fS_Empty });
     var vS_Full = new ol.source.Vector({ features: fS_Full });
     var vS_Available = new ol.source.Vector({ features: fS_Available });
     var vS_MyPosition = new ol.source.Vector({ features: fS_MyPosition });
-    //var vS_MyPosition2 = new ol.source.Vector({ features: fS_MyPosition2 });
+    var vS_Target = new ol.source.Vector({ features: fS_Target });
 
-    var vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red") });
-    var vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange") });
-    var vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow") });
-    var vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green") });
+    var vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 8) });
+    var vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 8) });
+    var vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow", 8) });
+    var vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 8) });
     var vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: iconStyle });
-    //var vL_MyPosition2 = new ol.layer.Vector({ source: vS_MyPosition2, style: this.createStyle("blue") });
+    var vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 10) });
 
     var mapImg = new ol.layer.Tile({
       source: new ol.source.OSM()
@@ -135,23 +148,22 @@ export class LocalisationPage implements OnInit {
 
     this.mapOl = new ol.Map({
       target: "map",
-      layers: [mapImg, vL_Closed, vL_Empty, vL_Full, vL_Available, vL_MyPosition],//, vL_MyPosition2],
+      layers: [mapImg, vL_Closed, vL_Empty, vL_Full, vL_Available, vL_MyPosition, vL_MyTarget],
       overlays: [new ol.Overlay({ element: document.getElementById('popup') })],
       view: new ol.View({
         center: ol.proj.fromLonLat([long, lat]),
         zoom: 15
-      })//,
-      //controls : [] //Enleve les boutons de controle
+      })
     })
   }
 
-  createStyle(color) {
+  createStyle(color, taille) {
     return new ol.style.Style({
       image: new ol.style.Circle({
-        radius: 6,
+        radius: taille,
         stroke: new ol.style.Stroke({
-          color: 'white',
-          width: 2
+          color: 'black',
+          width: 3
         }),
         fill: new ol.style.Fill({ color: color })
       })
@@ -159,16 +171,19 @@ export class LocalisationPage implements OnInit {
   }
 
   clickOnStar(station) {
-    console.log("-------------      CATCH      ------------------------");
-    console.log(station.gid);
     if (this.platform.is('mobile')) {
       this.stationSelected.favorite = !this.stationSelected.favorite;
-      //this.fileService.writeFile(station.gid);
+      this.featureSelected.set("favorite", !this.featureSelected.get("favorite"));
+      if(this.stationSelected.favorite)
+        this.fileService.addStationToFile(station.gid);
+      else
+        this.fileService.removeStationToFile(station.gid);
     }
   }
 
   clickCloser() {
     this.stationSelected = null;
+    this.targetPoint.setGeometry(null);
   }
 
   clickMap(event) {
@@ -178,12 +193,12 @@ export class LocalisationPage implements OnInit {
         return feature;
       }
     );
-
+    this.featureSelected = feature;
     this.showPopup(feature);
   }
 
   showPopup(feature) {
-    if (feature && feature.get("name") != maposition) {
+    if (feature && feature.get("name") != maposition && feature.get("name") != selected) {
       this.stationSelected = {};
       this.stationSelected.name = feature.get("name");
       this.stationSelected.status = feature.get("status") == "OPEN" ? "Ouverte" : "Fermée";
@@ -192,14 +207,8 @@ export class LocalisationPage implements OnInit {
       this.stationSelected.favorite = feature.get("favorite");
       this.stationSelected.gid = feature.get("gid");
 
+      this.targetPoint.setGeometry(new ol.geom.Point(feature.getGeometry().getCoordinates()));
       this.mapOl.getView().setCenter(feature.getGeometry().getCoordinates());
-
-      //var lng = parseFloat(feature.get("lng"));
-      //var lat = parseFloat(feature.get("lat"));
-      //console.log(ol.proj.fromLonLat([lng, lat]));
-      //console.log(feature.getGeometry().getCoordinates());
-      //this.mapOl.getOverlayById(0).setPosition(feature.getGeometry().getCoordinates());
-      //this.popupDiv.setPosition(ol.proj.fromLonLat([lng, lat]));
     }
   }
 
