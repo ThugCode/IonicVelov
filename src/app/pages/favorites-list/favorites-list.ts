@@ -64,6 +64,7 @@ export class FavoritesListPage implements OnInit {
     if (this.platform.is('mobile')) {
       this.fileService.removeStationToFile(item.gid);
     }
+    this.items.splice(this.items.indexOf(item), 1);
   }
 
   itemTapped(event, item) {
