@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { StationService } from './services/station.service';
+import { PisteService } from './services/piste.service';
 import { FileService } from './services/file.service';
 import { LocalisationPage } from './pages/localisation/localisation';
 import { AlertesPage } from './pages/alertes/alertes';
@@ -34,7 +35,8 @@ import { HelpPage } from './pages/help/help';
   ],
   providers: [
     StationService,
-    FileService
+    FileService,
+    PisteService
   ]
 })
 export class AppModule {}

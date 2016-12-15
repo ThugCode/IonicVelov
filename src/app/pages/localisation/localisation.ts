@@ -4,7 +4,9 @@ import { Keyboard } from 'ionic-native';
 import { Clipboard } from 'ionic-native';
 import { FileService } from '../../services/file.service';
 import { StationService } from '../../services/station.service';
+import { PisteService } from '../../services/piste.service';
 import { Station } from '../../models/station';
+import { PisteShape } from '../../models/piste';
 import { LoadingController } from 'ionic-angular';
 import { Network } from 'ionic-native';
 import { ToastController, Searchbar } from 'ionic-angular';
@@ -39,6 +41,7 @@ export class LocalisationPage implements OnInit {
   stationsFiltered  : Station[];        //Station filtered (for search input)
   stationSelected   : any;              //Selected station on the map (for bottom popup)
   featureSelected   : any;              //Selected feature (for favorite star)
+  piste             : PisteShape[];     //PisteShape list
   mapOl             : any;              //Ol map
   targetPoint       : ol.Feature;       //Blue point feature on map
   notConnected      : boolean;          //Is the device connected to internet ?
@@ -57,18 +60,17 @@ export class LocalisationPage implements OnInit {
   vL_MyPosition     : ol.layer.Vector;  //Layer for my position
   vL_MyTarget       : ol.layer.Vector;  //Layer for selected station
 
-
   constructor(
     private stationService: StationService,
     private loadingCtrl: LoadingController,
     private fileService: FileService,
+    private pisteService: PisteService,
     private toastCtrl: ToastController
   ) { 
     this.initialised = false;
   }
 
   ngOnInit() {
-
     this.notConnected = Network.connection === "none";
     this.stationFilter = "";
     this.loader = this.loadingCtrl.create({
@@ -82,6 +84,15 @@ export class LocalisationPage implements OnInit {
   getStations() {
     this.stationService.getStations().subscribe(stations => {
         this.stations = stations;
+        this.getPiste();
+      });
+  }
+
+  getPiste() {
+    this.pisteService.getPistes()
+      .subscribe(piste => {
+        this.piste = piste;
+        console.log(this.piste);
         this.loadMap();
     });
   }
@@ -184,6 +195,7 @@ export class LocalisationPage implements OnInit {
     var fS_Available = [];
     var fS_Bonus = [];
     var fS_All = [];
+    var fS_Pistes = [];
 
     this.stations.forEach(element => {
 
