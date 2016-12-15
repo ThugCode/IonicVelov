@@ -17,6 +17,7 @@ export class FavoritesListPage implements OnInit {
 
   selectedItem: any;
   items: Station[];
+  length: any;
 
   constructor(
     private navCtrl: NavController,
@@ -38,7 +39,7 @@ export class FavoritesListPage implements OnInit {
         });
       }
       else {
-        var prefered = ["768", "844", "923"];
+        var prefered = [];//"768", "844", "923"];
         this.getFavoris(stations, prefered);
       }
     });
@@ -53,6 +54,7 @@ export class FavoritesListPage implements OnInit {
         this.items.push(element);
       }
     });
+    this.length = this.items.length;
   }
 
   ngOnInit() {
@@ -65,6 +67,7 @@ export class FavoritesListPage implements OnInit {
       this.fileService.removeStationToFile(item.gid);
     }
     this.items.splice(this.items.indexOf(item), 1);
+    this.length--;
   }
 
   itemTapped(event, item) {

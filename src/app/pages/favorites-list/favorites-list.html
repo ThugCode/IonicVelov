@@ -26,5 +26,8 @@
     </ion-item-sliding>
     
   </ion-list>
+  <div class="center none-station" *ngIf="length == 0">
+    Vous n'avez pas de station favorite
+  </div>
   <div *ngIf="selectedItem" padding></div>
 </ion-content>
