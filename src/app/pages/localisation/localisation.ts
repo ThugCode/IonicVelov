@@ -9,8 +9,8 @@ import { Platform } from 'ionic-angular';
 
 import ol from 'openlayers';
 
-const maposition = "Ma position";
-const selected = "Sélection";
+const TEXT_MY_POSITION = "Ma position";
+const TEXT_SELECTED = "Sélection";
 
 @Component({
   selector: 'localisation-page',
@@ -52,7 +52,6 @@ export class LocalisationPage implements OnInit {
   loadMap() {
     Geolocation.getCurrentPosition().then((resp) => {
       this.getPrefered(resp);
-      this.loader.dismiss();
     }).catch((error) => {
       console.log('Error getting location', error);
     })
@@ -60,7 +59,7 @@ export class LocalisationPage implements OnInit {
 
   getPrefered(resp) {
     if(this.platform.is('mobile')) {
-      this.fileService.readStationFromFile().then(prefered => {
+      this.fileService.readFavoritesFromFile().then(prefered => {
         this.createMap(resp, prefered);
       });
     } else {
@@ -120,11 +119,11 @@ export class LocalisationPage implements OnInit {
 
     fS_MyPosition.push(new ol.Feature({
       geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat])),
-      name: maposition
+      name: TEXT_MY_POSITION
     }));
 
     this.targetPoint = new ol.Feature({
-      name: selected
+      name: TEXT_SELECTED
     });
     fS_Target.push(this.targetPoint);
 
@@ -155,6 +154,8 @@ export class LocalisationPage implements OnInit {
         zoom: 15
       })
     })
+
+    this.loader.dismiss();
   }
 
   createStyle(color, taille) {
@@ -198,7 +199,7 @@ export class LocalisationPage implements OnInit {
   }
 
   showPopup(feature) {
-    if (feature && feature.get("name") != maposition && feature.get("name") != selected) {
+    if (feature && feature.get("name") != TEXT_MY_POSITION && feature.get("name") != TEXT_SELECTED) {
       this.stationSelected = {};
       this.stationSelected.name = feature.get("name");
       this.stationSelected.status = feature.get("status") == "OPEN" ? "Ouverte" : "Fermée";

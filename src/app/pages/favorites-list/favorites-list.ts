@@ -34,7 +34,7 @@ export class FavoritesListPage implements OnInit {
 
       if (this.platform.is('mobile')) {
         console.log("Mobile device !");
-        this.fileService.readStationFromFile().then(prefered => {
+        this.fileService.readFavoritesFromFile().then(prefered => {
           this.getFavoris(stations, prefered);
         });
       }
