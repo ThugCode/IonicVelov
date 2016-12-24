@@ -5,6 +5,7 @@ import { FavoritesDetailPage } from '../favorites-detail/favorites-detail';
 import { StationService } from '../../services/station.service';
 import { FileService } from '../../services/file.service';
 import { Station } from '../../models/station';
+import { Network } from 'ionic-native';
 import { Platform } from 'ionic-angular';
 import { ItemSliding } from 'ionic-angular';
 
@@ -18,6 +19,7 @@ export class FavoritesListPage implements OnInit {
   selectedItem: any;
   items: Station[];
   length: any;
+  notConnected: boolean;
 
   constructor(
     private navCtrl: NavController,
@@ -58,6 +60,7 @@ export class FavoritesListPage implements OnInit {
   }
 
   ngOnInit() {
+    this.notConnected = Network.connection === "none";
     this.getStations();
   }
 

@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { StationService } from '../../services/station.service';
 import { Station } from '../../models/station';
 
+import { Network } from 'ionic-native';
+
 @Component({
   selector: 'alertes-page',
   templateUrl: 'alertes.html'
@@ -12,6 +14,7 @@ export class AlertesPage implements OnInit {
   stations: Station[];
   items: string[];
   length: any;
+  notConnected: boolean;
 
   constructor(
     private stationService: StationService
@@ -32,6 +35,7 @@ export class AlertesPage implements OnInit {
   }
 
   ngOnInit() {
+    this.notConnected = Network.connection === "none";
     this.getAlertes();
   }
 }

@@ -5,6 +5,7 @@ import { FileService } from '../../services/file.service';
 import { StationService } from '../../services/station.service';
 import { Station } from '../../models/station';
 import { LoadingController } from 'ionic-angular';
+import { Network } from 'ionic-native';
 import { Platform } from 'ionic-angular';
 
 import ol from 'openlayers';
@@ -18,12 +19,13 @@ const TEXT_SELECTED = "Sélection";
 })
 export class LocalisationPage implements OnInit {
   @ViewChild('map') mapChild;           //Child map in HTML
-  loader: any;                           //Loader
+  loader: any;                          //Loader
   stations: Station[];                  //Station list
   stationSelected: any;                 //Selected station
   mapOl: any;                           //Ol map
   targetPoint: ol.Feature;              //Blue point
   featureSelected: any;
+  notConnected: boolean;
 
   constructor(
     private stationService: StationService,
@@ -33,6 +35,7 @@ export class LocalisationPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.notConnected = Network.connection === "none";
     this.loader = this.loadingCtrl.create({
       content: "Merci de patienter...",
       duration: 2000
