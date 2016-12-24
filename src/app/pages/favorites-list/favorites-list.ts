@@ -6,7 +6,6 @@ import { StationService } from '../../services/station.service';
 import { FileService } from '../../services/file.service';
 import { Station } from '../../models/station';
 import { Network } from 'ionic-native';
-import { Platform } from 'ionic-angular';
 import { ItemSliding } from 'ionic-angular';
 
 @Component({
@@ -25,25 +24,16 @@ export class FavoritesListPage implements OnInit {
     private navCtrl: NavController,
     private navParams: NavParams,
     private stationService: StationService,
-    private fileService: FileService,
-    private platform: Platform
+    private fileService: FileService
   ) {
     this.selectedItem = navParams.get('item');
   }
 
   getStations() {
     this.stationService.getStations().subscribe(stations => {
-
-      if (this.platform.is('mobile')) {
-        console.log("Mobile device !");
         this.fileService.readFavoritesFromFile().then(prefered => {
           this.getFavoris(stations, prefered);
         });
-      }
-      else {
-        var prefered = [];//"768", "844", "923"];
-        this.getFavoris(stations, prefered);
-      }
     });
   }
 
@@ -66,9 +56,7 @@ export class FavoritesListPage implements OnInit {
 
   delete(slidingItem: ItemSliding, item) {
     slidingItem.close();
-    if (this.platform.is('mobile')) {
-      this.fileService.removeStationToFile(item.gid);
-    }
+    this.fileService.removeStationToFile(item.gid);
     this.items.splice(this.items.indexOf(item), 1);
     this.length--;
   }

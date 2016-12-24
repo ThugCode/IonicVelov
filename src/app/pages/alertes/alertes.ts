@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
 import { StationService } from '../../services/station.service';
 import { Station } from '../../models/station';
-
 import { Network } from 'ionic-native';
 
 @Component({

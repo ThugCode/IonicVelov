@@ -6,7 +6,6 @@ import { StationService } from '../../services/station.service';
 import { Station } from '../../models/station';
 import { LoadingController } from 'ionic-angular';
 import { Network } from 'ionic-native';
-import { Platform } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 
 import ol from 'openlayers';
@@ -32,11 +31,11 @@ export class LocalisationPage implements OnInit {
     private stationService: StationService,
     private loadingCtrl: LoadingController,
     private fileService: FileService,
-    private platform: Platform,
     private toastCtrl: ToastController
   ) { }
 
   ngOnInit() {
+
     this.notConnected = Network.connection === "none";
     this.loader = this.loadingCtrl.create({
       content: "Merci de patienter...",
@@ -63,14 +62,9 @@ export class LocalisationPage implements OnInit {
   }
 
   getPrefered(resp) {
-    if(this.platform.is('mobile')) {
       this.fileService.readFavoritesFromFile().then(prefered => {
         this.createMap(resp, prefered);
       });
-    } else {
-      var prefered = [];
-      this.createMap(resp, prefered);
-    }
   }
 
   createMap(resp, prefered) {
@@ -177,17 +171,15 @@ export class LocalisationPage implements OnInit {
   }
 
   clickOnStar(station) {
-    if (this.platform.is('mobile')) {
-      this.stationSelected.favorite = !this.stationSelected.favorite;
-      this.featureSelected.set("favorite", !this.featureSelected.get("favorite"));
-      if(this.stationSelected.favorite) {
-        this.fileService.addStationToFile(station.gid);
-        this.presentToast("Station "+station.name+" ajoutée aux favoris");
-      }
-      else {
-        this.fileService.removeStationToFile(station.gid);
-        this.presentToast("Station "+station.name+" supprimée des favoris");
-      }
+    this.stationSelected.favorite = !this.stationSelected.favorite;
+    this.featureSelected.set("favorite", !this.featureSelected.get("favorite"));
+    if(this.stationSelected.favorite) {
+      this.fileService.addStationToFile(station.gid);
+      this.presentToast("Station "+station.name+" ajoutée aux favoris");
+    }
+    else {
+      this.fileService.removeStationToFile(station.gid);
+      this.presentToast("Station "+station.name+" supprimée des favoris");
     }
   }
 
