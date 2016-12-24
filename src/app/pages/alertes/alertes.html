@@ -3,7 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Vélo'v</ion-title>
+    <ion-title>Alertes</ion-title>
   </ion-navbar>
   <ion-toolbar *ngIf="notConnected" color="danger">
     <ion-title>Mode hors ligne</ion-title>
@@ -12,20 +12,19 @@
 
 
 <ion-content padding>
-<h3>Alertes</h3>
-<div class="center none-station" *ngIf="length == 0">
-  <ion-icon name="md-checkmark-circle"></ion-icon>
-  <h3>Aucune station fermée</h3>
-</div>
-<div class="center" *ngIf="length > 0">
-  <ion-icon name="md-warning"></ion-icon>
-  <h3>{{length}} station(s) fermée(s)</h3>
-</div>
-<ion-list>
+  <div class="center none-station" *ngIf="length == 0">
+    <ion-icon name="md-checkmark-circle"></ion-icon>
+    <h3>Aucune station fermée</h3>
+  </div>
+  <div class="center" *ngIf="length > 0">
+    <ion-icon name="md-warning"></ion-icon>
+    <h3>{{length}} station(s) fermée(s)</h3>
+  </div>
+  <ion-list>
     <ion-item *ngFor="let item of items">
       <ion-icon name="ios-lock" item-left></ion-icon>
       {{item}}
     </ion-item>
-</ion-list>
+  </ion-list>
 
 </ion-content>
