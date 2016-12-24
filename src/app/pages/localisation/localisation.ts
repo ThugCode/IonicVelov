@@ -7,6 +7,7 @@ import { Station } from '../../models/station';
 import { LoadingController } from 'ionic-angular';
 import { Network } from 'ionic-native';
 import { Platform } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
 
 import ol from 'openlayers';
 
@@ -31,7 +32,8 @@ export class LocalisationPage implements OnInit {
     private stationService: StationService,
     private loadingCtrl: LoadingController,
     private fileService: FileService,
-    private platform: Platform
+    private platform: Platform,
+    private toastCtrl: ToastController
   ) { }
 
   ngOnInit() {
@@ -178,10 +180,14 @@ export class LocalisationPage implements OnInit {
     if (this.platform.is('mobile')) {
       this.stationSelected.favorite = !this.stationSelected.favorite;
       this.featureSelected.set("favorite", !this.featureSelected.get("favorite"));
-      if(this.stationSelected.favorite)
+      if(this.stationSelected.favorite) {
         this.fileService.addStationToFile(station.gid);
-      else
+        this.presentToast("Station "+station.name+" ajoutée aux favoris");
+      }
+      else {
         this.fileService.removeStationToFile(station.gid);
+        this.presentToast("Station "+station.name+" supprimée des favoris");
+      }
     }
   }
 
@@ -216,4 +222,11 @@ export class LocalisationPage implements OnInit {
     }
   }
 
+  presentToast(p_message) {
+    let toast = this.toastCtrl.create({
+      message: p_message,
+      duration: 3000
+    });
+    toast.present();
+  }
 }
