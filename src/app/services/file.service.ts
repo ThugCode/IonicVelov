@@ -63,7 +63,7 @@ export class FileService {
         .catch(err => {
             console.log('Fichier inexistant')
             console.log(err)
-            return "";
+            return [];
         })
     }
 
