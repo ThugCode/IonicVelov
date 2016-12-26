@@ -5,7 +5,8 @@ import { FileService } from '../../services/file.service';
 import { StationService } from '../../services/station.service';
 import { Station } from '../../models/station';
 import { LoadingController } from 'ionic-angular';
-import { Platform } from 'ionic-angular';
+import { Network } from 'ionic-native';
+import { ToastController } from 'ionic-angular';
 
 import ol from 'openlayers';
 
@@ -18,21 +19,24 @@ const TEXT_SELECTED = "Sélection";
 })
 export class LocalisationPage implements OnInit {
   @ViewChild('map') mapChild;           //Child map in HTML
-  loader: any;                           //Loader
+  loader: any;                          //Loader
   stations: Station[];                  //Station list
   stationSelected: any;                 //Selected station
   mapOl: any;                           //Ol map
   targetPoint: ol.Feature;              //Blue point
   featureSelected: any;
+  notConnected: boolean;
 
   constructor(
     private stationService: StationService,
     private loadingCtrl: LoadingController,
     private fileService: FileService,
-    private platform: Platform
+    private toastCtrl: ToastController
   ) { }
 
   ngOnInit() {
+
+    this.notConnected = Network.connection === "none";
     this.loader = this.loadingCtrl.create({
       content: "Merci de patienter...",
       duration: 2000
@@ -58,14 +62,9 @@ export class LocalisationPage implements OnInit {
   }
 
   getPrefered(resp) {
-    if(this.platform.is('mobile')) {
       this.fileService.readFavoritesFromFile().then(prefered => {
         this.createMap(resp, prefered);
       });
-    } else {
-      var prefered = [];
-      this.createMap(resp, prefered);
-    }
   }
 
   createMap(resp, prefered) {
@@ -172,13 +171,15 @@ export class LocalisationPage implements OnInit {
   }
 
   clickOnStar(station) {
-    if (this.platform.is('mobile')) {
-      this.stationSelected.favorite = !this.stationSelected.favorite;
-      this.featureSelected.set("favorite", !this.featureSelected.get("favorite"));
-      if(this.stationSelected.favorite)
-        this.fileService.addStationToFile(station.gid);
-      else
-        this.fileService.removeStationToFile(station.gid);
+    this.stationSelected.favorite = !this.stationSelected.favorite;
+    this.featureSelected.set("favorite", !this.featureSelected.get("favorite"));
+    if(this.stationSelected.favorite) {
+      this.fileService.addStationToFile(station.gid);
+      this.presentToast("Station "+station.name+" ajoutée aux favoris");
+    }
+    else {
+      this.fileService.removeStationToFile(station.gid);
+      this.presentToast("Station "+station.name+" supprimée des favoris");
     }
   }
 
@@ -213,4 +214,11 @@ export class LocalisationPage implements OnInit {
     }
   }
 
+  presentToast(p_message) {
+    let toast = this.toastCtrl.create({
+      message: p_message,
+      duration: 3000
+    });
+    toast.present();
+  }
 }

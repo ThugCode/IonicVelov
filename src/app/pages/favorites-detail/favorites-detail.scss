@@ -1,11 +1,34 @@
 favorites-detail-page {
 
   div.selection {
-    font-size: 22px;
+    color : white;
+    font-size: 18px;
     display: block;
-    text-align: center;
-    padding-top: 5%;
+    padding : 10px;
   }
 
+  .name-detail {
+    padding-top: 5%;
+    text-align: center;
+  }
+
+  .title-detail {
+    margin-top : 20px;
+    margin-bottom : 10px;
+    color : #CCAF5F;
+    border-bottom: 1px solid #CCAF5F;
+    font-size: 16px;
+  }
+
+  .table-place {
+    text-align: center;
+    font-size: 26px;
+  }
+
+  .last_update {
+    margin-top : -10px;
+    margin-bottom : 10px;
+    font-size : 14px;
+  }
 }
 

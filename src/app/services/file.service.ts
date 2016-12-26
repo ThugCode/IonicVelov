@@ -20,7 +20,7 @@ export class FileService {
     }
 
     init() {
-        if (this.platform.is('mobile')) {
+        if (this.platform.is('cordova')) {
             this.filePath = cordova.file.dataDirectory;
             this.checkFileFavorites();
             this.checkFileOffline();
@@ -38,88 +38,106 @@ export class FileService {
     }*/
 
     checkFileFavorites() {
-        this.filePath = cordova.file.dataDirectory;
-        File.checkFile(this.filePath, FILE_FAVORITE)
-            .then(function (success) {}, function (error) {
-                console.log('Fichier inexistant')
-                File.createFile(this.filePath, FILE_FAVORITE, true);
-            });
+        if (this.platform.is('cordova')) {
+            this.filePath = cordova.file.dataDirectory;
+            File.checkFile(this.filePath, FILE_FAVORITE)
+                .then(function (success) {}, function (error) {
+                    console.log('Fichier inexistant')
+                    File.createFile(this.filePath, FILE_FAVORITE, true);
+                });
+        }
     }
 
     checkFileOffline() {
-        this.filePath = cordova.file.dataDirectory;
-        File.checkFile(this.filePath, FILE_OFFLINE)
-            .then(function (success) {}, function (error) {
-                console.log('Fichier inexistant')
-                File.createFile(this.filePath, FILE_OFFLINE, true);
-            });
+        if (this.platform.is('cordova')) { 
+            this.filePath = cordova.file.dataDirectory;
+            File.checkFile(this.filePath, FILE_OFFLINE)
+                .then(function (success) {}, function (error) {
+                    console.log('Fichier inexistant')
+                    File.createFile(this.filePath, FILE_OFFLINE, true);
+                });
+        }
     }
 
     readSationOffline(): Promise<Station[]> {
-        this.filePath = cordova.file.dataDirectory;
-        return File.readAsText(this.filePath, FILE_OFFLINE).then(success => {
-            return JSON.parse(success.toString());
-        })
-        .catch(err => {
-            console.log('Fichier inexistant')
-            console.log(err)
-            return "";
-        })
+        if (this.platform.is('cordova')) {
+            this.filePath = cordova.file.dataDirectory;
+            return File.readAsText(this.filePath, FILE_OFFLINE).then(success => {
+                return JSON.parse(success.toString());
+            })
+            .catch(err => {
+                console.log('Fichier inexistant')
+                console.log(err)
+                return [];
+            })
+        } else {
+            return Promise.all([]);
+        }
     }
 
     writeStationOffline(json) {
-        this.filePath = cordova.file.dataDirectory;
-        var toFile = JSON.stringify(json);
-        File.writeFile(this.filePath, FILE_OFFLINE, toFile, true);
+        if (this.platform.is('cordova')) {
+            this.filePath = cordova.file.dataDirectory;
+            var toFile = JSON.stringify(json);
+            File.writeFile(this.filePath, FILE_OFFLINE, toFile, true);
+        }
     }
 
     readFavoritesFromFile(): Promise<any[]> {
-        this.filePath = cordova.file.dataDirectory;
-        return File.readAsText(this.filePath, FILE_FAVORITE).then(success => {
-            var favorites = [];
-            var read = success.toString().split("%");
-            read.forEach(element => {
-                if (element != "") favorites.push(element);
+        if (this.platform.is('cordova')) {
+            this.filePath = cordova.file.dataDirectory;
+            return File.readAsText(this.filePath, FILE_FAVORITE).then(success => {
+                var favorites = [];
+                var read = success.toString().split("%");
+                read.forEach(element => {
+                    if (element != "") favorites.push(element);
+                });
+                return favorites;
+            })
+            .catch(err => {
+                console.log('Fichier inexistant')
+                console.log(err)
+                return [];
             });
-            return favorites;
-        })
-        .catch(err => {
-            console.log('Fichier inexistant')
-            console.log(err)
-            return [];
-        });
+        } else {
+            return Promise.all(["768", "844", "923"]);
+        }
     }
 
     addStationToFile(id) {
-        this.filePath = cordova.file.dataDirectory;
-        File.readAsText(this.filePath, FILE_FAVORITE).then(success => {
-            var favorites = "";
-            var read = success.toString().split("%");
-            read.forEach(element => {
-                if (element != "") favorites += element + "%";
+        if (this.platform.is('cordova')) {
+            this.filePath = cordova.file.dataDirectory;
+            File.readAsText(this.filePath, FILE_FAVORITE).then(success => {
+                var favorites = "";
+                var read = success.toString().split("%");
+                read.forEach(element => {
+                    if (element != "") favorites += element + "%";
+                });
+                favorites += id;
+                File.writeFile(this.filePath, FILE_FAVORITE, favorites, true);
+            })
+            .catch(err => {
+                console.log('Fichier inexistant')
+                console.log(err)
             });
-            favorites += id;
-            File.writeFile(this.filePath, FILE_FAVORITE, favorites, true);
-        })
-        .catch(err => {
-            console.log('Fichier inexistant')
-            console.log(err)
-        });
+        }
     }
 
     removeStationToFile(id) {
-        this.filePath = cordova.file.dataDirectory;
-        File.readAsText(this.filePath, FILE_FAVORITE).then(success => {
-            var favorites = "";
-            var read = success.toString().split("%");
-            read.forEach(element => {
-                if (element != id.toString()) favorites += element + "%";
+        if (this.platform.is('cordova')) {
+            this.filePath = cordova.file.dataDirectory;
+            File.readAsText(this.filePath, FILE_FAVORITE).then(success => {
+                var favorites = "";
+                var read = success.toString().split("%");
+                read.forEach(element => {
+                    if (element != id.toString()) favorites += element + "%";
+                });
+                File.writeFile(this.filePath, FILE_FAVORITE, favorites, true);
+            })
+            .catch(err => {
+                console.log('Fichier inexistant')
+                console.log(err)
             });
-            File.writeFile(this.filePath, FILE_FAVORITE, favorites, true);
-        })
-        .catch(err => {
-            console.log('Fichier inexistant')
-            console.log(err)
-        });
+        }
     }
 }

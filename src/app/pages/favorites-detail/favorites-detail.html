@@ -8,20 +8,29 @@
 </ion-header>
 
 <ion-content>
- <div *ngIf="selectedItem" class="selection">
-    <b>{{selectedItem.name}}</b>
-    <ion-icon name="{{selectedItem.icon}}"></ion-icon>
-    <div>
-      Statut : <b>{{selectedItem.status}}</b>
-    </div>
-    <div>
-      Total de vélo : <b>{{selectedItem.bike_stands}}</b>
-    </div>
-    <div>
-      Vélos disponibles : <b>{{selectedItem.available_bikes}}</b>
-    </div>
-    <div>
-      Places libres : <b>{{selectedItem.available_bike_stands}}</b>
-    </div>
+  <div *ngIf="selectedItem" class="selection">
+
+    <div class="name-detail"><b>{{selectedItem.name}}</b></div>
+
+    <div class="title-detail">Station <b>{{selectedItem.status}}</b></div>
+
+    <ion-grid>
+      <ion-row class="table-place">
+        <ion-col width-50><ion-icon name="bicycle" item-left></ion-icon><b>  {{selectedItem.available_bikes}}</b></ion-col>
+        <ion-col width-50><ion-icon name="log-in" item-left></ion-icon><b>  {{selectedItem.available_bike_stands}}</b></ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <div class="title-detail">Informations</div>
+    <div class="last_update">Dernière mise à jour : {{selectedItem.last_update}}</div>
+    
+    <div>Numéro : {{selectedItem.number}}</div>
+
+    <div>Total de places : {{selectedItem.bike_stands}}</div>
+
+    <div>{{selectedItem.address}}</div>
+
+    <div>{{selectedItem.commune}}</div>
+
   </div>
 </ion-content>
