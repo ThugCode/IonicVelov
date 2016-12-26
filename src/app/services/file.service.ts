@@ -20,7 +20,7 @@ export class FileService {
     }
 
     init() {
-        if (this.platform.is('mobile')) {
+        if (this.platform.is('cordova')) {
             this.filePath = cordova.file.dataDirectory;
             this.checkFileFavorites();
             this.checkFileOffline();
@@ -38,7 +38,7 @@ export class FileService {
     }*/
 
     checkFileFavorites() {
-        if (this.platform.is('mobile')) {
+        if (this.platform.is('cordova')) {
             this.filePath = cordova.file.dataDirectory;
             File.checkFile(this.filePath, FILE_FAVORITE)
                 .then(function (success) {}, function (error) {
@@ -49,7 +49,7 @@ export class FileService {
     }
 
     checkFileOffline() {
-        if (this.platform.is('mobile')) { 
+        if (this.platform.is('cordova')) { 
             this.filePath = cordova.file.dataDirectory;
             File.checkFile(this.filePath, FILE_OFFLINE)
                 .then(function (success) {}, function (error) {
@@ -60,7 +60,7 @@ export class FileService {
     }
 
     readSationOffline(): Promise<Station[]> {
-        if (this.platform.is('mobile')) {
+        if (this.platform.is('cordova')) {
             this.filePath = cordova.file.dataDirectory;
             return File.readAsText(this.filePath, FILE_OFFLINE).then(success => {
                 return JSON.parse(success.toString());
@@ -76,7 +76,7 @@ export class FileService {
     }
 
     writeStationOffline(json) {
-        if (this.platform.is('mobile')) {
+        if (this.platform.is('cordova')) {
             this.filePath = cordova.file.dataDirectory;
             var toFile = JSON.stringify(json);
             File.writeFile(this.filePath, FILE_OFFLINE, toFile, true);
@@ -84,7 +84,7 @@ export class FileService {
     }
 
     readFavoritesFromFile(): Promise<any[]> {
-        if (this.platform.is('mobile')) {
+        if (this.platform.is('cordova')) {
             this.filePath = cordova.file.dataDirectory;
             return File.readAsText(this.filePath, FILE_FAVORITE).then(success => {
                 var favorites = [];
@@ -100,12 +100,12 @@ export class FileService {
                 return [];
             });
         } else {
-            return Promise.all([]);
+            return Promise.all(["768", "844", "923"]);
         }
     }
 
     addStationToFile(id) {
-        if (this.platform.is('mobile')) {
+        if (this.platform.is('cordova')) {
             this.filePath = cordova.file.dataDirectory;
             File.readAsText(this.filePath, FILE_FAVORITE).then(success => {
                 var favorites = "";
@@ -124,7 +124,7 @@ export class FileService {
     }
 
     removeStationToFile(id) {
-        if (this.platform.is('mobile')) {
+        if (this.platform.is('cordova')) {
             this.filePath = cordova.file.dataDirectory;
             File.readAsText(this.filePath, FILE_FAVORITE).then(success => {
                 var favorites = "";
