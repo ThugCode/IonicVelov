@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { NavController, NavParams } from 'ionic-angular';
-
+import { Network } from 'ionic-native';
 
 @Component({
   selector: 'favorites-detail-page',
@@ -9,9 +9,12 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class FavoritesDetailPage {
   selectedItem: any;
+  notConnected: boolean;
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
-    // If we navigated to this page, we will have an item available as a nav param
+    
+    this.notConnected = Network.connection === "none";
+    
     this.selectedItem = navParams.get('item');
   }
 }

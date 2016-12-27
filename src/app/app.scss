@@ -15,33 +15,47 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 
-.fixed-content {
-    background: url('../assets/img/back.jpg') no-repeat center center fixed; 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    background-size: cover;
-}
+$gold-color             : #CCAF5F;
+$gray-color             : #4B4243;
+$whsm-color             : #F5F5F5;
 
-.toolbar-title {
-    text-align : left;
+.fixed-content {
+    background              : url('../assets/img/back.jpg') no-repeat center center fixed; 
+    -webkit-background-size : cover;
+    -moz-background-size    : cover;
+    background-size         : cover;
 }
 
 .toolbar-background {
-    border : none;
+    border                  : none;
+    background-color        : $gold-color;
+}
+
+.toolbar-content {
+    text-align              : left;
+}
+
+.offline-toolbar {
+    .toolbar-background {
+        background-color    : $whsm-color;
+    }
+
+    .toolbar-content {
+        text-align          : center;
+    }
 }
 
 .bar-button {
-    color : black;
+    color                   : black;
 }
 
 .toolbar-title-md {
-    color : black;
-}
-
-.toolbar-background {
-    background-color: #ccaf5f;
+    color                   : black;
 }
 
 .center {
-    color: white;
+    color                   : white;
+    text-align              : center;
+    font-size               : 20px !important;
+    margin-bottom           : 20px;
 }
