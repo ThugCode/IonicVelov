@@ -4,6 +4,11 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Localisation</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="showSearchList()">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
   <ion-toolbar class="offline-toolbar" *ngIf="notConnected">
     <ion-title>Mode hors ligne</ion-title>
@@ -11,6 +16,15 @@
 </ion-header>
 
 <ion-content>
+  <div id="search" *ngIf="searchVisible">
+    <ion-searchbar [(ngModel)]="stationFilter" (ionInput)="searchStations()"></ion-searchbar>
+    <ion-list>
+      <ion-item *ngFor="let station of stationsFiltered" (click)="selectStation(station)">
+        {{ station.name }}
+      </ion-item>
+    </ion-list>
+  </div>
+
   <div id="map" #map class="map" (click)="clickMap($event)"></div>
   <div id="popup" class="ol-popup" *ngIf="stationSelected" [(ngModel)]="stationSelected" ngDefaultControl>
     <button id="popup-favorite" class="ol-popup-btn ol-popup-favorite" (click)="clickOnStar(stationSelected)">

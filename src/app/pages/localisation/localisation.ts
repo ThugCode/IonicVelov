@@ -21,11 +21,14 @@ export class LocalisationPage implements OnInit {
   @ViewChild('map') mapChild;           //Child map in HTML
   loader: any;                          //Loader
   stations: Station[];                  //Station list
+  stationsFiltered: Station[];         //Station filtered (for search input)
   stationSelected: any;                 //Selected station
   mapOl: any;                           //Ol map
   targetPoint: ol.Feature;              //Blue point
   featureSelected: any;
   notConnected: boolean;
+  searchVisible: boolean = false;
+  stationFilter: String;
 
   constructor(
     private stationService: StationService,
@@ -37,6 +40,7 @@ export class LocalisationPage implements OnInit {
   ngOnInit() {
 
     this.notConnected = Network.connection === "none";
+    this.stationFilter = "";
     this.loader = this.loadingCtrl.create({
       content: "Merci de patienter...",
       duration: 2000
@@ -62,9 +66,9 @@ export class LocalisationPage implements OnInit {
   }
 
   getPrefered(resp) {
-      this.fileService.readFavoritesFromFile().then(prefered => {
-        this.createMap(resp, prefered);
-      });
+    this.fileService.readFavoritesFromFile().then(prefered => {
+      this.createMap(resp, prefered);
+    });
   }
 
   createMap(resp, prefered) {
@@ -82,7 +86,7 @@ export class LocalisationPage implements OnInit {
     var fS_Bonus = [];
 
     this.stations.forEach(element => {
-      
+
       tempFeature = new ol.Feature({
         geometry: new ol.geom.Point(ol.proj.fromLonLat([parseFloat(element.lng), parseFloat(element.lat)])),
         name: element.name,
@@ -112,10 +116,10 @@ export class LocalisationPage implements OnInit {
     });
 
     var iconStyle = new ol.style.Style({
-      image: new ol.style.Icon( ({
+      image: new ol.style.Icon(({
         anchor: [128, 20],
-        scale : 0.2,
-        anchorOrigin : "bottom-left",
+        scale: 0.2,
+        anchorOrigin: "bottom-left",
         anchorXUnits: 'pixels',
         anchorYUnits: 'pixels',
         src: 'assets/img/pin.png'
@@ -181,13 +185,13 @@ export class LocalisationPage implements OnInit {
   clickOnStar(station) {
     this.stationSelected.favorite = !this.stationSelected.favorite;
     this.featureSelected.set("favorite", !this.featureSelected.get("favorite"));
-    if(this.stationSelected.favorite) {
+    if (this.stationSelected.favorite) {
       this.fileService.addStationToFile(station.gid);
-      this.presentToast("Station "+station.name+" ajoutée aux favoris");
+      this.presentToast("Station " + station.name + " ajoutée aux favoris");
     }
     else {
       this.fileService.removeStationToFile(station.gid);
-      this.presentToast("Station "+station.name+" supprimée des favoris");
+      this.presentToast("Station " + station.name + " supprimée des favoris");
     }
   }
 
@@ -197,13 +201,42 @@ export class LocalisationPage implements OnInit {
   }
 
   clickMap(event) {
-    var coord = [event.layerX, event.layerY]
+    var coord = [event.layerX, event.layerY];
+    console.log(coord);
     var feature = this.mapOl.forEachFeatureAtPixel(coord,
       function (feature, layer) {
         return feature;
       }
     );
     this.featureSelected = feature;
+    this.showPopup(feature);
+  }
+
+  showSearchList() {
+    this.searchVisible = true;
+  }
+
+  searchStations() {
+    this.stationsFiltered = this.stations.filter((station) => {
+      return station.name.toLowerCase().indexOf(this.stationFilter.toLowerCase()) > -1;
+    }); 
+  }
+
+  selectStation(station: Station) {
+    console.log(station);
+    var coord = [Number(station.lat), Number(station.lng)];
+    console.log("coord : " + coord);
+    var pixel = this.mapOl.getPixelFromCoordinate(coord);
+    console.log("pixel : " + pixel);
+    var feature = this.mapOl.forEachFeatureAtPixel(pixel,
+      function (feature, layer) {
+        return feature;
+      });
+
+    console.log("feature : " + feature);
+    this.featureSelected = feature;
+
+    this.searchVisible = false;
     this.showPopup(feature);
   }
 
