@@ -5,6 +5,9 @@
     </button>
     <ion-title>Station</ion-title>
   </ion-navbar>
+  <ion-toolbar class="offline-toolbar" *ngIf="notConnected">
+    <ion-title>Mode hors ligne</ion-title>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>

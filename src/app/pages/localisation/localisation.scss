@@ -1,42 +1,44 @@
 localisation-page {
 
   #map {
-    width : 100%;
-    height : 100%;
+    width                           : 100%;
+    height                          : 100%;
   }
 
   .ol-popup {
-      position: absolute;
-      background-color: #ccaf5f;
-      -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-      filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-      padding: 10px;
-      left:0px;
-      right:0px;
-      bottom: 0px;
-      min-width: 180px;
+      position                      : absolute;
+      background-color              : $black-color;
+      color                         : $white-color;
+      filter                        : drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+      -webkit-filter                : drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+      padding                       : 10px;
+      left                          : 0px;
+      right                         : 0px;
+      bottom                        : 0px;
+      min-width                     : 180px;
     }
 
     .ol-popup-closer {
-      float: right;
+      float                         : right;
     }
 
     .ol-popup-btn {
-      background-color: transparent;
-      font-size : 20px!important;
+      background-color              : transparent;
+      font-size                     : 20px!important;
+      color                         : $white-color;
     }
 
     .popup-content-name {
-      margin-top : 10px;
-      margin-bottom : 10px;
+      margin-top                    : 10px;
+      margin-bottom                 : 10px;
     }
     
     .content-number {
-      float : right;
-      margin-top: -15px;
+      float                         : right;
+      margin-top                    : -15px;
     }
 
     .fixed-content {
-      background: none; 
+      background                    : none; 
     }
 }
