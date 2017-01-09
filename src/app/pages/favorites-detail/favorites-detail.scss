@@ -1,7 +1,7 @@
 favorites-detail-page {
 
   .selection {
-    color : white;
+    color : $black-color;
     font-size: 18px;
     display: block;
     padding : 10px;
@@ -15,8 +15,8 @@ favorites-detail-page {
   .title-detail {
     margin-top : 20px;
     margin-bottom : 10px;
-    color : #CCAF5F;
-    border-bottom: 1px solid #CCAF5F;
+    color : $black-color;
+    border-bottom: 1px solid $black-color;
     font-size: 16px;
   }
 

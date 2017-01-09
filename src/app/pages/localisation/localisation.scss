@@ -7,7 +7,8 @@ localisation-page {
 
   .ol-popup {
       position                      : absolute;
-      background-color              : $gold-color;
+      background-color              : $black-color;
+      color                         : $white-color;
       filter                        : drop-shadow(0 1px 4px rgba(0,0,0,0.2));
       -webkit-filter                : drop-shadow(0 1px 4px rgba(0,0,0,0.2));
       padding                       : 10px;
@@ -24,6 +25,7 @@ localisation-page {
     .ol-popup-btn {
       background-color              : transparent;
       font-size                     : 20px!important;
+      color                         : $white-color;
     }
 
     .popup-content-name {
