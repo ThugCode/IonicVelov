@@ -29,6 +29,7 @@ export class LocalisationPage implements OnInit {
   notConnected: boolean;
   searchVisible: boolean = false;
   stationFilter: String;
+  vL_All: ol.layer.Vector;
 
   constructor(
     private stationService: StationService,
@@ -84,6 +85,7 @@ export class LocalisationPage implements OnInit {
     var fS_MyPosition = [];
     var fS_Target = [];
     var fS_Bonus = [];
+    var fS_All = [];
 
     this.stations.forEach(element => {
 
@@ -113,6 +115,8 @@ export class LocalisationPage implements OnInit {
       if (element.bonus == "Oui") {
         fS_Bonus.push(tempFeature);
       }
+
+      fS_All.push(tempFeature);
     });
 
     var iconStyle = new ol.style.Style({
@@ -143,6 +147,7 @@ export class LocalisationPage implements OnInit {
     var vS_MyPosition = new ol.source.Vector({ features: fS_MyPosition });
     var vS_Target = new ol.source.Vector({ features: fS_Target });
     var vS_Bonus = new ol.source.Vector({ features: fS_Bonus });
+    var vS_All = new ol.source.Vector({ features: fS_All });
 
     var vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 8) });
     var vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 8) });
@@ -151,6 +156,9 @@ export class LocalisationPage implements OnInit {
     var vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: iconStyle });
     var vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 10) });
     var vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 2) });
+
+
+    this.vL_All = new ol.layer.Vector({ source: vS_All });
 
     var mapImg = new ol.layer.Tile({
       source: new ol.source.OSM()
@@ -219,23 +227,18 @@ export class LocalisationPage implements OnInit {
   searchStations() {
     this.stationsFiltered = this.stations.filter((station) => {
       return station.name.toLowerCase().indexOf(this.stationFilter.toLowerCase()) > -1;
-    }); 
+    });
   }
 
   selectStation(station: Station) {
-    console.log(station);
-    var coord = [Number(station.lat), Number(station.lng)];
-    console.log("coord : " + coord);
-    var pixel = this.mapOl.getPixelFromCoordinate(coord);
-    console.log("pixel : " + pixel);
-    var feature = this.mapOl.forEachFeatureAtPixel(pixel,
-      function (feature, layer) {
+    var feature = this.vL_All.getSource().forEachFeature((feature) => {
+      var properties = feature.getProperties();
+
+      if (properties["name"] == station.name)
         return feature;
-      });
+    });
 
-    console.log("feature : " + feature);
     this.featureSelected = feature;
-
     this.searchVisible = false;
     this.showPopup(feature);
   }
