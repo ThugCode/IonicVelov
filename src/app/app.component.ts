@@ -7,6 +7,7 @@ import { StatusBar } from 'ionic-native';
 import { LocalisationPage } from './pages/localisation/localisation';
 import { AlertesPage } from './pages/alertes/alertes';
 import { FavoritesListPage } from './pages/favorites-list/favorites-list';
+import { HelpPage } from './pages/help/help';
 
 
 @Component({
@@ -29,7 +30,8 @@ export class MyApp {
     this.pages = [
       { title: 'Alertes', component: AlertesPage },
       { title: 'Localisation', component: LocalisationPage },
-      { title: 'Mes stations', component: FavoritesListPage }
+      { title: 'Mes stations', component: FavoritesListPage },
+      { title: 'Aide', component: HelpPage }
     ];
   }
 
