@@ -1,23 +1,26 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar *ngIf="!searchVisible">
     <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
+        <ion-icon name="menu"></ion-icon>
+      </button>
     <ion-title>Localisation</ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="showSearchList()">
-        <ion-icon name="search"></ion-icon>
-      </button>
+          <ion-icon name="search"></ion-icon>
+        </button>
     </ion-buttons>
   </ion-navbar>
+  <ion-navbar *ngIf="searchVisible">
+    <ion-searchbar (ionCancel)="hideSearchList()" [(ngModel)]="stationFilter" (ionInput)="searchStations()" showCancelButton="true"></ion-searchbar>
+  </ion-navbar>
+  <ion-toolbar *ngIf="notConnected" color="danger">
   <ion-toolbar class="offline-toolbar" *ngIf="notConnected">
     <ion-title>Mode hors ligne</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div id="search" *ngIf="searchVisible">
-    <ion-searchbar [(ngModel)]="stationFilter" (ionInput)="searchStations()"></ion-searchbar>
+<ion-content class="content no-scroll">
+  <div id="searchList" *ngIf="searchVisible">
     <ion-list>
       <ion-item *ngFor="let station of stationsFiltered" (click)="selectStation(station)">
         {{ station.name }}

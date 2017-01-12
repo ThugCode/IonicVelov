@@ -224,6 +224,10 @@ export class LocalisationPage implements OnInit {
     this.searchVisible = true;
   }
 
+  hideSearchList() {
+    this.searchVisible = false;
+  }
+
   searchStations() {
     this.stationsFiltered = this.stations.filter((station) => {
       return station.name.toLowerCase().indexOf(this.stationFilter.toLowerCase()) > -1;
