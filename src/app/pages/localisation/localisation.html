@@ -27,5 +27,9 @@
         <div class="content-number">{{stationSelected.available}}/{{stationSelected.bikestand}}</div>
       </div>
     </div>
+
+    <ion-fab class="half-fab" center bottom *ngIf="stationSelected.bonus">
+      <div ion-fab class="half-fab-lettre">Bonus</div>
+    </ion-fab>
   </div>
 </ion-content>

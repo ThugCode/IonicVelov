@@ -92,6 +92,7 @@ export class LocalisationPage implements OnInit {
         gid: element.gid,
         lat: element.lat,
         lng: element.lng,
+        bonus: element.bonus == "Oui",
         favorite: prefered.indexOf(element.gid) >= 0
       });
 
@@ -145,7 +146,7 @@ export class LocalisationPage implements OnInit {
     var vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 8) });
     var vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: iconStyle });
     var vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 10) });
-    var vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("blakc", 2) });
+    var vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 2) });
 
     var mapImg = new ol.layer.Tile({
       source: new ol.source.OSM()
@@ -215,6 +216,7 @@ export class LocalisationPage implements OnInit {
       this.stationSelected.available = feature.get("available");
       this.stationSelected.favorite = feature.get("favorite");
       this.stationSelected.gid = feature.get("gid");
+      this.stationSelected.bonus = feature.get("bonus");
 
       this.targetPoint.setGeometry(new ol.geom.Point(feature.getGeometry().getCoordinates()));
       this.mapOl.getView().setCenter(feature.getGeometry().getCoordinates());
