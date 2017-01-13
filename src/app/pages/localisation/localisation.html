@@ -13,7 +13,6 @@
   <ion-navbar *ngIf="searchVisible">
     <ion-searchbar #searchbar (ionCancel)="hideSearchList()" [(ngModel)]="stationFilter" (ionInput)="searchStations()" showCancelButton="true"></ion-searchbar>
   </ion-navbar>
-  <ion-toolbar *ngIf="notConnected" color="danger">
   <ion-toolbar class="offline-toolbar" *ngIf="notConnected">
     <ion-title>Mode hors ligne</ion-title>
   </ion-toolbar>
