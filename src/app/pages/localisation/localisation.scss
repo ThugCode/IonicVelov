@@ -1,5 +1,19 @@
 localisation-page {
 
+  .half-fab {
+    margin-bottom                   : -38px;
+  }
+
+  .half-fab-lettre {
+    background-color              : $white-color;
+    color                         : $black-color!important;
+
+    .button-inner {
+      margin-top                  : -10px;
+      font-size                   : 12px;
+    }
+  }
+
   #map {
     width                           : 100%;
     height                          : 100%;

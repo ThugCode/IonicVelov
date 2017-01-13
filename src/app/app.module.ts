@@ -7,6 +7,7 @@ import { LocalisationPage } from './pages/localisation/localisation';
 import { AlertesPage } from './pages/alertes/alertes';
 import { FavoritesDetailPage } from './pages/favorites-detail/favorites-detail';
 import { FavoritesListPage } from './pages/favorites-list/favorites-list';
+import { HelpPage } from './pages/help/help';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { FavoritesListPage } from './pages/favorites-list/favorites-list';
     LocalisationPage,
     AlertesPage,
     FavoritesDetailPage,
-    FavoritesListPage
+    FavoritesListPage,
+    HelpPage
   ],
   imports: [
     IonicModule.forRoot(MyApp, {
@@ -27,7 +29,8 @@ import { FavoritesListPage } from './pages/favorites-list/favorites-list';
     LocalisationPage,
     AlertesPage,
     FavoritesDetailPage,
-    FavoritesListPage
+    FavoritesListPage,
+    HelpPage
   ],
   providers: [
     StationService,

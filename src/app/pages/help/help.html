@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Aide</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <ion-card>
+    <ion-card-header>
+      Page d'alerte
+    </ion-card-header>
+    <ion-card-content>
+      La page d'alerte vous permet de voir, très rapidement, toutes les stations qui sont fermées sur le réseau.
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      Page de localisation
+    </ion-card-header>
+
+    <img src="assets/img/littleCard.png">
+
+    <ion-card-content>
+      La carte permet de retrouver toutes les stations du réseau. 
+      Vous pouvez sélectionner une station en cliquant sur son point associé 
+      ou en la recherchant avec le champs de recherche en haut à droite 
+      "<ion-icon name="search"></ion-icon>".
+    <ion-grid>
+
+      <ion-row>
+        <ion-col class="img-icon"><img src="assets/img/littlePin.png"></ion-col>
+        <ion-col>Votre position</ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col class="img-icon"><img src="assets/img/vert.png"></ion-col>
+        <ion-col>Station ouverte</ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col class="img-icon"><img src="assets/img/rouge.png"></ion-col>
+        <ion-col>Station fermée</ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col class="img-icon"><img src="assets/img/orange.png"></ion-col>
+        <ion-col>Station pleine</ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col class="img-icon"><img src="assets/img/jaune.png"></ion-col>
+        <ion-col>Station vide</ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col class="img-icon"><img src="assets/img/bleu.png"></ion-col>
+        <ion-col>Station sélectionnée</ion-col>
+      </ion-row>
+
+    </ion-grid>
+
+    Les stations bonus sont représentées avec un point en leur centre. 
+    Rendre son Vélo'v dans une station bonus permet de gagner 30 minutes sur son crédit temps.
+    <br/>
+    Lorsqu'une station est sélectionnée, 
+    vous pouvez voir les informations de la station 
+    et vous pouvez l'ajouter ou la supprimer des favoris en cliquant sur l'étoile
+    "<ion-icon name="star-outline"></ion-icon>" ou "<ion-icon name="star"></ion-icon>".
+    Vous retrouverez alors cette station dans la page "Mes stations".
+    </ion-card-content>
+
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      Page des stations favorites
+    </ion-card-header>
+    <ion-card-content>
+      Sur cette page vous retrouverez toutes vos stations favorites. 
+      Si vous souhaitez supprimer une station, il suffit de faire glisser la ligne vers la gauche.
+      Un bouton de suppression apparait alors.
+      Lorsque vous cliquez sur une station, vous pouvez voir toutes les informations associées.
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

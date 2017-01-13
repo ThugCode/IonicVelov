@@ -79,6 +79,7 @@ export class LocalisationPage implements OnInit {
     var fS_Available = [];
     var fS_MyPosition = [];
     var fS_Target = [];
+    var fS_Bonus = [];
 
     this.stations.forEach(element => {
       
@@ -91,6 +92,7 @@ export class LocalisationPage implements OnInit {
         gid: element.gid,
         lat: element.lat,
         lng: element.lng,
+        bonus: element.bonus == "Oui",
         favorite: prefered.indexOf(element.gid) >= 0
       });
 
@@ -102,6 +104,10 @@ export class LocalisationPage implements OnInit {
         fS_Full.push(tempFeature);
       } else {
         fS_Available.push(tempFeature);
+      }
+
+      if (element.bonus == "Oui") {
+        fS_Bonus.push(tempFeature);
       }
     });
 
@@ -132,6 +138,7 @@ export class LocalisationPage implements OnInit {
     var vS_Available = new ol.source.Vector({ features: fS_Available });
     var vS_MyPosition = new ol.source.Vector({ features: fS_MyPosition });
     var vS_Target = new ol.source.Vector({ features: fS_Target });
+    var vS_Bonus = new ol.source.Vector({ features: fS_Bonus });
 
     var vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 8) });
     var vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 8) });
@@ -139,6 +146,7 @@ export class LocalisationPage implements OnInit {
     var vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 8) });
     var vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: iconStyle });
     var vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 10) });
+    var vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 2) });
 
     var mapImg = new ol.layer.Tile({
       source: new ol.source.OSM()
@@ -146,7 +154,7 @@ export class LocalisationPage implements OnInit {
 
     this.mapOl = new ol.Map({
       target: "map",
-      layers: [mapImg, vL_Closed, vL_Empty, vL_Full, vL_Available, vL_MyPosition, vL_MyTarget],
+      layers: [mapImg, vL_Closed, vL_Empty, vL_Full, vL_Available, vL_MyPosition, vL_MyTarget, vL_Bonus],
       overlays: [new ol.Overlay({ element: document.getElementById('popup') })],
       view: new ol.View({
         center: ol.proj.fromLonLat([long, lat]),
@@ -208,6 +216,7 @@ export class LocalisationPage implements OnInit {
       this.stationSelected.available = feature.get("available");
       this.stationSelected.favorite = feature.get("favorite");
       this.stationSelected.gid = feature.get("gid");
+      this.stationSelected.bonus = feature.get("bonus");
 
       this.targetPoint.setGeometry(new ol.geom.Point(feature.getGeometry().getCoordinates()));
       this.mapOl.getView().setCenter(feature.getGeometry().getCoordinates());
