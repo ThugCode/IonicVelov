@@ -16,5 +16,7 @@ export class FavoritesDetailPage {
     this.notConnected = Network.connection === "none";
     
     this.selectedItem = navParams.get('item');
+
+    this.selectedItem.bonus = this.selectedItem.bonus == "Oui";
   }
 }

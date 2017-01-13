@@ -35,8 +35,8 @@
 
     <div>{{selectedItem.commune}}</div>
 
-    <ion-fab top right>
-      <div ion-fab mini class="div-fab" *ngIf="selectedItem.bonus">Bonus</div>
+    <ion-fab top right *ngIf="selectedItem.bonus">
+      <div ion-fab mini class="div-fab" >Bonus</div>
     </ion-fab>
 
   </div>
