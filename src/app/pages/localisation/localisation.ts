@@ -6,7 +6,7 @@ import { StationService } from '../../services/station.service';
 import { Station } from '../../models/station';
 import { LoadingController } from 'ionic-angular';
 import { Network } from 'ionic-native';
-import { ToastController } from 'ionic-angular';
+import { ToastController, Searchbar } from 'ionic-angular';
 
 import ol from 'openlayers';
 
@@ -19,6 +19,7 @@ const TEXT_SELECTED = "Sélection";
 })
 export class LocalisationPage implements OnInit {
   @ViewChild('map') mapChild;           //Child map in HTML
+  @ViewChild('searchbar') searchbar: Searchbar;   //Child searchBar in HTML
   loader: any;                          //Loader
   stations: Station[];                  //Station list
   stationsFiltered: Station[];         //Station filtered (for search input)
@@ -222,6 +223,9 @@ export class LocalisationPage implements OnInit {
 
   showSearchList() {
     this.searchVisible = true;
+    setTimeout(() => {
+      this.searchbar.setFocus();
+    });
   }
 
   hideSearchList() {
