@@ -12,6 +12,9 @@ import ol from 'openlayers';
 
 const TEXT_MY_POSITION = "Ma position";
 const TEXT_SELECTED = "Sélection";
+const TEXT_THANKS_WAITING = "Merci de patienter...";
+const TEXT_YES = "Oui";
+const JSON_CLOSED = "CLOSED";
 
 @Component({
   selector: 'localisation-page',
@@ -46,7 +49,7 @@ export class LocalisationPage implements OnInit {
     this.notConnected = Network.connection === "none";
     this.stationFilter = "";
     this.loader = this.loadingCtrl.create({
-      content: "Merci de patienter...",
+      content: TEXT_THANKS_WAITING,
       duration: 2000
     });
     this.loader.present();
@@ -101,11 +104,11 @@ export class LocalisationPage implements OnInit {
         gid: element.gid,
         lat: element.lat,
         lng: element.lng,
-        bonus: element.bonus == "Oui",
+        bonus: element.bonus == TEXT_YES,
         favorite: prefered.indexOf(element.gid) >= 0
       });
 
-      if (element.status == "CLOSED") {
+      if (element.status == JSON_CLOSED) {
         fS_Closed.push(tempFeature);
       } else if (element.available_bikes == "0") {
         fS_Empty.push(tempFeature);
@@ -115,7 +118,7 @@ export class LocalisationPage implements OnInit {
         fS_Available.push(tempFeature);
       }
 
-      if (element.bonus == "Oui") {
+      if (element.bonus == TEXT_YES) {
         fS_Bonus.push(tempFeature);
       }
 
@@ -133,10 +136,11 @@ export class LocalisationPage implements OnInit {
       }))
     });
 
-    fS_MyPosition.push(new ol.Feature({
+    this.myPosition = new ol.Feature({
       geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat])),
       name: TEXT_MY_POSITION
-    }));
+    });
+    fS_MyPosition.push(this.myPosition);
 
     this.targetPoint = new ol.Feature({
       name: TEXT_SELECTED
@@ -178,6 +182,23 @@ export class LocalisationPage implements OnInit {
     })
 
     this.loader.dismiss();
+    this.updateScreen();
+  }
+
+  updateScreen() {
+    setTimeout(() => {  
+      console.log('hello');
+
+      Geolocation.getCurrentPosition().then((resp) => {
+        var long = resp.coords.longitude;
+        var lat = resp.coords.latitude;
+        this.myPosition.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([long, lat])));
+      }).catch((error) => {
+        console.log('Error getting location', error);
+      })
+
+      this.updateScreen();
+    }, 1000);
   }
 
   createStyle(color, taille) {
