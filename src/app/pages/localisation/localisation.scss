@@ -18,6 +18,17 @@ localisation-page {
     width                           : 100%;
     height                          : 100%;
   }
+  
+  #searchList {
+    position: absolute;
+    z-index: 99;
+    width: 100%;
+    height: 100%;
+  }
+
+  .content {
+    position: relative;
+  }
 
   .ol-popup {
       position                      : absolute;
@@ -55,4 +66,8 @@ localisation-page {
     .fixed-content {
       background                    : none; 
     }
+
+    .no-scroll .scroll-content{
+     overflow: hidden;
+  }
 }
