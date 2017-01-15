@@ -22,15 +22,17 @@ export class LocalisationPage implements OnInit {
   @ViewChild('searchbar') searchbar: Searchbar;   //Child searchBar in HTML
   loader: any;                          //Loader
   stations: Station[];                  //Station list
-  stationsFiltered: Station[];         //Station filtered (for search input)
+  stationsFiltered: Station[];          //Station filtered (for search input)
   stationSelected: any;                 //Selected station
   mapOl: any;                           //Ol map
   targetPoint: ol.Feature;              //Blue point
-  featureSelected: any;
-  notConnected: boolean;
-  searchVisible: boolean = false;
-  stationFilter: String;
-  vL_All: ol.layer.Vector;
+  featureSelected: any;                 //Selected feature
+  notConnected: boolean;                //Is device connected to internet ?
+  myPosition : ol.Feature;              //Position of user
+  searchVisible: boolean = false;       //Is search field visible ?
+  stationFilter: String;                //Search filter
+  vL_All: ol.layer.Vector;              //All vector
+
 
   constructor(
     private stationService: StationService,
