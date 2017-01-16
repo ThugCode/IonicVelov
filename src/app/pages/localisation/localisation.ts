@@ -188,7 +188,7 @@ export class LocalisationPage implements OnInit {
 
   updateScreen() {
     setTimeout(() => {  
-      console.log('hello');
+      this.notConnected = Network.connection === "none";
 
       Geolocation.getCurrentPosition().then((resp) => {
         var long = resp.coords.longitude;

@@ -18,5 +18,14 @@ export class FavoritesDetailPage {
     this.selectedItem = navParams.get('item');
 
     this.selectedItem.bonus = this.selectedItem.bonus == "Oui";
+
+    this.updateScreen();
+  }
+
+  updateScreen() {
+    setTimeout(() => {  
+      this.notConnected = Network.connection === "none";
+      this.updateScreen();
+    }, 2000);
   }
 }
