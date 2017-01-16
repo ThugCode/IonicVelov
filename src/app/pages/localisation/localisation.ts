@@ -1,5 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { Geolocation } from 'ionic-native';
+import { Keyboard } from 'ionic-native';
 
 import { FileService } from '../../services/file.service';
 import { StationService } from '../../services/station.service';
@@ -246,13 +247,14 @@ export class LocalisationPage implements OnInit {
 
   showSearchList() {
     this.searchVisible = true;
-    setTimeout(() => {
+    /*setTimeout(() => {
       this.searchbar.setFocus();
-    });
+    });*/
   }
 
   hideSearchList() {
     this.searchVisible = false;
+    Keyboard.close();
   }
 
   searchStations() {
@@ -270,7 +272,7 @@ export class LocalisationPage implements OnInit {
     });
 
     this.featureSelected = feature;
-    this.searchVisible = false;
+    this.hideSearchList();
     this.showPopup(feature);
   }
 
