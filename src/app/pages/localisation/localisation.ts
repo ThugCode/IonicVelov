@@ -47,6 +47,14 @@ export class LocalisationPage implements OnInit {
   stationFilter     : String;           //Search filter
   
   vL_All            : ol.layer.Vector;  //All vector
+  vL_Closed         : ol.layer.Vector;  
+  vL_Empty          : ol.layer.Vector;
+  vL_Full           : ol.layer.Vector;
+  vL_Available      : ol.layer.Vector;
+  vL_Bonus          : ol.layer.Vector;
+  vL_MyPosition     : ol.layer.Vector;
+  vL_MyTarget       : ol.layer.Vector;
+
 
   constructor(
     private stationService: StationService,
@@ -93,9 +101,9 @@ export class LocalisationPage implements OnInit {
     this.fileService.readFavoritesFromFile().then(prefered => {
       this.createMap(coords, prefered);
     }).catch((error) => {
+      this.createMap(coords, []);
       console.log(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE, error);
       alert(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE);
-      this.createMap(coords, []);
     });
   }
 
@@ -104,13 +112,69 @@ export class LocalisationPage implements OnInit {
     var long = coords[0];
     var lat = coords[1];
 
+    var iconStyle = this.createPinStyle();
+
+    var fS_MyPosition = [];
+    this.myPosition = new ol.Feature({
+      selectable : false,
+      geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat]))
+    });
+    if(!this.hasPosition) {
+      this.myPosition.setGeometry(null);
+    }
+    fS_MyPosition.push(this.myPosition);
+
+    var vS_MyPosition = new ol.source.Vector({ features: fS_MyPosition });
+    this.vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: iconStyle });
+
+    var mapImg = new ol.layer.Tile({
+      source: new ol.source.OSM()
+    });
+
+    this.mapOl = new ol.Map({
+      target: "map",
+      layers: [mapImg],
+      overlays: [new ol.Overlay({ element: document.getElementById('popup') })],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([long, lat]),
+        zoom: 15,
+        minZoom: 6,
+        maxZoom: 18
+      }),
+      controls : ol.control.defaults().extend([
+          new ol.control.Zoom(),
+          new ol.control.ZoomSlider()
+        ])
+    });
+
+    this.createTargetLayer();
+
+    this.loadStationVector(prefered);
+
+    this.loader.dismiss();
+    this.initialised = true;
+    this.updateScreen();
+  }
+
+
+  createTargetLayer() {
+    var fS_Target = [];
+    this.targetPoint = new ol.Feature({
+      selectable : false
+    });
+    fS_Target.push(this.targetPoint);
+    var vS_Target = new ol.source.Vector({ features: fS_Target });
+    this.vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 10) });
+  }
+
+
+  loadStationVector(prefered) {
+
     var tempFeature;
     var fS_Closed = [];
     var fS_Empty = [];
     var fS_Full = [];
     var fS_Available = [];
-    var fS_MyPosition = [];
-    var fS_Target = [];
     var fS_Bonus = [];
     var fS_All = [];
 
@@ -147,7 +211,36 @@ export class LocalisationPage implements OnInit {
       fS_All.push(tempFeature);
     });
 
-    var iconStyle = new ol.style.Style({
+    var vS_Closed = new ol.source.Vector({ features: fS_Closed });
+    var vS_Empty = new ol.source.Vector({ features: fS_Empty });
+    var vS_Full = new ol.source.Vector({ features: fS_Full });
+    var vS_Available = new ol.source.Vector({ features: fS_Available });
+    var vS_Bonus = new ol.source.Vector({ features: fS_Bonus });
+    var vS_All = new ol.source.Vector({ features: fS_All });
+
+    this.vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 8) });
+    this.vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 8) });
+    this.vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow", 8) });
+    this.vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 8) });
+    this.vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 2) });
+    this.vL_All = new ol.layer.Vector({ source: vS_All });
+    
+    this.mapOl.addLayer(this.vL_Closed);
+    this.mapOl.addLayer(this.vL_Empty);
+    this.mapOl.addLayer(this.vL_Full);
+    this.mapOl.addLayer(this.vL_Available);
+    this.mapOl.addLayer(this.vL_Bonus);
+    this.mapOl.addLayer(this.vL_MyPosition);
+    this.mapOl.addLayer(this.vL_MyTarget);
+  }
+
+
+
+
+
+
+  createPinStyle() {
+    return new ol.style.Style({
       image: new ol.style.Icon(({
         anchor: [128, 20],
         scale: 0.2,
@@ -157,63 +250,6 @@ export class LocalisationPage implements OnInit {
         src: 'assets/img/pin.png'
       }))
     });
-
-    this.myPosition = new ol.Feature({
-      selectable : false,
-      geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat]))
-    });
-    if(!this.hasPosition) {
-      this.myPosition.setGeometry(null);
-    }
-    fS_MyPosition.push(this.myPosition);
-
-    this.targetPoint = new ol.Feature({
-      selectable : false
-    });
-    fS_Target.push(this.targetPoint);
-
-    var vS_Closed = new ol.source.Vector({ features: fS_Closed });
-    var vS_Empty = new ol.source.Vector({ features: fS_Empty });
-    var vS_Full = new ol.source.Vector({ features: fS_Full });
-    var vS_Available = new ol.source.Vector({ features: fS_Available });
-    var vS_MyPosition = new ol.source.Vector({ features: fS_MyPosition });
-    var vS_Target = new ol.source.Vector({ features: fS_Target });
-    var vS_Bonus = new ol.source.Vector({ features: fS_Bonus });
-    var vS_All = new ol.source.Vector({ features: fS_All });
-
-    var vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 8) });
-    var vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 8) });
-    var vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow", 8) });
-    var vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 8) });
-    var vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: iconStyle });
-    var vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 10) });
-    var vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 2) });
-
-    this.vL_All = new ol.layer.Vector({ source: vS_All });
-
-    var mapImg = new ol.layer.Tile({
-      source: new ol.source.OSM()
-    });
-
-    this.mapOl = new ol.Map({
-      target: "map",
-      layers: [mapImg, vL_Closed, vL_Empty, vL_Full, vL_Available, vL_MyPosition, vL_MyTarget, vL_Bonus],
-      overlays: [new ol.Overlay({ element: document.getElementById('popup') })],
-      view: new ol.View({
-        center: ol.proj.fromLonLat([long, lat]),
-        zoom: 15,
-        minZoom: 6,
-        maxZoom: 18
-      }),
-      controls : ol.control.defaults().extend([
-          new ol.control.Zoom(),
-          new ol.control.ZoomSlider()
-        ])
-    });
-
-    this.loader.dismiss();
-    this.initialised = true;
-    this.updateScreen();
   }
 
   updateScreen() {
@@ -340,6 +376,24 @@ export class LocalisationPage implements OnInit {
   }
   
   refreshData() {
-    
+
+    this.mapOl.removeLayer(this.vL_Closed);
+    this.mapOl.removeLayer(this.vL_Empty);
+    this.mapOl.removeLayer(this.vL_Full);
+    this.mapOl.removeLayer(this.vL_Available);
+    this.mapOl.removeLayer(this.vL_Bonus);
+    this.mapOl.removeLayer(this.vL_MyPosition);
+    this.mapOl.removeLayer(this.vL_MyTarget);
+
+    this.stationService.getStations().subscribe(stations => {
+        this.stations = stations;
+        this.fileService.readFavoritesFromFile().then(prefered => {
+          this.loadStationVector(prefered);
+        }).catch((error) => {
+          this.loadStationVector([]);
+          console.log(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE, error);
+          alert(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE);
+        });
+    });
   }
 }
