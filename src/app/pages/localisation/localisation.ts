@@ -11,39 +11,51 @@ import { ToastController, Searchbar } from 'ionic-angular';
 
 import ol from 'openlayers';
 
-const TEXT_MY_POSITION = "Ma position";
-const TEXT_SELECTED = "Sélection";
 const TEXT_THANKS_WAITING = "Merci de patienter...";
 const TEXT_YES = "Oui";
+const TEXT_OPENED = "Ouverte";
+const TEXT_CLOSED = "Fermée";
+const TEXT_STATION = "Station";
+const TEXT_ADDED_TO_FAVORITES = "ajoutée aux favoris"
+const TEXT_DELETED_FROM_FAVORITES = "supprimée des favoris";
+const TEXT_ENABLE_TO_FIND_LOCATION = "Impossible de détecter votre position";
+const TEXT_ENABLE_TO_FIND_YOUR_FAVORITE = "Impossible de détecter vos stations favorites";
+
 const JSON_CLOSED = "CLOSED";
+const JSON_OPEN = "OPEN";
 
 @Component({
   selector: 'localisation-page',
   templateUrl: 'localisation.html'
 })
 export class LocalisationPage implements OnInit {
-  @ViewChild('map') mapChild;           //Child map in HTML
+  @ViewChild('map') mapChild;                     //Child map in HTML
   @ViewChild('searchbar') searchbar: Searchbar;   //Child searchBar in HTML
-  loader: any;                          //Loader
-  stations: Station[];                  //Station list
-  stationsFiltered: Station[];          //Station filtered (for search input)
-  stationSelected: any;                 //Selected station
-  mapOl: any;                           //Ol map
-  targetPoint: ol.Feature;              //Blue point
-  featureSelected: any;                 //Selected feature
-  notConnected: boolean;                //Is device connected to internet ?
-  myPosition : ol.Feature;              //Position of user
-  searchVisible: boolean = false;       //Is search field visible ?
-  stationFilter: String;                //Search filter
-  vL_All: ol.layer.Vector;              //All vector
 
+  initialised       : boolean;          //Is the view initialised ?
+  loader            : any;              //Loader during initilisation
+  stations          : Station[];        //Station list
+  stationsFiltered  : Station[];        //Station filtered (for search input)
+  stationSelected   : any;              //Selected station on the map (for bottom popup)
+  featureSelected   : any;              //Selected feature (for favorite star)
+  mapOl             : any;              //Ol map
+  targetPoint       : ol.Feature;       //Blue point feature on map
+  notConnected      : boolean;          //Is the device connected to internet ?
+  hasPosition       : boolean;          //Has the device localisation ?
+  myPosition        : any;              //Position of user
+  searchVisible     : boolean = false;  //Is search field visible ?
+  stationFilter     : String;           //Search filter
+  
+  vL_All            : ol.layer.Vector;  //All vector
 
   constructor(
     private stationService: StationService,
     private loadingCtrl: LoadingController,
     private fileService: FileService,
     private toastCtrl: ToastController
-  ) { }
+  ) { 
+    this.initialised = false;
+  }
 
   ngOnInit() {
 
@@ -67,22 +79,30 @@ export class LocalisationPage implements OnInit {
 
   loadMap() {
     Geolocation.getCurrentPosition().then((resp) => {
-      this.getPrefered(resp);
+      this.hasPosition = true;
+      this.getPrefered([resp.coords.longitude, resp.coords.latitude]);
     }).catch((error) => {
-      console.log('Error getting location', error);
+      this.hasPosition = false;
+      this.getPrefered([4.85, 45.75]);
+      console.log(TEXT_ENABLE_TO_FIND_LOCATION, error);
+      alert(TEXT_ENABLE_TO_FIND_LOCATION);
     })
   }
 
-  getPrefered(resp) {
+  getPrefered(coords) {
     this.fileService.readFavoritesFromFile().then(prefered => {
-      this.createMap(resp, prefered);
+      this.createMap(coords, prefered);
+    }).catch((error) => {
+      console.log(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE, error);
+      alert(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE);
+      this.createMap(coords, []);
     });
   }
 
-  createMap(resp, prefered) {
+  createMap(coords, prefered) {
 
-    var long = resp.coords.longitude;
-    var lat = resp.coords.latitude;
+    var long = coords[0];
+    var lat = coords[1];
 
     var tempFeature;
     var fS_Closed = [];
@@ -97,6 +117,7 @@ export class LocalisationPage implements OnInit {
     this.stations.forEach(element => {
 
       tempFeature = new ol.Feature({
+        selectable : true,
         geometry: new ol.geom.Point(ol.proj.fromLonLat([parseFloat(element.lng), parseFloat(element.lat)])),
         name: element.name,
         status: element.status,
@@ -138,13 +159,16 @@ export class LocalisationPage implements OnInit {
     });
 
     this.myPosition = new ol.Feature({
-      geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat])),
-      name: TEXT_MY_POSITION
+      selectable : false,
+      geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat]))
     });
+    if(!this.hasPosition) {
+      this.myPosition.setGeometry(null);
+    }
     fS_MyPosition.push(this.myPosition);
 
     this.targetPoint = new ol.Feature({
-      name: TEXT_SELECTED
+      selectable : false
     });
     fS_Target.push(this.targetPoint);
 
@@ -164,7 +188,6 @@ export class LocalisationPage implements OnInit {
     var vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: iconStyle });
     var vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 10) });
     var vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 2) });
-
 
     this.vL_All = new ol.layer.Vector({ source: vS_All });
 
@@ -189,6 +212,7 @@ export class LocalisationPage implements OnInit {
     });
 
     this.loader.dismiss();
+    this.initialised = true;
     this.updateScreen();
   }
 
@@ -197,11 +221,14 @@ export class LocalisationPage implements OnInit {
       this.notConnected = Network.connection === "none";
 
       Geolocation.getCurrentPosition().then((resp) => {
-        var long = resp.coords.longitude;
-        var lat = resp.coords.latitude;
-        this.myPosition.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([long, lat])));
+        this.hasPosition = true;
+        this.myPosition.setGeometry(new ol.geom.Point(
+          ol.proj.fromLonLat([resp.coords.longitude, resp.coords.latitude]))
+        );
       }).catch((error) => {
-        console.log('Error getting location', error);
+        this.hasPosition = false;
+        this.myPosition.setGeometry(null);
+        console.log(TEXT_ENABLE_TO_FIND_LOCATION, error);
       })
 
       this.updateScreen();
@@ -224,14 +251,17 @@ export class LocalisationPage implements OnInit {
   clickOnStar(station) {
     this.stationSelected.favorite = !this.stationSelected.favorite;
     this.featureSelected.set("favorite", !this.featureSelected.get("favorite"));
+
+    var string = TEXT_STATION + " " + station.name + " ";
     if (this.stationSelected.favorite) {
       this.fileService.addStationToFile(station.gid);
-      this.presentToast("Station " + station.name + " ajoutée aux favoris");
-    }
-    else {
+      string += TEXT_ADDED_TO_FAVORITES;
+    } else {
       this.fileService.removeStationToFile(station.gid);
-      this.presentToast("Station " + station.name + " supprimée des favoris");
+      string += TEXT_DELETED_FROM_FAVORITES;
     }
+
+    this.presentToast(string);
   }
 
   clickCloser() {
@@ -241,7 +271,6 @@ export class LocalisationPage implements OnInit {
 
   clickMap(event) {
     var coord = [event.layerX, event.layerY];
-    console.log(coord);
     var feature = this.mapOl.forEachFeatureAtPixel(coord,
       function (feature, layer) {
         return feature;
@@ -283,10 +312,10 @@ export class LocalisationPage implements OnInit {
   }
 
   showPopup(feature) {
-    if (feature && feature.get("name") != TEXT_MY_POSITION && feature.get("name") != TEXT_SELECTED) {
+    if (feature && feature.get("selectable")) {
       this.stationSelected = {};
       this.stationSelected.name = feature.get("name");
-      this.stationSelected.status = feature.get("status") == "OPEN" ? "Ouverte" : "Fermée";
+      this.stationSelected.status = feature.get("status") == JSON_OPEN ? TEXT_OPENED : TEXT_CLOSED;
       this.stationSelected.bikestand = feature.get("bikeStands");
       this.stationSelected.available = feature.get("available");
       this.stationSelected.favorite = feature.get("favorite");
@@ -304,5 +333,13 @@ export class LocalisationPage implements OnInit {
       duration: 3000
     });
     toast.present();
+  }
+
+  centerOnMyPosition() {
+    this.mapOl.getView().setCenter(this.myPosition.getGeometry().getCoordinates());
+  }
+  
+  refreshData() {
+    
   }
 }

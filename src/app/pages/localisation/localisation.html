@@ -28,12 +28,12 @@
   </div>
 
   <div id="map" #map class="map" (click)="clickMap($event)"></div>
-  <div class="ol-zoom-extent ol-unselectable ol-control">
+  <div class="ol-zoom-extent ol-unselectable ol-control" *ngIf="initialised && hasPosition">
     <button type="button" (click)="centerOnMyPosition()">
       <ion-icon name="ios-pin"></ion-icon>
     </button>
   </div>
-  <div class="ol-overviewmap ol-unselectable ol-control ol-collapsed">
+  <div class="ol-overviewmap ol-unselectable ol-control ol-collapsed" *ngIf="initialised">
     <button type="button" (click)="refreshData()">
         <ion-icon name="ios-refresh"></ion-icon>
     </button>
