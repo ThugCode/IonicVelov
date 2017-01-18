@@ -28,6 +28,17 @@
   </div>
 
   <div id="map" #map class="map" (click)="clickMap($event)"></div>
+  <div class="ol-zoom-extent ol-unselectable ol-control">
+    <button type="button" (click)="centerOnMyPosition()">
+      <ion-icon name="ios-pin"></ion-icon>
+    </button>
+  </div>
+  <div class="ol-overviewmap ol-unselectable ol-control ol-collapsed">
+    <button type="button" (click)="refreshData()">
+        <ion-icon name="ios-refresh"></ion-icon>
+    </button>
+  </div>
+
   <div id="popup" class="ol-popup" *ngIf="stationSelected" [(ngModel)]="stationSelected" ngDefaultControl>
     <button id="popup-favorite" class="ol-popup-btn ol-popup-favorite" (click)="clickOnStar(stationSelected)">
         <ion-icon *ngIf="stationSelected.favorite" id="star-full" name="star" item-left></ion-icon>

@@ -178,9 +178,15 @@ export class LocalisationPage implements OnInit {
       overlays: [new ol.Overlay({ element: document.getElementById('popup') })],
       view: new ol.View({
         center: ol.proj.fromLonLat([long, lat]),
-        zoom: 15
-      })
-    })
+        zoom: 15,
+        minZoom: 6,
+        maxZoom: 18
+      }),
+      controls : ol.control.defaults().extend([
+          new ol.control.Zoom(),
+          new ol.control.ZoomSlider()
+        ])
+    });
 
     this.loader.dismiss();
     this.updateScreen();

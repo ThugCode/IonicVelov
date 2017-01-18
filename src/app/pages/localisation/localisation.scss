@@ -80,6 +80,30 @@ localisation-page {
     }
 
     .no-scroll .scroll-content{
-     overflow: hidden;
-  }
+     overflow                       : hidden;
+    }
+
+    //Couleur des boutons de controle
+    .ol-control {
+      background-color: rgba(235,231,220,.7);
+      button {
+        background-color            : rgba(2,35,46,0.8);
+      }
+    }
+
+    //Positionnement du bouton de centrage sur la position courante
+    .ol-zoom-extent {
+      top                           : 265px;
+    }
+
+    //Positionnement du bouton de dézoom
+    .ol-zoom .ol-zoom-out {
+        margin-top: 204px;
+    }
+    
+    //Fond de la barre de zoom
+    .ol-zoomslider {
+        background-color: transparent;
+        top: 2.3em;
+    }
 }
