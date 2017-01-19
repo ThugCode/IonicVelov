@@ -1,7 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { Geolocation } from 'ionic-native';
 import { Keyboard } from 'ionic-native';
-
 import { FileService } from '../../services/file.service';
 import { StationService } from '../../services/station.service';
 import { Station } from '../../models/station';
@@ -46,14 +45,14 @@ export class LocalisationPage implements OnInit {
   searchVisible     : boolean = false;  //Is search field visible ?
   stationFilter     : String;           //Search filter
   
-  vL_All            : ol.layer.Vector;  //All vector
-  vL_Closed         : ol.layer.Vector;  
-  vL_Empty          : ol.layer.Vector;
-  vL_Full           : ol.layer.Vector;
-  vL_Available      : ol.layer.Vector;
-  vL_Bonus          : ol.layer.Vector;
-  vL_MyPosition     : ol.layer.Vector;
-  vL_MyTarget       : ol.layer.Vector;
+  vL_All            : ol.layer.Vector;  //Layer for searching
+  vL_Closed         : ol.layer.Vector;  //Layer for closed station
+  vL_Empty          : ol.layer.Vector;  //Layer for empty station
+  vL_Full           : ol.layer.Vector;  //Layer for full station
+  vL_Available      : ol.layer.Vector;  //Layer for available station
+  vL_Bonus          : ol.layer.Vector;  //Layer for bonus station
+  vL_MyPosition     : ol.layer.Vector;  //Layer for my position
+  vL_MyTarget       : ol.layer.Vector;  //Layer for selected station
 
 
   constructor(
@@ -78,11 +77,10 @@ export class LocalisationPage implements OnInit {
   }
 
   getStations() {
-    this.stationService.getStations()
-      .subscribe(stations => {
+    this.stationService.getStations().subscribe(stations => {
         this.stations = stations;
         this.loadMap();
-      });
+    });
   }
 
   loadMap() {
@@ -112,20 +110,6 @@ export class LocalisationPage implements OnInit {
     var long = coords[0];
     var lat = coords[1];
 
-    var iconStyle = this.createPinStyle();
-
-    var fS_MyPosition = [];
-    this.myPosition = new ol.Feature({
-      selectable : false,
-      geometry: new ol.geom.Point(ol.proj.fromLonLat([long, lat]))
-    });
-    if(!this.hasPosition) {
-      this.myPosition.setGeometry(null);
-    }
-    fS_MyPosition.push(this.myPosition);
-
-    var vS_MyPosition = new ol.source.Vector({ features: fS_MyPosition });
-    this.vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: iconStyle });
 
     var mapImg = new ol.layer.Tile({
       source: new ol.source.OSM()
@@ -147,17 +131,18 @@ export class LocalisationPage implements OnInit {
         ])
     });
 
-    this.createTargetLayer();
+    this.buildTargetLayer();
 
-    this.loadStationVector(prefered);
+    this.buildMyPositionLayer(coords);
+
+    this.buildAllStationLayers(prefered);
 
     this.loader.dismiss();
     this.initialised = true;
     this.updateScreen();
   }
 
-
-  createTargetLayer() {
+  buildTargetLayer() {
     var fS_Target = [];
     this.targetPoint = new ol.Feature({
       selectable : false
@@ -167,8 +152,24 @@ export class LocalisationPage implements OnInit {
     this.vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 10) });
   }
 
+  buildMyPositionLayer(coords) {
 
-  loadStationVector(prefered) {
+    var fS_MyPosition = [];
+    this.myPosition = new ol.Feature({
+      selectable : false,
+      geometry: new ol.geom.Point(ol.proj.fromLonLat([coords[0], coords[1]]))
+    });
+
+    //If no position don't print pin
+    if(!this.hasPosition) { this.myPosition.setGeometry(null); }
+
+    fS_MyPosition.push(this.myPosition);
+
+    var vS_MyPosition = new ol.source.Vector({ features: fS_MyPosition });
+    this.vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: this.createPinStyle() });
+  }
+
+  buildAllStationLayers(prefered) {
 
     var tempFeature;
     var fS_Closed = [];
@@ -233,11 +234,6 @@ export class LocalisationPage implements OnInit {
     this.mapOl.addLayer(this.vL_MyPosition);
     this.mapOl.addLayer(this.vL_MyTarget);
   }
-
-
-
-
-
 
   createPinStyle() {
     return new ol.style.Style({
@@ -372,6 +368,7 @@ export class LocalisationPage implements OnInit {
   }
 
   centerOnMyPosition() {
+    if(this.myPosition.getGeometry() == null) return;
     this.mapOl.getView().setCenter(this.myPosition.getGeometry().getCoordinates());
   }
   
@@ -388,11 +385,10 @@ export class LocalisationPage implements OnInit {
     this.stationService.getStations().subscribe(stations => {
         this.stations = stations;
         this.fileService.readFavoritesFromFile().then(prefered => {
-          this.loadStationVector(prefered);
+          this.buildAllStationLayers(prefered);
         }).catch((error) => {
-          this.loadStationVector([]);
+          this.buildAllStationLayers([]);
           console.log(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE, error);
-          alert(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE);
         });
     });
   }
