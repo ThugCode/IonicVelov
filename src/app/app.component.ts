@@ -37,6 +37,8 @@ export class MyApp {
 
   initializeApp() {
     this.platform.ready().then(() => {
+
+      this.menu.swipeEnable(false, 'menu1');
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       StatusBar.styleLightContent();
