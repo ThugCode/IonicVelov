@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { Geolocation } from 'ionic-native';
 import { Keyboard } from 'ionic-native';
+import { Clipboard } from 'ionic-native';
 import { FileService } from '../../services/file.service';
 import { StationService } from '../../services/station.service';
 import { Station } from '../../models/station';
@@ -19,6 +20,7 @@ const TEXT_ADDED_TO_FAVORITES = "ajoutée aux favoris"
 const TEXT_DELETED_FROM_FAVORITES = "supprimée des favoris";
 const TEXT_ENABLE_TO_FIND_LOCATION = "Impossible de détecter votre position";
 const TEXT_ENABLE_TO_FIND_YOUR_FAVORITE = "Impossible de détecter vos stations favorites";
+const TEXT_COPY_DATA = "Données de la station copiées";
 
 const JSON_CLOSED = "CLOSED";
 const JSON_OPEN = "OPEN";
@@ -182,20 +184,19 @@ export class LocalisationPage implements OnInit {
 
     this.stations.forEach(element => {
 
-      console.log(element.available_bikes);
-
       tempFeature = new ol.Feature({
-        selectable : true,
-        geometry: new ol.geom.Point(ol.proj.fromLonLat([parseFloat(element.lng), parseFloat(element.lat)])),
-        name: element.name,
-        status: element.status,
-        available_bikes: element.available_bikes,
-        available_bike_stands: element.available_bike_stands,
-        gid: element.gid,
-        lat: element.lat,
-        lng: element.lng,
-        bonus: element.bonus == TEXT_YES,
-        favorite: prefered.indexOf(element.gid) >= 0
+        selectable            : true,
+        geometry              : new ol.geom.Point(ol.proj.fromLonLat([parseFloat(element.lng), parseFloat(element.lat)])),
+        name                  : element.name,
+        address               : element.address,
+        status                : element.status,
+        available_bikes       : element.available_bikes,
+        available_bike_stands : element.available_bike_stands,
+        gid                   : element.gid,
+        lat                   : element.lat,
+        lng                   : element.lng,
+        bonus                 : element.bonus == TEXT_YES,
+        favorite              : prefered.indexOf(element.gid) >= 0
       });
 
       if (element.status == JSON_CLOSED) {
@@ -350,6 +351,7 @@ export class LocalisationPage implements OnInit {
     if (feature && feature.get("selectable")) {
       this.stationSelected = {};
       this.stationSelected.name = feature.get("name");
+      this.stationSelected.address = feature.get("address");
       this.stationSelected.status = feature.get("status") == JSON_OPEN ? TEXT_OPENED : TEXT_CLOSED;
       this.stationSelected.available_bikes = feature.get("available_bikes");
       this.stationSelected.available_bike_stands = feature.get("available_bike_stands");
@@ -397,6 +399,15 @@ export class LocalisationPage implements OnInit {
   }
 
   copyData() {
+    var string = "Station " + this.stationSelected.name + " \n" +
+                  "statut " + this.stationSelected.status + " \n" +
+                  "address " + this.stationSelected.address + " \n" +
+                  "vélos " + this.stationSelected.available_bikes + " \n" +
+                  "places " + this.stationSelected.available_bike_stands + " \n" +
+                  "bonus " + (this.stationSelected.bonus == false ? "Non" : "Oui");
 
+    Clipboard.copy(string);
+
+    this.presentToast(TEXT_COPY_DATA);
   }
 }
