@@ -125,10 +125,11 @@ export class LocalisationPage implements OnInit {
         minZoom: 6,
         maxZoom: 18
       }),
-      controls : ol.control.defaults().extend([
-          new ol.control.Zoom(),
-          new ol.control.ZoomSlider()
-        ])
+      controls : ol.control.defaults({
+          zoom          : true,
+          attribution   : false,
+          rotate        : true
+        })
     });
 
     this.buildTargetLayer();
@@ -181,13 +182,15 @@ export class LocalisationPage implements OnInit {
 
     this.stations.forEach(element => {
 
+      console.log(element.available_bikes);
+
       tempFeature = new ol.Feature({
         selectable : true,
         geometry: new ol.geom.Point(ol.proj.fromLonLat([parseFloat(element.lng), parseFloat(element.lat)])),
         name: element.name,
         status: element.status,
-        bikeStands: element.bike_stands,
-        available: element.available_bike_stands,
+        available_bikes: element.available_bikes,
+        available_bike_stands: element.available_bike_stands,
         gid: element.gid,
         lat: element.lat,
         lng: element.lng,
@@ -348,8 +351,8 @@ export class LocalisationPage implements OnInit {
       this.stationSelected = {};
       this.stationSelected.name = feature.get("name");
       this.stationSelected.status = feature.get("status") == JSON_OPEN ? TEXT_OPENED : TEXT_CLOSED;
-      this.stationSelected.bikestand = feature.get("bikeStands");
-      this.stationSelected.available = feature.get("available");
+      this.stationSelected.available_bikes = feature.get("available_bikes");
+      this.stationSelected.available_bike_stands = feature.get("available_bike_stands");
       this.stationSelected.favorite = feature.get("favorite");
       this.stationSelected.gid = feature.get("gid");
       this.stationSelected.bonus = feature.get("bonus");
@@ -391,5 +394,9 @@ export class LocalisationPage implements OnInit {
           console.log(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE, error);
         });
     });
+  }
+
+  copyData() {
+
   }
 }

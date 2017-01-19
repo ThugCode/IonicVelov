@@ -30,29 +30,40 @@
   <div id="map" #map class="map" (click)="clickMap($event)"></div>
   <div class="ol-zoom-extent ol-unselectable ol-control" *ngIf="initialised && hasPosition">
     <button type="button" (click)="centerOnMyPosition()">
-      <ion-icon name="ios-pin"></ion-icon>
+      <ion-icon name="md-pin"></ion-icon>
     </button>
   </div>
   <div class="ol-overviewmap ol-unselectable ol-control ol-collapsed" *ngIf="initialised">
     <button type="button" (click)="refreshData()">
-        <ion-icon name="ios-refresh"></ion-icon>
+        <ion-icon name="md-refresh"></ion-icon>
     </button>
   </div>
-
   <div id="popup" class="ol-popup" *ngIf="stationSelected" [(ngModel)]="stationSelected" ngDefaultControl>
-    <button id="popup-favorite" class="ol-popup-btn ol-popup-favorite" (click)="clickOnStar(stationSelected)">
-        <ion-icon *ngIf="stationSelected.favorite" id="star-full" name="star" item-left></ion-icon>
-        <ion-icon *ngIf="!stationSelected.favorite" id="star-empty" name="star-outline" item-left></ion-icon>
-      </button>
-    <button id="popup-closer" class="ol-popup-btn ol-popup-closer" (click)="clickCloser()">
-      <ion-icon name="close" item-left></ion-icon>
-    </button>
     <div id="popup-content">
+
+      <button id="popup-closer" class="ol-popup-btn ol-popup-closer" (click)="clickCloser()">
+        <ion-icon name="md-close"></ion-icon>
+      </button>
+      <button id="popup-copy" class="ol-popup-btn ol-popup-copy" (click)="copyData()">
+        <ion-icon name="md-copy"></ion-icon>
+      </button>
+      <button id="popup-favorite" class="ol-popup-btn ol-popup-favorite" (click)="clickOnStar(stationSelected)">
+        <ion-icon *ngIf="stationSelected.favorite" name="md-star"></ion-icon>
+        <ion-icon *ngIf="!stationSelected.favorite" name="md-star-outline"></ion-icon>
+      </button>
+
       <div class="popup-content-name">{{stationSelected.name}}</div>
+      <div class="popup-content-seperator"></div>
       <div class="popup-content-info">
-        <div class="content-status">{{stationSelected.status}}</div>
-        <div class="content-number">{{stationSelected.available}}/{{stationSelected.bikestand}}</div>
+          <ion-grid>
+            <ion-row class="table-place">
+              <ion-col width-50><ion-icon name="bicycle"></ion-icon><b>  {{stationSelected.available_bikes}}</b></ion-col>
+              <ion-col width-50><ion-icon name="log-in"></ion-icon><b>  {{stationSelected.available_bike_stands}}</b></ion-col>
+            </ion-row>
+          </ion-grid>
       </div>
+      <div class="content-status">{{stationSelected.status}}</div>
+      <div class="content-distance">{{stationSelected.gid}} km(s)</div>
     </div>
 
     <ion-fab class="half-fab" center bottom *ngIf="stationSelected.bonus">

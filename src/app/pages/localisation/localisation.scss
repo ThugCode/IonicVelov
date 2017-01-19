@@ -1,24 +1,15 @@
 localisation-page {
 
-  .half-fab {
-    margin-bottom                   : -38px;
-  }
-
-  .half-fab-lettre {
-    background-color              : $white-color;
-    color                         : $black-color!important;
-
-    .button-inner {
-      margin-top                  : -10px;
-      font-size                   : 12px;
-    }
-  }
-
   #map {
     width                           : 100%;
     height                          : 100%;
   }
+
+  .fixed-content {
+    background                      : none; 
+  }
   
+  /************** SEARCH ****************/
   .searchbar-input {
     background                      : $white-color!important;
   }
@@ -39,8 +30,14 @@ localisation-page {
   }
 
   .content {
-    position: relative;
+    position                        : relative;
   }
+
+  .no-scroll .scroll-content{
+    overflow                        : hidden;
+  }
+
+  /************** POPUP *************/
 
   .ol-popup {
       position                      : absolute;
@@ -53,57 +50,85 @@ localisation-page {
       right                         : 0px;
       bottom                        : 0px;
       min-width                     : 180px;
-    }
-
-    .ol-popup-closer {
-      float                         : right;
+      height                        : 150px;
     }
 
     .ol-popup-btn {
       background-color              : transparent;
       font-size                     : 20px!important;
       color                         : $white-color;
+      float                         : right;
+      margin-left                   : 15px;
+      margin-top                    : -5px;
+    }
+
+    .ol-control button:focus, 
+    .ol-control button:hover {
+      background-color              : rgba(2,35,46,0.8);
     }
 
     .popup-content-name {
-      margin-top                    : 10px;
+      margin-top                    : 5px;
+      margin-bottom                 : 15px;
+      font-weight                   : bold;
+      font-size                     : 15px;
+      max-height                    : 20px;
+      overflow-x                    : hidden;
+      overflow-y                    : hidden;
+    }
+
+    .popup-content-seperator {
+      border-top                    : 1px solid $white-color;
+      width                         : 100%;
+      height                        : 0px;
       margin-bottom                 : 10px;
     }
     
-    .content-number {
+    .table-place {
+      text-align                    : center;
+      font-size                     : 26px;
+      margin-bottom                 : 5px;
+    }
+
+    .content-distance {
       float                         : right;
-      margin-top                    : -15px;
+      text-align                    : right;
+      margin-top                    : -15px; 
     }
-
-    .fixed-content {
-      background                    : none; 
-    }
-
-    .no-scroll .scroll-content{
-     overflow                       : hidden;
-    }
-
-    //Couleur des boutons de controle
+    
+    /*********** BUTTONS *********/
     .ol-control {
-      background-color: rgba(235,231,220,.7);
+      background-color              : rgba(235,231,220,.7);
+      width                         : 40px;
+      height                        : 40px;
       button {
         background-color            : rgba(2,35,46,0.8);
+        color                       : $white-color;
+        width                       : 34px;
+        height                      : 34px;
       }
     }
 
-    //Positionnement du bouton de centrage sur la position courante
-    .ol-zoom-extent {
-      top                           : 265px;
+    .ol-zoom {
+      height                        : 75px;
     }
 
-    //Positionnement du bouton de dézoom
-    .ol-zoom .ol-zoom-out {
-        margin-top: 204px;
+    .ol-zoom-extent {
+      top                           : 6em;
     }
-    
-    //Fond de la barre de zoom
-    .ol-zoomslider {
-        background-color: transparent;
-        top: 2.3em;
+
+    /*********** BONUS FAB ***********/
+    .half-fab {
+      margin-bottom                 : -38px;
+    }
+
+    .half-fab-lettre {
+      background-color              : $white-color;
+      color                         : $black-color!important;
+
+      .button-inner {
+        margin-top                  : -10px;
+        font-size                   : 12px;
+      }
     }
 }
