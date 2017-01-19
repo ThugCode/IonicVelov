@@ -35,5 +35,13 @@ export class AlertesPage implements OnInit {
   ngOnInit() {
     this.notConnected = Network.connection === "none";
     this.getAlertes();
+    this.updateScreen();
+  }
+
+  updateScreen() {
+    setTimeout(() => {  
+      this.notConnected = Network.connection === "none";
+      this.updateScreen();
+    }, 2000);
   }
 }

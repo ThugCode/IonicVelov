@@ -52,6 +52,14 @@ export class FavoritesListPage implements OnInit {
   ngOnInit() {
     this.notConnected = Network.connection === "none";
     this.getStations();
+    this.updateScreen();
+  }
+
+  updateScreen() {
+    setTimeout(() => {  
+      this.notConnected = Network.connection === "none";
+      this.updateScreen();
+    }, 2000);
   }
 
   delete(slidingItem: ItemSliding, item) {
