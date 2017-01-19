@@ -43,7 +43,8 @@ export class LocalisationPage implements OnInit {
   targetPoint       : ol.Feature;       //Blue point feature on map
   notConnected      : boolean;          //Is the device connected to internet ?
   hasPosition       : boolean;          //Has the device localisation ?
-  myPosition        : any;              //Position of user
+  myPosition        : any;              //Position of user on map
+  myCoordinate      : any;              //Position of user on earth
   searchVisible     : boolean = false;  //Is search field visible ?
   stationFilter     : String;           //Search filter
   
@@ -88,10 +89,12 @@ export class LocalisationPage implements OnInit {
   loadMap() {
     Geolocation.getCurrentPosition().then((resp) => {
       this.hasPosition = true;
+      this.myCoordinate = resp.coords;
       this.getPrefered([resp.coords.longitude, resp.coords.latitude]);
     }).catch((error) => {
       this.hasPosition = false;
       this.getPrefered([4.85, 45.75]);
+      this.myCoordinate = null;
       console.log(TEXT_ENABLE_TO_FIND_LOCATION, error);
       alert(TEXT_ENABLE_TO_FIND_LOCATION);
     })
@@ -195,6 +198,7 @@ export class LocalisationPage implements OnInit {
         gid                   : element.gid,
         lat                   : element.lat,
         lng                   : element.lng,
+        distance              : this.getDistance(element.lat, element.lng),
         bonus                 : element.bonus == TEXT_YES,
         favorite              : prefered.indexOf(element.gid) >= 0
       });
@@ -252,17 +256,48 @@ export class LocalisationPage implements OnInit {
     });
   }
 
+  toRadian(number) {
+    return number * Math.PI / 180;
+  }
+  
+  getDistance(lati1, long1):string {
+
+    if(this.myCoordinate == null) return "0";
+
+    var lati2 = this.myCoordinate.latitude;
+    var long2 = this.myCoordinate.longitude;
+
+    var r = 6371;
+    var la1 = lati1;
+    var la2 = lati2;
+    var lat1 = this.toRadian(lati1);
+    var lat2 = this.toRadian(lati2);
+    var lo1 = long1;
+    var lo2 = long2;
+    var la2minla1 = this.toRadian(la2-la1);
+    var lo2minlo1 = this.toRadian(lo2-lo1);
+
+    var cal = Math.sin(la2minla1 / 2) * Math.sin(la2minla1 / 2) +
+            Math.cos(lat1) * Math.cos(lat2) *
+            Math.sin(lo2minlo1/2) * Math.sin(lo2minlo1/2);
+    var c = 2* Math.atan2(Math.sqrt(cal), Math.sqrt(1-cal));
+
+    return (r * c).toFixed(1).toString();
+};
+
   updateScreen() {
     setTimeout(() => {  
       this.notConnected = Network.connection === "none";
 
       Geolocation.getCurrentPosition().then((resp) => {
         this.hasPosition = true;
+        this.myCoordinate = resp.coords;
         this.myPosition.setGeometry(new ol.geom.Point(
           ol.proj.fromLonLat([resp.coords.longitude, resp.coords.latitude]))
         );
       }).catch((error) => {
         this.hasPosition = false;
+        this.myCoordinate = null;
         this.myPosition.setGeometry(null);
         console.log(TEXT_ENABLE_TO_FIND_LOCATION, error);
       })
@@ -358,6 +393,7 @@ export class LocalisationPage implements OnInit {
       this.stationSelected.favorite = feature.get("favorite");
       this.stationSelected.gid = feature.get("gid");
       this.stationSelected.bonus = feature.get("bonus");
+      this.stationSelected.distance = feature.get("distance");
 
       this.targetPoint.setGeometry(new ol.geom.Point(feature.getGeometry().getCoordinates()));
       this.mapOl.getView().setCenter(feature.getGeometry().getCoordinates());
