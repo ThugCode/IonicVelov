@@ -3,11 +3,13 @@ import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { StationService } from './services/station.service';
 import { FileService } from './services/file.service';
+import { EmailService } from './services/email.service';
 import { LocalisationPage } from './pages/localisation/localisation';
 import { AlertesPage } from './pages/alertes/alertes';
 import { FavoritesDetailPage } from './pages/favorites-detail/favorites-detail';
 import { FavoritesListPage } from './pages/favorites-list/favorites-list';
 import { HelpPage } from './pages/help/help';
+
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import { HelpPage } from './pages/help/help';
   ],
   providers: [
     StationService,
-    FileService
+    FileService,
+    EmailService
   ]
 })
 export class AppModule {}

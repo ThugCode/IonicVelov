@@ -64,7 +64,7 @@ localisation-page {
 
     .ol-control button:focus, 
     .ol-control button:hover {
-      background-color              : rgba(2,35,46,0.8);
+      background-color              : rgba($black-color,0.8);
     }
 
     .popup-content-name {
@@ -98,11 +98,11 @@ localisation-page {
     
     /*********** BUTTONS *********/
     .ol-control {
-      background-color              : rgba(235,231,220,.7);
+      background-color              : rgba($white-color,.7);
       width                         : 40px;
       height                        : 40px;
       button {
-        background-color            : rgba(2,35,46,0.8);
+        background-color            : rgba($black-color,0.8);
         color                       : $white-color;
         width                       : 34px;
         height                      : 34px;

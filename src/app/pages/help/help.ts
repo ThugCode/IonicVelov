@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { EmailService } from '../../services/email.service';
+import { Email } from '../../models/email';
 
 @Component({
   selector: 'page-help',
@@ -7,6 +8,15 @@ import { NavController } from 'ionic-angular';
 })
 export class HelpPage {
 
-  constructor(public navCtrl: NavController) {}
+  email : Email;
+
+  constructor(
+    private emailService: EmailService
+  ) {
+    this.email = new Email();
+  }
   
+  postEmail() {
+    this.emailService.sendEmail(this.email);
+  }
 }
