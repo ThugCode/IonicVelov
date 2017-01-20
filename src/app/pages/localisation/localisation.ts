@@ -6,7 +6,6 @@ import { FileService } from '../../services/file.service';
 import { StationService } from '../../services/station.service';
 import { PisteService } from '../../services/piste.service';
 import { Station } from '../../models/station';
-import { PisteShape } from '../../models/piste';
 import { LoadingController } from 'ionic-angular';
 import { Network } from 'ionic-native';
 import { ToastController, Searchbar } from 'ionic-angular';
@@ -41,7 +40,6 @@ export class LocalisationPage implements OnInit {
   stationsFiltered  : Station[];        //Station filtered (for search input)
   stationSelected   : any;              //Selected station on the map (for bottom popup)
   featureSelected   : any;              //Selected feature (for favorite star)
-  piste             : PisteShape[];     //PisteShape list
   mapOl             : any;              //Ol map
   targetPoint       : ol.Feature;       //Blue point feature on map
   notConnected      : boolean;          //Is the device connected to internet ?
@@ -84,17 +82,8 @@ export class LocalisationPage implements OnInit {
   getStations() {
     this.stationService.getStations().subscribe(stations => {
         this.stations = stations;
-        this.getPiste();
-      });
-  }
-
-  getPiste() {
-    this.pisteService.getPistes()
-      .subscribe(piste => {
-        this.piste = piste;
-        console.log(this.piste);
         this.loadMap();
-    });
+      });
   }
 
   loadMap() {
@@ -149,10 +138,9 @@ export class LocalisationPage implements OnInit {
     });
 
     this.buildTargetLayer();
-
     this.buildMyPositionLayer(coords);
-
     this.buildAllStationLayers(prefered);
+    this.buildPistesLayer();
 
     this.loader.dismiss();
     this.initialised = true;
@@ -195,7 +183,6 @@ export class LocalisationPage implements OnInit {
     var fS_Available = [];
     var fS_Bonus = [];
     var fS_All = [];
-    var fS_Pistes = [];
 
     this.stations.forEach(element => {
 
@@ -253,6 +240,32 @@ export class LocalisationPage implements OnInit {
     this.mapOl.addLayer(this.vL_Bonus);
     this.mapOl.addLayer(this.vL_MyPosition);
     this.mapOl.addLayer(this.vL_MyTarget);
+  }
+
+  buildPistesLayer() {
+    var vS_Piste = new ol.source.Vector({ url: this.pisteService.PistesUrl, format: new ol.format.GeoJSON() });
+    var vL_Piste = new ol.layer.Vector({ source: vS_Piste, style: this.createPistesStyle });
+
+    this.mapOl.addLayer(vL_Piste);
+  }
+
+  createPistesStyle(feature) {
+    var styles =  {
+      'LineString': new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: 'blue',
+          width: 2
+        })
+      }),
+      'MultiLineString': new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: 'blue',
+          width: 2
+        })
+      })
+  };
+
+    return styles[feature.getGeometry().getType()];
   }
 
   createPinStyle() {
