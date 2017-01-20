@@ -15,49 +15,7 @@ export class FileService {
 
     constructor(
         private platform: Platform
-    ) { 
-        //this.init();
-    }
-
-    init() {
-        if (this.platform.is('cordova')) {
-            this.filePath = cordova.file.dataDirectory;
-            this.checkFileFavorites();
-            this.checkFileOffline();
-       }
-    }
-
-    /*
-    checkDir(id) {
-        File.checkDir(this.filePath, '').then(_ => {
-            console.log('Dossier existant');
-        }).catch(err => {
-            console.log('Création du dossier');
-            File.createDir(this.filePath, '', true);
-        });
-    }*/
-
-    checkFileFavorites() {
-        if (this.platform.is('cordova')) {
-            this.filePath = cordova.file.dataDirectory;
-            File.checkFile(this.filePath, FILE_FAVORITE)
-                .then(function (success) {}, function (error) {
-                    console.log('Fichier inexistant')
-                    File.createFile(this.filePath, FILE_FAVORITE, true);
-                });
-        }
-    }
-
-    checkFileOffline() {
-        if (this.platform.is('cordova')) { 
-            this.filePath = cordova.file.dataDirectory;
-            File.checkFile(this.filePath, FILE_OFFLINE)
-                .then(function (success) {}, function (error) {
-                    console.log('Fichier inexistant')
-                    File.createFile(this.filePath, FILE_OFFLINE, true);
-                });
-        }
-    }
+    ) {}
 
     readSationOffline(): Promise<Station[]> {
         if (this.platform.is('cordova')) {
