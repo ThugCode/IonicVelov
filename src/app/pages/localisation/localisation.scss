@@ -58,8 +58,9 @@ localisation-page {
       font-size                     : 20px!important;
       color                         : $white-color;
       float                         : right;
-      margin-left                   : 15px;
+      margin-left                   : 5px;
       margin-top                    : -5px;
+      width                         : 20px;
     }
 
     .ol-control button:focus, 
@@ -75,6 +76,7 @@ localisation-page {
       max-height                    : 20px;
       overflow-x                    : hidden;
       overflow-y                    : hidden;
+      word-break                    : break-all;
     }
 
     .popup-content-seperator {
