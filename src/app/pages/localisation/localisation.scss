@@ -58,13 +58,14 @@ localisation-page {
       font-size                     : 20px!important;
       color                         : $white-color;
       float                         : right;
-      margin-left                   : 15px;
+      margin-left                   : 5px;
       margin-top                    : -5px;
+      width                         : 20px;
     }
 
     .ol-control button:focus, 
     .ol-control button:hover {
-      background-color              : rgba(2,35,46,0.8);
+      background-color              : rgba($black-color,0.8);
     }
 
     .popup-content-name {
@@ -75,6 +76,7 @@ localisation-page {
       max-height                    : 20px;
       overflow-x                    : hidden;
       overflow-y                    : hidden;
+      word-break                    : break-all;
     }
 
     .popup-content-seperator {
@@ -98,11 +100,11 @@ localisation-page {
     
     /*********** BUTTONS *********/
     .ol-control {
-      background-color              : rgba(235,231,220,.7);
+      background-color              : rgba($white-color,.7);
       width                         : 40px;
       height                        : 40px;
       button {
-        background-color            : rgba(2,35,46,0.8);
+        background-color            : rgba($black-color,0.8);
         color                       : $white-color;
         width                       : 34px;
         height                      : 34px;

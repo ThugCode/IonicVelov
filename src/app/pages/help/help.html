@@ -88,4 +88,31 @@
     </ion-card-content>
   </ion-card>
 
+  <ion-card>
+    <ion-card-header>
+      Déclarer un bug
+    </ion-card-header>
+
+    <ion-card-content id="card-bug">
+      Pour reporter un bug, il vous faut une application mail sur votre smartphone avec une adresse configurée.
+      Remplissez les champs ci-dessous puis cliquez sur "envoyer".
+      L'application mail va alors ouvrir une page avec votre message, il ne vous restera plus qu'à l'envoyer.
+      <ion-label>Type de bug *</ion-label>
+      <ion-segment [(ngModel)]="email.subject">
+        <ion-segment-button value="[Affichage]">Affichage</ion-segment-button>
+        <ion-segment-button value="[Dysfonction]">Dysfonction</ion-segment-button>
+        <ion-segment-button value="[Freeze/Crash]">Freeze/Crash</ion-segment-button>
+      </ion-segment>
+
+      <ion-label>Incident *</ion-label>
+      <ion-textarea [(ngModel)]="email.body" 
+      placeholder="Veuillez donner des précisions sur le comportement constaté">
+      </ion-textarea>
+        
+      <div padding>
+        <button ion-button block (click)="postEmail()">Envoyer</button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>

@@ -8,6 +8,7 @@ import { Station } from '../../models/station';
 import { LoadingController } from 'ionic-angular';
 import { Network } from 'ionic-native';
 import { ToastController, Searchbar } from 'ionic-angular';
+import { Vibration } from 'ionic-native';
 
 import ol from 'openlayers';
 
@@ -333,6 +334,7 @@ export class LocalisationPage implements OnInit {
     }
 
     this.presentToast(string);
+    Vibration.vibrate(1000);
   }
 
   clickCloser() {
