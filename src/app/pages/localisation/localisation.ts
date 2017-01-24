@@ -48,6 +48,7 @@ export class LocalisationPage implements OnInit {
   myCoordinate      : any;              //Position of user on earth
   searchVisible     : boolean = false;  //Is search field visible ?
   stationFilter     : String;           //Search filter
+  displayedPiste    : boolean           //Is pistes cyclables displayed ?
   
   vL_All            : ol.layer.Vector;  //Layer for searching
   vL_Closed         : ol.layer.Vector;  //Layer for closed station
@@ -57,6 +58,7 @@ export class LocalisationPage implements OnInit {
   vL_Bonus          : ol.layer.Vector;  //Layer for bonus station
   vL_MyPosition     : ol.layer.Vector;  //Layer for my position
   vL_MyTarget       : ol.layer.Vector;  //Layer for selected station
+  vL_Piste          : ol.layer.Vector;  //Layer for pistes
 
   constructor(
     private stationService: StationService,
@@ -71,6 +73,7 @@ export class LocalisationPage implements OnInit {
   ngOnInit() {
     this.notConnected = Network.connection === "none";
     this.stationFilter = "";
+    this.displayedPiste = false;
     this.loader = this.loadingCtrl.create({
       content: TEXT_THANKS_WAITING,
       duration: 2000
@@ -244,9 +247,7 @@ export class LocalisationPage implements OnInit {
 
   buildPistesLayer() {
     var vS_Piste = new ol.source.Vector({ url: this.pisteService.PistesUrl, format: new ol.format.GeoJSON() });
-    var vL_Piste = new ol.layer.Vector({ source: vS_Piste, style: this.createPistesStyle });
-
-    this.mapOl.addLayer(vL_Piste);
+    this.vL_Piste = new ol.layer.Vector({ source: vS_Piste, style: this.createPistesStyle });
   }
 
   createPistesStyle(feature) {
@@ -266,6 +267,16 @@ export class LocalisationPage implements OnInit {
   };
 
     return styles[feature.getGeometry().getType()];
+  }
+
+  displayPistes() {
+    if(this.displayedPiste) {
+      this.mapOl.removeLayer(this.vL_Piste);
+      this.displayedPiste = false;
+    } else {
+      this.mapOl.addLayer(this.vL_Piste);
+      this.displayedPiste = true;
+    }
   }
 
   createPinStyle() {
@@ -457,6 +468,8 @@ export class LocalisationPage implements OnInit {
           console.log(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE, error);
         });
     });
+
+    this.buildPistesLayer();
   }
 
   copyData() {
