@@ -7,7 +7,7 @@ import { StationService } from '../../services/station.service';
 import { Station } from '../../models/station';
 import { LoadingController } from 'ionic-angular';
 import { Network } from 'ionic-native';
-import { ToastController, Searchbar } from 'ionic-angular';
+import { ToastController, Searchbar, AlertController } from 'ionic-angular';
 import { Vibration } from 'ionic-native';
 
 import ol from 'openlayers';
@@ -63,7 +63,8 @@ export class LocalisationPage implements OnInit {
     private stationService: StationService,
     private loadingCtrl: LoadingController,
     private fileService: FileService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController
   ) { 
     this.initialised = false;
   }
@@ -97,7 +98,7 @@ export class LocalisationPage implements OnInit {
       this.getPrefered([4.85, 45.75]);
       this.myCoordinate = null;
       console.log(TEXT_ENABLE_TO_FIND_LOCATION, error);
-      alert(TEXT_ENABLE_TO_FIND_LOCATION);
+      this.presentAlert(TEXT_ENABLE_TO_FIND_LOCATION);
     })
   }
 
@@ -107,7 +108,7 @@ export class LocalisationPage implements OnInit {
     }).catch((error) => {
       this.createMap(coords, []);
       console.log(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE, error);
-      alert(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE);
+      this.presentAlert(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE);
     });
   }
 
@@ -284,7 +285,7 @@ export class LocalisationPage implements OnInit {
     var c = 2* Math.atan2(Math.sqrt(cal), Math.sqrt(1-cal));
 
     return (r * c).toFixed(1).toString();
-};
+  };
 
   updateScreen() {
     setTimeout(() => {  
@@ -408,6 +409,15 @@ export class LocalisationPage implements OnInit {
       duration: 3000
     });
     toast.present();
+  }
+
+  presentAlert(p_alert) {
+    let alert = this.alertCtrl.create({
+      title: 'Attention',
+      subTitle: p_alert,
+      buttons: ['Ok']
+    });
+    alert.present();
   }
 
   centerOnMyPosition() {
