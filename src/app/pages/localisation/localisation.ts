@@ -21,7 +21,7 @@ const TEXT_ADDED_TO_FAVORITES = "ajoutée aux favoris"
 const TEXT_DELETED_FROM_FAVORITES = "supprimée des favoris";
 const TEXT_ENABLE_TO_FIND_LOCATION = "Impossible de détecter votre position";
 const TEXT_ENABLE_TO_FIND_YOUR_FAVORITE = "Impossible de détecter vos stations favorites";
-const TEXT_COPY_DATA = "Données de la station copiées";
+const TEXT_COPY_DATA = "Adresse de la station copiée";
 
 const JSON_CLOSED = "CLOSED";
 const JSON_OPEN = "OPEN";
