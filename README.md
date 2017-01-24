@@ -20,7 +20,13 @@ Ajout de plugins
 -------
 * cordova plugin add cordova-plugin-geolocation
 * cordova plugin add cordova-plugin-file
+* ionic plugin add cordova-plugin-email
 * ionic plugin add https://github.com/VersoSolutions/CordovaClipboard.git;
+
+MAJ splashscreen & icone
+-------
+* ionic resources --splash
+* ionic resources --icon
 
 Run & build
 -------

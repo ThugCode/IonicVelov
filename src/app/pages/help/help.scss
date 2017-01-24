@@ -11,4 +11,59 @@ page-help {
     .card-content {
         text-align              : justify;
     }
+
+    #card-bug {
+        .segment-ios {
+            .segment-button {
+                border-color    : $black-color!important;
+                color           : $black-color!important;
+            }
+
+            .segment-button:hover:not(.segment-activated) {
+                background-color: rgba($black-color, 0.1);
+            }
+
+            .segment-button.segment-activated {
+                background-color: $black-color!important;
+                color           : $white-color!important;
+            }
+        }
+
+        ion-textarea {
+            border              : 1px solid black;
+            border-radius       : 5px;
+        }
+
+        textarea {
+            resize              : vertical;
+            min-height          : 100px;
+        }
+
+        button {
+            color               : $white-color;
+            background-color    : $black-color;
+        }
+
+        .segment-md .segment-button.activated, 
+        .segment-md .segment-button.segment-activated {
+            border-color        : $black-color!important;
+        }
+
+        .segment-md .segment-button {
+            border-bottom-color : rgba(0, 0, 0, 0.1);
+            color               : $black-color!important;
+            font-size           : 10px;
+        }
+
+        .segment-wp .segment-button {
+            width               : 34%;
+            font-size           : 10px;
+        }
+    }
+
+    .card-content-wp {
+        ion-textarea {
+            border              : none!important;
+        }
+    }
 }
