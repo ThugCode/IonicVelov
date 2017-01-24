@@ -33,6 +33,11 @@
       <ion-icon name="md-pin"></ion-icon>
     </button>
   </div>
+  <div class="ol-pistes ol-overviewmap ol-unselectable ol-control" *ngIf="initialised">
+    <button type="button" (click)="displayPistes()">
+      <ion-icon name="bicycle"></ion-icon>
+    </button>
+  </div>
   <div class="ol-overviewmap ol-unselectable ol-control ol-collapsed" *ngIf="initialised">
     <button type="button" (click)="refreshData()">
         <ion-icon name="md-refresh"></ion-icon>
