@@ -4,6 +4,7 @@ import { Keyboard } from 'ionic-native';
 import { Clipboard } from 'ionic-native';
 import { FileService } from '../../services/file.service';
 import { StationService } from '../../services/station.service';
+import { PisteService } from '../../services/piste.service';
 import { Station } from '../../models/station';
 import { LoadingController } from 'ionic-angular';
 import { Network } from 'ionic-native';
@@ -48,6 +49,7 @@ export class LocalisationPage implements OnInit {
   myCoordinate      : any;              //Position of user on earth
   searchVisible     : boolean = false;  //Is search field visible ?
   stationFilter     : String;           //Search filter
+  displayedPiste    : boolean           //Is pistes cyclables displayed ?
   
   vL_All            : ol.layer.Vector;  //Layer for searching
   vL_Closed         : ol.layer.Vector;  //Layer for closed station
@@ -57,22 +59,23 @@ export class LocalisationPage implements OnInit {
   vL_Bonus          : ol.layer.Vector;  //Layer for bonus station
   vL_MyPosition     : ol.layer.Vector;  //Layer for my position
   vL_MyTarget       : ol.layer.Vector;  //Layer for selected station
-
+  vL_Piste          : ol.layer.Vector;  //Layer for pistes
 
   constructor(
     private stationService: StationService,
     private loadingCtrl: LoadingController,
     private fileService: FileService,
     private toastCtrl: ToastController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private pisteService: PisteService
   ) { 
     this.initialised = false;
   }
 
   ngOnInit() {
-
     this.notConnected = Network.connection === "none";
     this.stationFilter = "";
+    this.displayedPiste = false;
     this.loader = this.loadingCtrl.create({
       content: TEXT_THANKS_WAITING,
       duration: 2000
@@ -85,7 +88,7 @@ export class LocalisationPage implements OnInit {
     this.stationService.getStations().subscribe(stations => {
         this.stations = stations;
         this.loadMap();
-    });
+      });
   }
 
   loadMap() {
@@ -140,10 +143,9 @@ export class LocalisationPage implements OnInit {
     });
 
     this.buildTargetLayer();
-
     this.buildMyPositionLayer(coords);
-
     this.buildAllStationLayers(prefered);
+    this.buildPistesLayer();
 
     this.loader.dismiss();
     this.initialised = true;
@@ -243,6 +245,43 @@ export class LocalisationPage implements OnInit {
     this.mapOl.addLayer(this.vL_MyPosition);
     this.mapOl.addLayer(this.vL_MyTarget);
     this.mapOl.addLayer(this.vL_Bonus);
+  }
+
+  buildPistesLayer() {
+    var vS_Piste = new ol.source.Vector({ url: this.pisteService.PistesUrl, format: new ol.format.GeoJSON() });
+    this.vL_Piste = new ol.layer.Vector({ source: vS_Piste, style: this.createPistesStyle });
+    if(this.displayedPiste) {
+      this.mapOl.addLayer(this.vL_Piste);
+    }
+  }
+
+  createPistesStyle(feature) {
+    var styles =  {
+      'LineString': new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: 'blue',
+          width: 2
+        })
+      }),
+      'MultiLineString': new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: 'blue',
+          width: 2
+        })
+      })
+  };
+
+    return styles[feature.getGeometry().getType()];
+  }
+
+  displayPistes() {
+    if(this.displayedPiste) {
+      this.mapOl.removeLayer(this.vL_Piste);
+      this.displayedPiste = false;
+    } else {
+      this.mapOl.addLayer(this.vL_Piste);
+      this.displayedPiste = true;
+    }
   }
 
   createPinStyle() {
@@ -434,6 +473,7 @@ export class LocalisationPage implements OnInit {
     this.mapOl.removeLayer(this.vL_Bonus);
     this.mapOl.removeLayer(this.vL_MyPosition);
     this.mapOl.removeLayer(this.vL_MyTarget);
+    this.mapOl.removeLayer(this.vL_Piste);
 
     this.stationService.getStations().subscribe(stations => {
         this.stations = stations;
@@ -444,6 +484,8 @@ export class LocalisationPage implements OnInit {
           console.log(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE, error);
         });
     });
+
+    this.buildPistesLayer();
   }
 
   copyData() {
