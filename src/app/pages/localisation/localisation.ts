@@ -240,9 +240,9 @@ export class LocalisationPage implements OnInit {
     this.mapOl.addLayer(this.vL_Empty);
     this.mapOl.addLayer(this.vL_Full);
     this.mapOl.addLayer(this.vL_Available);
-    this.mapOl.addLayer(this.vL_Bonus);
     this.mapOl.addLayer(this.vL_MyPosition);
     this.mapOl.addLayer(this.vL_MyTarget);
+    this.mapOl.addLayer(this.vL_Bonus);
   }
 
   createPinStyle() {
