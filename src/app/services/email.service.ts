@@ -9,13 +9,15 @@ export class EmailService {
         private platform: Platform
     ) {}
 
-    sendEmail(email) {
-
-        EmailComposer.isAvailable().then((available: boolean) =>{
-            if(!available) {
-                console.log("Enable to send mail");
-            }
+    ableToEmail():Promise<boolean> {
+        return EmailComposer.isAvailable().then((available: boolean) =>{
+            return available;
+        }).catch(err => {
+            return false;
         });
+    }
+
+    sendEmail(email) {
 
         email.app = "mailto";
         email.to = "leo.letourneur@etu.univ-lyon1.fr";
@@ -29,8 +31,5 @@ export class EmailService {
         email.body += JSON.stringify(this.platform.versions());
         
         EmailComposer.open(email);
-
-        email.body = "";
-        email.subject = "";
     }
 }
