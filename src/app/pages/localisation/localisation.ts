@@ -7,7 +7,7 @@ import { StationService } from '../../services/station.service';
 import { Station } from '../../models/station';
 import { LoadingController } from 'ionic-angular';
 import { Network } from 'ionic-native';
-import { ToastController, Searchbar } from 'ionic-angular';
+import { ToastController, Searchbar, AlertController } from 'ionic-angular';
 import { Vibration } from 'ionic-native';
 
 import ol from 'openlayers';
@@ -21,7 +21,7 @@ const TEXT_ADDED_TO_FAVORITES = "ajoutée aux favoris"
 const TEXT_DELETED_FROM_FAVORITES = "supprimée des favoris";
 const TEXT_ENABLE_TO_FIND_LOCATION = "Impossible de détecter votre position";
 const TEXT_ENABLE_TO_FIND_YOUR_FAVORITE = "Impossible de détecter vos stations favorites";
-const TEXT_COPY_DATA = "Données de la station copiées";
+const TEXT_COPY_DATA = "Adresse de la station copiée";
 
 const JSON_CLOSED = "CLOSED";
 const JSON_OPEN = "OPEN";
@@ -63,7 +63,8 @@ export class LocalisationPage implements OnInit {
     private stationService: StationService,
     private loadingCtrl: LoadingController,
     private fileService: FileService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController
   ) { 
     this.initialised = false;
   }
@@ -97,7 +98,7 @@ export class LocalisationPage implements OnInit {
       this.getPrefered([4.85, 45.75]);
       this.myCoordinate = null;
       console.log(TEXT_ENABLE_TO_FIND_LOCATION, error);
-      alert(TEXT_ENABLE_TO_FIND_LOCATION);
+      this.presentAlert(TEXT_ENABLE_TO_FIND_LOCATION);
     })
   }
 
@@ -107,7 +108,7 @@ export class LocalisationPage implements OnInit {
     }).catch((error) => {
       this.createMap(coords, []);
       console.log(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE, error);
-      alert(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE);
+      this.presentAlert(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE);
     });
   }
 
@@ -156,7 +157,7 @@ export class LocalisationPage implements OnInit {
     });
     fS_Target.push(this.targetPoint);
     var vS_Target = new ol.source.Vector({ features: fS_Target });
-    this.vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 10) });
+    this.vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 14) });
   }
 
   buildMyPositionLayer(coords) {
@@ -228,10 +229,10 @@ export class LocalisationPage implements OnInit {
     var vS_Bonus = new ol.source.Vector({ features: fS_Bonus });
     var vS_All = new ol.source.Vector({ features: fS_All });
 
-    this.vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 8) });
-    this.vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 8) });
-    this.vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow", 8) });
-    this.vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 8) });
+    this.vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 10) });
+    this.vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 10) });
+    this.vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow", 10) });
+    this.vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 10) });
     this.vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 2) });
     this.vL_All = new ol.layer.Vector({ source: vS_All });
     
@@ -239,9 +240,9 @@ export class LocalisationPage implements OnInit {
     this.mapOl.addLayer(this.vL_Empty);
     this.mapOl.addLayer(this.vL_Full);
     this.mapOl.addLayer(this.vL_Available);
-    this.mapOl.addLayer(this.vL_Bonus);
     this.mapOl.addLayer(this.vL_MyPosition);
     this.mapOl.addLayer(this.vL_MyTarget);
+    this.mapOl.addLayer(this.vL_Bonus);
   }
 
   createPinStyle() {
@@ -284,7 +285,7 @@ export class LocalisationPage implements OnInit {
     var c = 2* Math.atan2(Math.sqrt(cal), Math.sqrt(1-cal));
 
     return (r * c).toFixed(1).toString();
-};
+  };
 
   updateScreen() {
     setTimeout(() => {  
@@ -410,6 +411,15 @@ export class LocalisationPage implements OnInit {
     toast.present();
   }
 
+  presentAlert(p_alert) {
+    let alert = this.alertCtrl.create({
+      title: 'Attention',
+      subTitle: p_alert,
+      buttons: ['Ok']
+    });
+    alert.present();
+  }
+
   centerOnMyPosition() {
     if(this.myPosition.getGeometry() == null) return;
     this.mapOl.getView().setCenter(this.myPosition.getGeometry().getCoordinates());
@@ -437,15 +447,7 @@ export class LocalisationPage implements OnInit {
   }
 
   copyData() {
-    var string = "Station " + this.stationSelected.name + " \n" +
-                  "statut " + this.stationSelected.status + " \n" +
-                  "address " + this.stationSelected.address + " \n" +
-                  "vélos " + this.stationSelected.available_bikes + " \n" +
-                  "places " + this.stationSelected.available_bike_stands + " \n" +
-                  "bonus " + (this.stationSelected.bonus == false ? "Non" : "Oui");
-
-    Clipboard.copy(string);
-
+    Clipboard.copy(this.stationSelected.address);
     this.presentToast(TEXT_COPY_DATA);
   }
 }
