@@ -447,15 +447,7 @@ export class LocalisationPage implements OnInit {
   }
 
   copyData() {
-    var string = "Station " + this.stationSelected.name + " \n" +
-                  "statut " + this.stationSelected.status + " \n" +
-                  "address " + this.stationSelected.address + " \n" +
-                  "vélos " + this.stationSelected.available_bikes + " \n" +
-                  "places " + this.stationSelected.available_bike_stands + " \n" +
-                  "bonus " + (this.stationSelected.bonus == false ? "Non" : "Oui");
-
-    Clipboard.copy(string);
-
+    Clipboard.copy(this.stationSelected.address);
     this.presentToast(TEXT_COPY_DATA);
   }
 }
