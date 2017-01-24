@@ -157,7 +157,7 @@ export class LocalisationPage implements OnInit {
     });
     fS_Target.push(this.targetPoint);
     var vS_Target = new ol.source.Vector({ features: fS_Target });
-    this.vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 10) });
+    this.vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 14) });
   }
 
   buildMyPositionLayer(coords) {
@@ -229,10 +229,10 @@ export class LocalisationPage implements OnInit {
     var vS_Bonus = new ol.source.Vector({ features: fS_Bonus });
     var vS_All = new ol.source.Vector({ features: fS_All });
 
-    this.vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 8) });
-    this.vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 8) });
-    this.vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow", 8) });
-    this.vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 8) });
+    this.vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 10) });
+    this.vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 10) });
+    this.vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow", 10) });
+    this.vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 10) });
     this.vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 2) });
     this.vL_All = new ol.layer.Vector({ source: vS_All });
     
