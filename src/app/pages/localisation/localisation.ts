@@ -250,6 +250,9 @@ export class LocalisationPage implements OnInit {
   buildPistesLayer() {
     var vS_Piste = new ol.source.Vector({ url: this.pisteService.PistesUrl, format: new ol.format.GeoJSON() });
     this.vL_Piste = new ol.layer.Vector({ source: vS_Piste, style: this.createPistesStyle });
+    if(this.displayedPiste) {
+      this.mapOl.addLayer(this.vL_Piste);
+    }
   }
 
   createPistesStyle(feature) {
@@ -470,6 +473,7 @@ export class LocalisationPage implements OnInit {
     this.mapOl.removeLayer(this.vL_Bonus);
     this.mapOl.removeLayer(this.vL_MyPosition);
     this.mapOl.removeLayer(this.vL_MyTarget);
+    this.mapOl.removeLayer(this.vL_Piste);
 
     this.stationService.getStations().subscribe(stations => {
         this.stations = stations;
