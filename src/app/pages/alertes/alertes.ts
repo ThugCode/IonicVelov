@@ -41,7 +41,7 @@ export class AlertesPage implements OnInit {
   }
 
   /***
-   * Get all needed informations
+   * Get all needed informations at initialisation
    ***/
   ngOnInit() {
     this.getAlertes();
