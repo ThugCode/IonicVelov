@@ -1,30 +1,38 @@
 import { Component, OnInit } from '@angular/core';
-import { StationService } from '../../services/station.service';
-import { Station } from '../../models/station';
 import { Network } from 'ionic-native';
+import { StationService } from '../../services/station.service';
+
+const JSON_OPEN = "OPEN";
 
 @Component({
-  selector: 'alertes-page',
-  templateUrl: 'alertes.html'
+  selector        : 'alertes-page',
+  templateUrl     : 'alertes.html'
 })
 
+/******************************
+* dev     : IonicVelov - Polytech Lyon
+* version : 1.2
+* author  : GERLAND Loïc - LETOURNEUR Léo
+*******************************/
 export class AlertesPage implements OnInit {
-  stations: Station[];
-  items: string[];
-  length: any;
-  notConnected: boolean;
+  items           : string[];                 //Array of closed station name
+  length          : any;                      //Number of closed station
+  notConnected    : boolean;                  //Devise is connected to internet ?
 
   constructor(
-    private stationService: StationService
+    private stationService : StationService
   ) { }
 
+  /***
+   * Get all closed stations
+   * 
+   * @return list of station name
+   ***/
   getAlertes() {
-    this.stationService.getStations()
-      .subscribe(stations => {
-        this.stations = stations;
+    this.stationService.getStations().subscribe(stations => {
         this.items = [];
-        this.stations.forEach(element => {
-          if (element.status != "OPEN") {
+        stations.forEach(element => {
+          if (element.status != JSON_OPEN) {
             this.items.push(element.name);
           }
         })
@@ -32,15 +40,20 @@ export class AlertesPage implements OnInit {
       });
   }
 
+  /***
+   * Get all needed informations at initialisation
+   ***/
   ngOnInit() {
-    this.notConnected = Network.connection === "none";
     this.getAlertes();
     this.updateScreen();
   }
 
+  /***
+   * Update connection bar every 2s
+   ***/
   updateScreen() {
-    setTimeout(() => {  
-      this.notConnected = Network.connection === "none";
+    this.notConnected = Network.connection === "none";
+    setTimeout(() => {
       this.updateScreen();
     }, 2000);
   }
