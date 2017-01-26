@@ -1,24 +1,24 @@
 alertes-page {
 
   .center {
-    font-size: 40px !important;
+    font-size                   : 40px !important;
   }
 
   .none-station {
-    margin-top : 100px;
+    margin-top                  : 100px;
   }
 
   ion-item:first-child {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-top-left-radius      : 10px;
+    border-top-right-radius     : 10px;
   }
 
   ion-item:last-child {
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-bottom-left-radius   : 10px;
+    border-bottom-right-radius  : 10px;
   }
 
   ion-item {
-    background-color: rgba(255,255,255,0.6)!important;
+    background-color            : rgba(255,255,255,0.6)!important;
   }
 }

@@ -10,7 +10,6 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content padding>
   <div class="center none-station" *ngIf="length == 0">
     <ion-icon name="md-checkmark-circle"></ion-icon>
@@ -18,7 +17,10 @@
   </div>
   <div class="center" *ngIf="length > 0">
     <ion-icon name="md-warning"></ion-icon>
-    <h3>{{length}} station(s) fermée(s)</h3>
+    <h3>{{length}} 
+      <span *ngIf="length == 1">station fermée</span>
+      <span *ngIf="length > 1">stations fermées</span>
+    </h3>
   </div>
   <ion-list>
     <ion-item *ngFor="let item of items">
@@ -26,5 +28,4 @@
       {{item}}
     </ion-item>
   </ion-list>
-
 </ion-content>
