@@ -1,15 +1,10 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { Geolocation } from 'ionic-native';
-import { Keyboard } from 'ionic-native';
-import { Clipboard } from 'ionic-native';
+import { Geolocation, Keyboard, Clipboard, Network, Vibration } from 'ionic-native';
+import { LoadingController, ToastController, Searchbar, AlertController  } from 'ionic-angular';
 import { FileService } from '../../services/file.service';
 import { StationService } from '../../services/station.service';
 import { PisteService } from '../../services/piste.service';
 import { Station } from '../../models/station';
-import { LoadingController } from 'ionic-angular';
-import { Network } from 'ionic-native';
-import { ToastController, Searchbar, AlertController } from 'ionic-angular';
-import { Vibration } from 'ionic-native';
 
 import ol from 'openlayers';
 
@@ -23,14 +18,19 @@ const TEXT_DELETED_FROM_FAVORITES = "supprimée des favoris";
 const TEXT_ENABLE_TO_FIND_LOCATION = "Impossible de détecter votre position";
 const TEXT_ENABLE_TO_FIND_YOUR_FAVORITE = "Impossible de détecter vos stations favorites";
 const TEXT_COPY_DATA = "Adresse de la station copiée";
-
 const JSON_CLOSED = "CLOSED";
 const JSON_OPEN = "OPEN";
 
 @Component({
-  selector: 'localisation-page',
-  templateUrl: 'localisation.html'
+  selector        : 'localisation-page',
+  templateUrl     : 'localisation.html'
 })
+
+/******************************
+* dev     : IonicVelov - Polytech Lyon
+* version : 1.2
+* author  : GERLAND Loïc - LETOURNEUR Léo
+*******************************/
 export class LocalisationPage implements OnInit {
   @ViewChild('map') mapChild;                     //Child map in HTML
   @ViewChild('searchbar') searchbar: Searchbar;   //Child searchBar in HTML
@@ -62,35 +62,42 @@ export class LocalisationPage implements OnInit {
   vL_Piste          : ol.layer.Vector;  //Layer for pistes
 
   constructor(
-    private stationService: StationService,
-    private loadingCtrl: LoadingController,
-    private fileService: FileService,
-    private toastCtrl: ToastController,
-    private alertCtrl: AlertController,
-    private pisteService: PisteService
+    private stationService  : StationService,
+    private loadingCtrl     : LoadingController,
+    private fileService     : FileService,
+    private toastCtrl       : ToastController,
+    private alertCtrl       : AlertController,
+    private pisteService    : PisteService
   ) { 
     this.initialised = false;
   }
 
+  /***
+   * Get all needed informations at initialisation
+   ***/
   ngOnInit() {
     this.notConnected = Network.connection === "none";
     this.stationFilter = "";
     this.displayedPiste = false;
-    this.loader = this.loadingCtrl.create({
-      content: TEXT_THANKS_WAITING,
-      duration: 2000
-    });
-    this.loader.present();
+    this.presentLoader();
     this.getStations();
   }
 
+  /***
+   * Get all stations and load map
+   * 
+   ***/
   getStations() {
     this.stationService.getStations().subscribe(stations => {
         this.stations = stations;
         this.loadMap();
-      });
+    });
   }
 
+  /***
+   * Get position of user and call prefered function
+   * 
+   ***/
   loadMap() {
     Geolocation.getCurrentPosition().then((resp) => {
       this.hasPosition = true;
@@ -105,6 +112,11 @@ export class LocalisationPage implements OnInit {
     })
   }
 
+  /***
+   * Get all prefered station id and then call creation of map
+   * 
+   * @param coords : float[]
+   ***/
   getPrefered(coords) {
     this.fileService.readFavoritesFromFile().then(prefered => {
       this.createMap(coords, prefered);
@@ -115,11 +127,16 @@ export class LocalisationPage implements OnInit {
     });
   }
 
+  /***
+   * Create openlayer map with all station
+   * 
+   * @param coords : float[]
+   * @param prefered : int[]
+   ***/
   createMap(coords, prefered) {
 
     var long = coords[0];
     var lat = coords[1];
-
 
     var mapImg = new ol.layer.Tile({
       source: new ol.source.OSM()
@@ -146,12 +163,15 @@ export class LocalisationPage implements OnInit {
     this.buildMyPositionLayer(coords);
     this.buildAllStationLayers(prefered);
     this.buildPistesLayer();
-
-    this.loader.dismiss();
+    
     this.initialised = true;
+    this.dismissLoader();
     this.updateScreen();
   }
 
+  /***
+   * Build blue point (selected station) layer
+   ***/
   buildTargetLayer() {
     var fS_Target = [];
     this.targetPoint = new ol.Feature({
@@ -162,6 +182,11 @@ export class LocalisationPage implements OnInit {
     this.vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 14) });
   }
 
+  /***
+   * Build user position (pin image) layer
+   * 
+   * @param coords : float[]
+   ***/
   buildMyPositionLayer(coords) {
 
     var fS_MyPosition = [];
@@ -179,6 +204,11 @@ export class LocalisationPage implements OnInit {
     this.vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: this.createPinStyle() });
   }
 
+  /***
+   * Build all layers for station (green, yellow, orange, red, black point)
+   * 
+   * @param prefered : int[]
+   ***/
   buildAllStationLayers(prefered) {
 
     var tempFeature;
@@ -231,30 +261,47 @@ export class LocalisationPage implements OnInit {
     var vS_Bonus = new ol.source.Vector({ features: fS_Bonus });
     var vS_All = new ol.source.Vector({ features: fS_All });
 
-    this.vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 10) });
-    this.vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 10) });
-    this.vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow", 10) });
-    this.vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 10) });
+    this.vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 9) });
+    this.vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 9) });
+    this.vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow", 9) });
+    this.vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 9) });
     this.vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 2) });
     this.vL_All = new ol.layer.Vector({ source: vS_All });
     
-    this.mapOl.addLayer(this.vL_Closed);
-    this.mapOl.addLayer(this.vL_Empty);
-    this.mapOl.addLayer(this.vL_Full);
-    this.mapOl.addLayer(this.vL_Available);
-    this.mapOl.addLayer(this.vL_MyPosition);
-    this.mapOl.addLayer(this.vL_MyTarget);
-    this.mapOl.addLayer(this.vL_Bonus);
+    this.addAllLayerOnMap();
   }
 
+  /***
+   * Build piste layer
+   * 
+   ***/
   buildPistesLayer() {
     var vS_Piste = new ol.source.Vector({ url: this.pisteService.PistesUrl, format: new ol.format.GeoJSON() });
     this.vL_Piste = new ol.layer.Vector({ source: vS_Piste, style: this.createPistesStyle });
-    if(this.displayedPiste) {
-      this.mapOl.addLayer(this.vL_Piste);
+  }
+
+  /***
+   * Display or hide pistes when clicking on button
+   * 
+   ***/
+  displayPistes() {
+
+    this.displayedPiste = !this.displayedPiste;
+
+    if(!this.displayedPiste)
+      this.mapOl.removeLayer(this.vL_Piste);
+    else {
+      this.removeAllLayerOnMap();
+      this.addAllLayerOnMap();
     }
   }
 
+  /***
+   * Create style for piste on ol map
+   * 
+   * @param feature
+   * @return style of the current feature
+   ***/
   createPistesStyle(feature) {
     var styles =  {
       'LineString': new ol.style.Style({
@@ -274,16 +321,31 @@ export class LocalisationPage implements OnInit {
     return styles[feature.getGeometry().getType()];
   }
 
-  displayPistes() {
-    if(this.displayedPiste) {
-      this.mapOl.removeLayer(this.vL_Piste);
-      this.displayedPiste = false;
-    } else {
-      this.mapOl.addLayer(this.vL_Piste);
-      this.displayedPiste = true;
-    }
+  /***
+   * Create style for all station
+   * 
+   * @param color : string
+   * @param taille : int
+   * @return ol.style.Style of the station group
+   ***/
+  createStyle(color, taille) {
+    return new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: taille,
+        stroke: new ol.style.Stroke({
+          color: 'black',
+          width: 3
+        }),
+        fill: new ol.style.Fill({ color: color })
+      })
+    });
   }
 
+  /***
+   * Create style for pin image on ol map
+   * 
+   * @return ol.style.Style with pin image
+   ***/
   createPinStyle() {
     return new ol.style.Style({
       image: new ol.style.Icon(({
@@ -297,10 +359,23 @@ export class LocalisationPage implements OnInit {
     });
   }
 
+  /***
+   * Transform degrees to radian
+   * 
+   * @param number : float
+   * @return float
+   ***/
   toRadian(number) {
     return number * Math.PI / 180;
   }
   
+  /***
+   * Get kilometres between two coordinates
+   * 
+   * @param lat1 : float
+   * @param long1 : float
+   * @return float
+   ***/
   getDistance(lati1, long1):string {
 
     if(this.myCoordinate == null) return "0";
@@ -326,6 +401,9 @@ export class LocalisationPage implements OnInit {
     return (r * c).toFixed(1).toString();
   };
 
+  /***
+   * Update connection bar and geoposition every seconde
+   ***/
   updateScreen() {
     setTimeout(() => {  
       this.notConnected = Network.connection === "none";
@@ -347,19 +425,11 @@ export class LocalisationPage implements OnInit {
     }, 1000);
   }
 
-  createStyle(color, taille) {
-    return new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: taille,
-        stroke: new ol.style.Stroke({
-          color: 'black',
-          width: 3
-        }),
-        fill: new ol.style.Fill({ color: color })
-      })
-    });
-  }
-
+  /***
+   * Trigger when clicking on star from popup station
+   * 
+   * @param station : Feature
+   ***/
   clickOnStar(station) {
     this.stationSelected.favorite = !this.stationSelected.favorite;
     this.featureSelected.set("favorite", !this.featureSelected.get("favorite"));
@@ -377,11 +447,28 @@ export class LocalisationPage implements OnInit {
     Vibration.vibrate(1000);
   }
 
+  /***
+   * Trigger when clicking on cross button from popup station
+   ***/
   clickCloser() {
     this.stationSelected = null;
     this.targetPoint.setGeometry(null);
   }
 
+  /***
+   * Trigger when clicking on copy button from popup station
+   ***/
+  copyData() {
+    Clipboard.copy(this.stationSelected.address);
+    this.presentToast(TEXT_COPY_DATA);
+  }
+
+  /***
+   * Trigger when clicking on the map
+   * If feature under the click, show popup with station informations
+   * 
+   * @param event : Event
+   ***/
   clickMap(event) {
     var coord = [event.layerX, event.layerY];
     var feature = this.mapOl.forEachFeatureAtPixel(coord,
@@ -393,6 +480,10 @@ export class LocalisationPage implements OnInit {
     this.showPopup(feature);
   }
 
+  /***
+   * Trigger when clicking on search button
+   * Open search bar
+   ***/
   showSearchList() {
     this.searchVisible = true;
     /*setTimeout(() => {
@@ -400,17 +491,30 @@ export class LocalisationPage implements OnInit {
     });*/
   }
 
+  /***
+   * Trigger when clicking on cancel search button
+   * Close search bar & keyboard
+   ***/
   hideSearchList() {
     this.searchVisible = false;
     Keyboard.close();
   }
 
+  /***
+   * Trigger when caracteres in search bar changed
+   * Search by name on all station
+   ***/
   searchStations() {
     this.stationsFiltered = this.stations.filter((station) => {
       return station.name.toLowerCase().indexOf(this.stationFilter.toLowerCase()) > -1;
     });
   }
 
+  /***
+   * Select a station after searching
+   * 
+   * @param station : Station
+   ***/
   selectStation(station: Station) {
     var feature = this.vL_All.getSource().forEachFeature((feature) => {
       var properties = feature.getProperties();
@@ -424,6 +528,12 @@ export class LocalisationPage implements OnInit {
     this.showPopup(feature);
   }
 
+  /***
+   * Show popup on the bottom of the map & fill informations
+   * Center on station & display blue point
+   * 
+   * @param feature : Feature
+   ***/
   showPopup(feature) {
     if (feature && feature.get("selectable")) {
       this.stationSelected = {};
@@ -442,6 +552,26 @@ export class LocalisationPage implements OnInit {
     }
   }
 
+  /***
+   * Hide loader
+   ***/
+  dismissLoader() {
+    this.loader.dismiss();
+  }
+
+  /***
+   * Show loader
+   ***/
+  presentLoader() {
+    this.loader = this.loadingCtrl.create({
+      content: TEXT_THANKS_WAITING
+    });
+    this.loader.present();
+  }
+
+  /***
+   * Show a toast with specific message during 3s
+   ***/
   presentToast(p_message) {
     let toast = this.toastCtrl.create({
       message: p_message,
@@ -450,6 +580,9 @@ export class LocalisationPage implements OnInit {
     toast.present();
   }
 
+  /***
+   * Show a message alert
+   ***/
   presentAlert(p_alert) {
     let alert = this.alertCtrl.create({
       title: 'Attention',
@@ -459,21 +592,20 @@ export class LocalisationPage implements OnInit {
     alert.present();
   }
 
+  /***
+   * Trigger when clicking on center button
+   ***/
   centerOnMyPosition() {
     if(this.myPosition.getGeometry() == null) return;
     this.mapOl.getView().setCenter(this.myPosition.getGeometry().getCoordinates());
   }
   
+  /***
+   * Trigger when clicking on refresh button
+   * Refresh data about station
+   ***/
   refreshData() {
-
-    this.mapOl.removeLayer(this.vL_Closed);
-    this.mapOl.removeLayer(this.vL_Empty);
-    this.mapOl.removeLayer(this.vL_Full);
-    this.mapOl.removeLayer(this.vL_Available);
-    this.mapOl.removeLayer(this.vL_Bonus);
-    this.mapOl.removeLayer(this.vL_MyPosition);
-    this.mapOl.removeLayer(this.vL_MyTarget);
-    this.mapOl.removeLayer(this.vL_Piste);
+    this.removeAllLayerOnMap();
 
     this.stationService.getStations().subscribe(stations => {
         this.stations = stations;
@@ -484,12 +616,37 @@ export class LocalisationPage implements OnInit {
           console.log(TEXT_ENABLE_TO_FIND_YOUR_FAVORITE, error);
         });
     });
-
-    this.buildPistesLayer();
   }
 
-  copyData() {
-    Clipboard.copy(this.stationSelected.address);
-    this.presentToast(TEXT_COPY_DATA);
+  /***
+   * Remove all layer from map
+   * 
+   ***/
+  removeAllLayerOnMap() {
+    this.mapOl.removeLayer(this.vL_Closed);
+    this.mapOl.removeLayer(this.vL_Empty);
+    this.mapOl.removeLayer(this.vL_Full);
+    this.mapOl.removeLayer(this.vL_Available);
+    this.mapOl.removeLayer(this.vL_Bonus);
+    this.mapOl.removeLayer(this.vL_MyPosition);
+    this.mapOl.removeLayer(this.vL_MyTarget);
+    this.mapOl.removeLayer(this.vL_Piste);
+  }
+
+  /***
+   * Add all layer on map
+   * 
+   ***/
+  addAllLayerOnMap() {
+    if(this.displayedPiste) {
+      this.mapOl.addLayer(this.vL_Piste);
+    }
+    this.mapOl.addLayer(this.vL_Closed);
+    this.mapOl.addLayer(this.vL_Empty);
+    this.mapOl.addLayer(this.vL_Full);
+    this.mapOl.addLayer(this.vL_Available);
+    this.mapOl.addLayer(this.vL_MyPosition);
+    this.mapOl.addLayer(this.vL_MyTarget);
+    this.mapOl.addLayer(this.vL_Bonus);
   }
 }

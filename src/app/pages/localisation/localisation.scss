@@ -1,3 +1,8 @@
+/******************************
+* dev     : IonicVelov - Polytech Lyon
+* version : 1.2
+* author  : GERLAND Loïc - LETOURNEUR Léo
+*******************************/
 localisation-page {
 
   #map {
@@ -121,6 +126,15 @@ localisation-page {
 
     .ol-pistes {
       top                           : 9em;
+      left                          : .5em;
+    }
+
+    .ol-pistes.selected {
+      background-color              : rgba($black-color,.7);
+      button {
+        background-color            : rgba($white-color,0.8);
+        color                       : $black-color;
+      }
     }
 
     /*********** BONUS FAB ***********/

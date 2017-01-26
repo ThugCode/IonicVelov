@@ -33,7 +33,7 @@
       <ion-icon name="md-pin"></ion-icon>
     </button>
   </div>
-  <div class="ol-pistes ol-overviewmap ol-unselectable ol-control" *ngIf="initialised">
+  <div class="ol-pistes ol-unselectable ol-control" *ngIf="initialised" [ngClass]="{'selected': displayedPiste}">
     <button type="button" (click)="displayPistes()">
       <ion-icon name="bicycle"></ion-icon>
     </button>
