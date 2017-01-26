@@ -6,6 +6,12 @@ import { Network } from 'ionic-native';
   selector            : 'favorites-detail-page',
   templateUrl         : 'favorites-detail.html'
 })
+
+/******************************
+* dev     : IonicVelov - Polytech Lyon
+* version : 1.2
+* author  : GERLAND Loïc - LETOURNEUR Léo
+*******************************/
 export class FavoritesDetailPage {
   selectedItem        : any;                      //Station to display
   notConnected        : boolean;                  //Devise is connected to internet ?

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Network } from 'ionic-native';
-
 import { StationService } from '../../services/station.service';
 
 const JSON_OPEN = "OPEN";
@@ -10,6 +9,11 @@ const JSON_OPEN = "OPEN";
   templateUrl     : 'alertes.html'
 })
 
+/******************************
+* dev     : IonicVelov - Polytech Lyon
+* version : 1.2
+* author  : GERLAND Loïc - LETOURNEUR Léo
+*******************************/
 export class AlertesPage implements OnInit {
   items           : string[];                 //Array of closed station name
   length          : any;                      //Number of closed station
