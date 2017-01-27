@@ -37,6 +37,11 @@
     <button type="button" (click)="displayPistes()">
       <ion-icon name="bicycle"></ion-icon>
     </button>
+  </div>  
+  <div class="ol-image ol-overviewmap ol-unselectable ol-control" *ngIf="initialised">
+    <button type="button" (click)="changeMapImage()">
+      <ion-icon name="map"></ion-icon>
+    </button>
   </div>
   <div class="ol-overviewmap ol-unselectable ol-control ol-collapsed" *ngIf="initialised">
     <button type="button" (click)="refreshData()">

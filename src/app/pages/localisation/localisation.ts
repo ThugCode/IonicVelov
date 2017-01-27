@@ -50,7 +50,9 @@ export class LocalisationPage implements OnInit {
   searchVisible     : boolean = false;  //Is search field visible ?
   stationFilter     : String;           //Search filter
   displayedPiste    : boolean           //Is pistes cyclables displayed ?
+  displayedImage    : boolean           //Is the second image map displayed ?
   
+  mapImg            : ol.layer.Tile;    //Layer for map image
   vL_All            : ol.layer.Vector;  //Layer for searching
   vL_Closed         : ol.layer.Vector;  //Layer for closed station
   vL_Empty          : ol.layer.Vector;  //Layer for empty station
@@ -79,7 +81,13 @@ export class LocalisationPage implements OnInit {
     this.notConnected = Network.connection === "none";
     this.stationFilter = "";
     this.displayedPiste = false;
+    this.displayedImage = false;
     this.presentLoader();
+    this.loader = this.loadingCtrl.create({
+      content: TEXT_THANKS_WAITING,
+      duration: 2000
+    });
+    this.loader.present();
     this.getStations();
   }
 
@@ -138,13 +146,14 @@ export class LocalisationPage implements OnInit {
     var long = coords[0];
     var lat = coords[1];
 
-    var mapImg = new ol.layer.Tile({
+
+    this.mapImg = new ol.layer.Tile({
       source: new ol.source.OSM()
     });
 
     this.mapOl = new ol.Map({
       target: "map",
-      layers: [mapImg],
+      layers: [this.mapImg],
       overlays: [new ol.Overlay({ element: document.getElementById('popup') })],
       view: new ol.View({
         center: ol.proj.fromLonLat([long, lat]),
@@ -526,6 +535,25 @@ export class LocalisationPage implements OnInit {
     this.featureSelected = feature;
     this.hideSearchList();
     this.showPopup(feature);
+  }
+
+  changeMapImage() {
+    this.mapOl.removeLayer(this.mapImg);
+
+    if(this.displayedImage) {
+      this.mapImg = new ol.layer.Tile({
+      source: new ol.source.OSM()
+    });
+    this.displayedImage = false;
+    } else {
+      this.mapImg = new ol.layer.Tile({
+      source: new ol.source.OSM({
+        url: "https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png"
+      })
+    });
+    this.displayedImage = true;
+    }
+    this.mapOl.addLayer(this.mapImg);
   }
 
   /***
