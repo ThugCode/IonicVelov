@@ -553,7 +553,7 @@ export class LocalisationPage implements OnInit {
     });
     this.displayedImage = true;
     }
-    this.mapOl.addLayer(this.mapImg);
+    this.mapOl.getLayers().insertAt(0,this.mapImg);
   }
 
   /***
