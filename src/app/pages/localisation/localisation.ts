@@ -172,7 +172,9 @@ export class LocalisationPage implements OnInit {
     this.buildMyPositionLayer(coords);
     this.buildAllStationLayers(prefered);
     this.buildPistesLayer();
-    
+
+    this.loader.dismiss();
+    this.mapOl.updateSize();
     this.initialised = true;
     this.dismissLoader();
     this.updateScreen();

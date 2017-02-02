@@ -36,7 +36,8 @@
     "cordova-plugin-statusbar",
     "cordova-plugin-device",
     "cordova-plugin-splashscreen",
-    "ionic-plugin-keyboard"
+    "ionic-plugin-keyboard",
+    "cordova-plugin-file"
   ],
   "cordovaPlatforms": [
     "ios",
@@ -44,6 +45,12 @@
       "platform": "ios",
       "version": "",
       "locator": "ios"
+    },
+    "android",
+    {
+      "platform": "android",
+      "version": "",
+      "locator": "android"
     }
   ],
   "description": "IonicVelov: An Ionic project"
