@@ -105,12 +105,12 @@ localisation-page {
     
     /*********** BUTTONS *********/
     .ol-control {
-      background-color              : rgba($white-color,.7);
+      background-color              : rgba($white-color,.7)!important;
       width                         : 40px;
       height                        : 40px;
       button {
-        background-color            : rgba($black-color,0.8);
-        color                       : $white-color;
+        background-color            : rgba($black-color,0.8)!important;
+        color                       : $white-color!important;
         width                       : 34px;
         height                      : 34px;
       }
@@ -137,7 +137,8 @@ localisation-page {
       }
     }
 
-    .ol-image {
+    .ol-mapImage {
+      left                          : .5em;
       top                           : 12em;
     }
 
@@ -153,6 +154,24 @@ localisation-page {
       .button-inner {
         margin-top                  : -10px;
         font-size                   : 12px;
+      }
+    }
+
+    /*************** FAB LAYOUT *************/
+    ion-fab {
+      .fab {
+        .fab-close-icon {
+          line-height               : 36px;
+        }
+      }
+
+      .fab-map {
+        min-width                   : 38px;
+        margin                      : 40px 0px;
+
+        button {
+          margin                    : 2px 0px 2px 0px;
+        }
       }
     }
 }
