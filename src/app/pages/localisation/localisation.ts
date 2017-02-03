@@ -50,7 +50,6 @@ export class LocalisationPage implements OnInit {
   searchVisible     : boolean = false;  //Is search field visible ?
   stationFilter     : String;           //Search filter
   displayedPiste    : boolean           //Is pistes cyclables displayed ?
-  displayedImage    : boolean           //Is the second image map displayed ?
   
   mapImg            : ol.layer.Tile;    //Layer for map image
   vL_All            : ol.layer.Vector;  //Layer for searching
@@ -81,13 +80,7 @@ export class LocalisationPage implements OnInit {
     this.notConnected = Network.connection === "none";
     this.stationFilter = "";
     this.displayedPiste = false;
-    this.displayedImage = false;
     this.presentLoader();
-    this.loader = this.loadingCtrl.create({
-      content: TEXT_THANKS_WAITING,
-      duration: 2000
-    });
-    this.loader.present();
     this.getStations();
   }
 
@@ -173,7 +166,6 @@ export class LocalisationPage implements OnInit {
     this.buildAllStationLayers(prefered);
     this.buildPistesLayer();
 
-    this.loader.dismiss();
     this.mapOl.updateSize();
     this.initialised = true;
     this.dismissLoader();
@@ -539,22 +531,25 @@ export class LocalisationPage implements OnInit {
     this.showPopup(feature);
   }
 
-  changeMapImage() {
+  changeMapImage(num :number) {
     this.mapOl.removeLayer(this.mapImg);
 
-    if(this.displayedImage) {
-      this.mapImg = new ol.layer.Tile({
-      source: new ol.source.OSM()
-    });
-    this.displayedImage = false;
-    } else {
-      this.mapImg = new ol.layer.Tile({
-      source: new ol.source.OSM({
-        url: "https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png"
-      })
-    });
-    this.displayedImage = true;
+    switch(num) {
+      case 1:
+      this.mapImg.setSource(new ol.source.OSM());
+      break;
+      case 2:
+      this.mapImg.setSource(new ol.source.TileArcGISRest({
+        url: "http://server.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer"
+      }));
+      break;
+      case 3:
+      this.mapImg.setSource(new ol.source.TileArcGISRest({
+        url: "http://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer"
+      }));
+      break;
     }
+
     this.mapOl.getLayers().insertAt(0,this.mapImg);
   }
 
