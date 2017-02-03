@@ -9,6 +9,12 @@ export class EmailService {
         private platform: Platform
     ) {}
 
+    /***
+     * Is the device able to send an email
+     * EmailComposer is a beta, so, 
+     * sometimes return false even if devise is able to send an email
+     * @return Promise<boolean>
+     ***/
     ableToEmail():Promise<boolean> {
         return EmailComposer.isAvailable().then((available: boolean) =>{
             return available;
@@ -17,9 +23,16 @@ export class EmailService {
         });
     }
 
+    /***
+     * Send an email with subject & body
+     * from email param. Add plateform & version device
+     * in the body for debugging.
+     * 
+     * @param email : Email
+     ***/
     sendEmail(email) {
 
-        email.app = "mailto";
+        //email.app = "mailto";
         email.to = "leo.letourneur@etu.univ-lyon1.fr";
         email.isHtml = true;
 
