@@ -49,8 +49,9 @@ export class LocalisationPage implements OnInit {
   myCoordinate      : any;              //Position of user on earth
   searchVisible     : boolean = false;  //Is search field visible ?
   stationFilter     : String;           //Search filter
-  displayedPiste    : boolean           //Is pistes cyclables displayed ?
   
+  displayedLayer    : boolean[]         //Is layer displayed ?
+
   mapImg            : ol.layer.Tile;    //Layer for map image
   vL_All            : ol.layer.Vector;  //Layer for searching
   vL_Closed         : ol.layer.Vector;  //Layer for closed station
@@ -79,7 +80,7 @@ export class LocalisationPage implements OnInit {
   ngOnInit() {
     this.notConnected = Network.connection === "none";
     this.stationFilter = "";
-    this.displayedPiste = false;
+    this.displayedLayer = [false, true, true, true, true, true];
     this.presentLoader();
     this.getStations();
   }
@@ -287,16 +288,12 @@ export class LocalisationPage implements OnInit {
    * Display or hide pistes when clicking on button
    * 
    ***/
-  displayPistes() {
+  displayOrHideLayer(layerId) {
 
-    this.displayedPiste = !this.displayedPiste;
+    this.displayedLayer[layerId] = !this.displayedLayer[layerId];
 
-    if(!this.displayedPiste)
-      this.mapOl.removeLayer(this.vL_Piste);
-    else {
-      this.removeAllLayerOnMap();
-      this.addAllLayerOnMap();
-    }
+    this.removeAllLayerOnMap();
+    this.addAllLayerOnMap();
   }
 
   /***
@@ -663,15 +660,13 @@ export class LocalisationPage implements OnInit {
    * 
    ***/
   addAllLayerOnMap() {
-    if(this.displayedPiste) {
-      this.mapOl.addLayer(this.vL_Piste);
-    }
-    this.mapOl.addLayer(this.vL_Closed);
-    this.mapOl.addLayer(this.vL_Empty);
-    this.mapOl.addLayer(this.vL_Full);
-    this.mapOl.addLayer(this.vL_Available);
+    if(this.displayedLayer[0]) { this.mapOl.addLayer(this.vL_Piste); }
+    if(this.displayedLayer[1]) { this.mapOl.addLayer(this.vL_Closed); }
+    if(this.displayedLayer[2]) { this.mapOl.addLayer(this.vL_Empty); }
+    if(this.displayedLayer[3]) { this.mapOl.addLayer(this.vL_Full); }
+    if(this.displayedLayer[4]) { this.mapOl.addLayer(this.vL_Available); }
     this.mapOl.addLayer(this.vL_MyPosition);
     this.mapOl.addLayer(this.vL_MyTarget);
-    this.mapOl.addLayer(this.vL_Bonus);
+    if(this.displayedLayer[5]) { this.mapOl.addLayer(this.vL_Bonus); }
   }
 }

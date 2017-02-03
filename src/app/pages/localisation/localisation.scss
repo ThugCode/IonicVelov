@@ -124,22 +124,9 @@ localisation-page {
       top                           : 6em;
     }
 
-    .ol-pistes {
-      top                           : 9em;
-      left                          : .5em;
-    }
-
-    .ol-pistes.selected {
-      background-color              : rgba($black-color,.7);
-      button {
-        background-color            : rgba($white-color,0.8);
-        color                       : $black-color;
-      }
-    }
-
     .ol-mapImage {
       left                          : .5em;
-      top                           : 12em;
+      top                           : 9em;
     }
 
     /*********** BONUS FAB ***********/
@@ -165,13 +152,18 @@ localisation-page {
         }
       }
 
-      .fab-map {
+      ion-fab-list {
         min-width                   : 38px;
         margin                      : 40px 0px;
 
         button {
-          margin                    : 2px 0px 2px 0px;
+          margin                    : 2px 0px 2px 0px!important;
         }
       }
+    }
+
+    button.selected {
+        background-color            : rgba($white-color,0.8)!important;
+        color                       : $black-color!important;
     }
 }

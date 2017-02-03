@@ -33,11 +33,6 @@
       <ion-icon name="md-pin"></ion-icon>
     </button>
   </div>
-  <div class="ol-pistes ol-unselectable ol-control" *ngIf="initialised" [ngClass]="{'selected': displayedPiste}">
-    <button type="button" (click)="displayPistes()">
-      <ion-icon name="bicycle"></ion-icon>
-    </button>
-  </div>
   <ion-fab class="ol-control ol-mapImage" *ngIf="initialised">
     <button ion-fab>
       <ion-icon name="map"></ion-icon>
@@ -53,6 +48,20 @@
         <ion-icon name="md-refresh"></ion-icon>
     </button>
   </div>
+  <ion-fab bottom right class="ol-control" *ngIf="initialised">
+    <button ion-fab>
+      <ion-icon name="map"></ion-icon>
+    </button>
+    <ion-fab-list side="top">
+      <button ion-fab [ngClass]="{'selected': displayedLayer[0]}" (click)="displayOrHideLayer(0)"><ion-icon name="bicycle"></ion-icon></button>
+      <button ion-fab [ngClass]="{'selected': displayedLayer[1]}" (click)="displayOrHideLayer(1)"><ion-icon name="md-water"></ion-icon></button>
+      <button ion-fab [ngClass]="{'selected': displayedLayer[2]}" (click)="displayOrHideLayer(2)"><ion-icon name="md-water"></ion-icon></button>
+      <button ion-fab [ngClass]="{'selected': displayedLayer[3]}" (click)="displayOrHideLayer(3)"><ion-icon name="md-water"></ion-icon></button>
+      <button ion-fab [ngClass]="{'selected': displayedLayer[4]}" (click)="displayOrHideLayer(4)"><ion-icon name="md-water"></ion-icon></button>
+      <button ion-fab [ngClass]="{'selected': displayedLayer[5]}" (click)="displayOrHideLayer(5)"><ion-icon name="md-radio-button-on"></ion-icon></button>
+    </ion-fab-list>
+  </ion-fab>
+
   <div id="popup" class="ol-popup" *ngIf="stationSelected" [(ngModel)]="stationSelected" ngDefaultControl>
     <div id="popup-content">
 
