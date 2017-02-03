@@ -27,7 +27,7 @@
     "zone.js": "0.6.26"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "0.0.45",
+    "@ionic/app-scripts": "1.0.0",
     "typescript": "2.0.6"
   },
   "cordovaPlugins": [
@@ -36,7 +36,13 @@
     "cordova-plugin-statusbar",
     "cordova-plugin-device",
     "cordova-plugin-splashscreen",
-    "ionic-plugin-keyboard"
+    "ionic-plugin-keyboard",
+    "cordova-plugin-file",
+    "cordova-plugin-email",
+    "cordova-plugin-geolocation",
+    "cordova-plugin-network-information",
+    "cordova-plugin-vibration",
+    "https://github.com/VersoSolutions/CordovaClipboard.git"
   ],
   "cordovaPlatforms": [
     "ios",
@@ -44,6 +50,12 @@
       "platform": "ios",
       "version": "",
       "locator": "ios"
+    },
+    "android",
+    {
+      "platform": "android",
+      "version": "",
+      "locator": "android"
     }
   ],
   "description": "IonicVelov: An Ionic project"

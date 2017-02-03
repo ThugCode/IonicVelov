@@ -38,6 +38,16 @@
       <ion-icon name="bicycle"></ion-icon>
     </button>
   </div>
+  <ion-fab bottom right *ngIf="initialised">
+    <button color="dark" ion-fab>
+      <ion-icon name="map"></ion-icon>
+    </button>
+    <ion-fab-list side="left">
+      <button ion-fab (click)="changeMapImage(1)">1</button>
+      <button ion-fab (click)="changeMapImage(2)">2</button>
+      <button ion-fab (click)="changeMapImage(3)">3</button>
+    </ion-fab-list>
+  </ion-fab>
   <div class="ol-overviewmap ol-unselectable ol-control ol-collapsed" *ngIf="initialised">
     <button type="button" (click)="refreshData()">
         <ion-icon name="md-refresh"></ion-icon>

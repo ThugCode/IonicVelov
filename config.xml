@@ -76,6 +76,7 @@
   <feature name="StatusBar">
     <param name="ios-package" onload="true" value="CDVStatusBar"/>
   </feature>
-  <allow-navigation href="http://10.42.149.188:8000"/>
+  <allow-navigation href="https://*/*" />
+  <allow-navigation href="http://*/*" />
   <icon src="resources\android\icon\drawable-xhdpi-icon.png"/>
 </widget>

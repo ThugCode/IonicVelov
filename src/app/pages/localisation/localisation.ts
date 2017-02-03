@@ -51,6 +51,7 @@ export class LocalisationPage implements OnInit {
   stationFilter     : String;           //Search filter
   displayedPiste    : boolean           //Is pistes cyclables displayed ?
   
+  mapImg            : ol.layer.Tile;    //Layer for map image
   vL_All            : ol.layer.Vector;  //Layer for searching
   vL_Closed         : ol.layer.Vector;  //Layer for closed station
   vL_Empty          : ol.layer.Vector;  //Layer for empty station
@@ -138,13 +139,14 @@ export class LocalisationPage implements OnInit {
     var long = coords[0];
     var lat = coords[1];
 
-    var mapImg = new ol.layer.Tile({
+
+    this.mapImg = new ol.layer.Tile({
       source: new ol.source.OSM()
     });
 
     this.mapOl = new ol.Map({
       target: "map",
-      layers: [mapImg],
+      layers: [this.mapImg],
       overlays: [new ol.Overlay({ element: document.getElementById('popup') })],
       view: new ol.View({
         center: ol.proj.fromLonLat([long, lat]),
@@ -163,7 +165,8 @@ export class LocalisationPage implements OnInit {
     this.buildMyPositionLayer(coords);
     this.buildAllStationLayers(prefered);
     this.buildPistesLayer();
-    
+
+    this.mapOl.updateSize();
     this.initialised = true;
     this.dismissLoader();
     this.updateScreen();
@@ -526,6 +529,28 @@ export class LocalisationPage implements OnInit {
     this.featureSelected = feature;
     this.hideSearchList();
     this.showPopup(feature);
+  }
+
+  changeMapImage(num :number) {
+    this.mapOl.removeLayer(this.mapImg);
+
+    switch(num) {
+      case 1:
+      this.mapImg.setSource(new ol.source.OSM());
+      break;
+      case 2:
+      this.mapImg.setSource(new ol.source.TileArcGISRest({
+        url: "http://server.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer"
+      }));
+      break;
+      case 3:
+      this.mapImg.setSource(new ol.source.TileArcGISRest({
+        url: "http://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer"
+      }));
+      break;
+    }
+
+    this.mapOl.getLayers().insertAt(0,this.mapImg);
   }
 
   /***
