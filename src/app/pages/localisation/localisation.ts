@@ -28,7 +28,7 @@ const JSON_OPEN = "OPEN";
 
 /******************************
 * dev     : IonicVelov - Polytech Lyon
-* version : 1.2
+* version : 1.3
 * author  : GERLAND Loïc - LETOURNEUR Léo
 *******************************/
 export class LocalisationPage implements OnInit {
@@ -183,7 +183,7 @@ export class LocalisationPage implements OnInit {
     });
     fS_Target.push(this.targetPoint);
     var vS_Target = new ol.source.Vector({ features: fS_Target });
-    this.vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 14) });
+    this.vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStationStyle("blue") });
   }
 
   /***
@@ -205,7 +205,7 @@ export class LocalisationPage implements OnInit {
     fS_MyPosition.push(this.myPosition);
 
     var vS_MyPosition = new ol.source.Vector({ features: fS_MyPosition });
-    this.vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: this.createPinStyle() });
+    this.vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: this.createStyle("blue", 8, "white") });
   }
 
   /***
@@ -265,11 +265,11 @@ export class LocalisationPage implements OnInit {
     var vS_Bonus = new ol.source.Vector({ features: fS_Bonus });
     var vS_All = new ol.source.Vector({ features: fS_All });
 
-    this.vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 9) });
-    this.vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 9) });
-    this.vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow", 9) });
-    this.vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 9) });
-    this.vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 2) });
+    this.vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStationStyle("red") });
+    this.vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStationStyle("orange") });
+    this.vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStationStyle("yellow") });
+    this.vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStationStyle("green") });
+    this.vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 3, "black") });
     this.vL_All = new ol.layer.Vector({ source: vS_All });
     
     this.addAllLayerOnMap();
@@ -328,13 +328,13 @@ export class LocalisationPage implements OnInit {
    * @param taille : int
    * @return ol.style.Style of the station group
    ***/
-  createStyle(color, taille) {
+  createStyle(color, taille, color2) {
     return new ol.style.Style({
       image: new ol.style.Circle({
         radius: taille,
         stroke: new ol.style.Stroke({
-          color: 'black',
-          width: 3
+          color: color2,
+          width: 2
         }),
         fill: new ol.style.Fill({ color: color })
       })
@@ -342,19 +342,20 @@ export class LocalisationPage implements OnInit {
   }
 
   /***
-   * Create style for pin image on ol map
+   * Create style for station on ol map
    * 
+   * @param color : string
    * @return ol.style.Style with pin image
    ***/
-  createPinStyle() {
+  createStationStyle(color) {
     return new ol.style.Style({
       image: new ol.style.Icon(({
-        anchor: [128, 20],
-        scale: 0.2,
-        anchorOrigin: "bottom-left",
+        anchor: [16, 36],
+        scale: 0.8,
+        anchorOrigin: "top-left",
         anchorXUnits: 'pixels',
         anchorYUnits: 'pixels',
-        src: 'assets/img/pin.png'
+        src: 'assets/img/station_pin/'+color+'.png'
       }))
     });
   }
