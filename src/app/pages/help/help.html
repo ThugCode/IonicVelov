@@ -30,59 +30,61 @@
       Vous pouvez sélectionner une station en cliquant sur son point associé 
       ou en la recherchant avec le champs de recherche en haut à droite 
       "<ion-icon name="search"></ion-icon>".
-    <ion-grid>
+      <ion-grid>
 
-      <ion-row>
-        <ion-col class="img-icon"><img src="assets/img/user.png"></ion-col>
-        <ion-col>Votre position</ion-col>
-      </ion-row>
+        <ion-row>
+          <ion-col class="img-icon"><img src="assets/img/user.png"></ion-col>
+          <ion-col>Votre position</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="img-icon"><img src="assets/img/station_pin/green.png"></ion-col>
+          <ion-col>Station ouverte</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="img-icon"><img src="assets/img/station_pin/red.png"></ion-col>
+          <ion-col>Station fermée</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="img-icon"><img src="assets/img/station_pin/orange.png"></ion-col>
+          <ion-col>Station pleine</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="img-icon"><img src="assets/img/station_pin/yellow.png"></ion-col>
+          <ion-col>Station vide</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="img-icon"><img src="assets/img/station_pin/blue.png"></ion-col>
+          <ion-col>Station sélectionnée</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="img-icon"><img src="assets/img/station_pin/bonus.png"></ion-col>
+          <ion-col>Station bonus (point noir)</ion-col>
+        </ion-row>
 
-      <ion-row>
-        <ion-col class="img-icon"><img src="assets/img/station_pin/green.png"></ion-col>
-        <ion-col>Station ouverte</ion-col>
-      </ion-row>
+      </ion-grid>
 
-      <ion-row>
-        <ion-col class="img-icon"><img src="assets/img/station_pin/red.png"></ion-col>
-        <ion-col>Station fermée</ion-col>
-      </ion-row>
-
-      <ion-row>
-        <ion-col class="img-icon"><img src="assets/img/station_pin/orange.png"></ion-col>
-        <ion-col>Station pleine</ion-col>
-      </ion-row>
-
-      <ion-row>
-        <ion-col class="img-icon"><img src="assets/img/station_pin/yellow.png"></ion-col>
-        <ion-col>Station vide</ion-col>
-      </ion-row>
-
-      <ion-row>
-        <ion-col class="img-icon"><img src="assets/img/station_pin/blue.png"></ion-col>
-        <ion-col>Station sélectionnée</ion-col>
-      </ion-row>
-
-      <ion-row>
-        <ion-col class="img-icon"><img src="assets/img/station_pin/bonus.png"></ion-col>
-        <ion-col>Station bonus (point noir)</ion-col>
-      </ion-row>
-
-    </ion-grid>
-
-    Les stations bonus sont représentées avec un point en leur centre. 
-    Rendre son Vélo'v dans une station bonus permet de gagner 30 minutes sur son crédit temps.
-    <br/>
-    Lorsqu'une station est sélectionnée, vous pouvez voir les informations de la station, 
-    copier l'adresse de la station grâce à l'icône <ion-icon name="copy"></ion-icon>
-    et vous pouvez l'ajouter ou la supprimer des favoris en cliquant sur l'étoile
-    "<ion-icon name="star-outline"></ion-icon>" ou "<ion-icon name="star"></ion-icon>".
-    Vous retrouverez alors cette station dans la page "Mes stations".
-    <br/>
-    Vous avez un bouton en bas à gauche de votre écran pour mettre à jour les données en temps réel. 
-    Cliquez sur "<ion-icon name="md-refresh"></ion-icon>", les stations vont alors se mettre à jour.
-    <br/>
-    Enfin, grâce au bouton "<ion-icon name="bicycle"></ion-icon>", 
-    vous pouvez afficher ou non les pistes cyclables.
+      Rendre son Vélo'v dans une station bonus permet de gagner 30 minutes sur son crédit temps.
+      <br/>
+      Lorsqu'une station est sélectionnée, vous pouvez voir les informations de la station, 
+      copier l'adresse de la station grâce à l'icône <ion-icon name="copy"></ion-icon>
+      et vous pouvez l'ajouter ou la supprimer des favoris en cliquant sur l'étoile
+      "<ion-icon name="star-outline"></ion-icon>" ou "<ion-icon name="star"></ion-icon>".
+      Vous retrouverez alors cette station dans la page "Mes stations".
+      <br/>
+      Vous avez un bouton en bas à gauche de votre écran pour mettre à jour les données en temps réel. 
+      Cliquez sur "<ion-icon name="md-refresh"></ion-icon>", les stations vont alors se mettre à jour.
+      <br/>
+      Vous pouvez recentrer votre écran sur votre position réelle en cliquant sur "<ion-icon name="ios-locate-outline"></ion-icon>"
+      <br/>
+      Vous pouvez aussi activer l'orientation de votre smartphone grâce au bouton 
+      "<ion-icon name="md-compass"></ion-icon>" pour savoir dans quel sens regarder votre carte.
+      <br/>
+      Pour changer le fond de la carte, cliquez sur "<ion-icon name="map"></ion-icon>"
+      par avoir accès aux différents fond.
+      <br/>
+      Enfin, grâce au bouton "<ion-icon name="buffer"></ion-icon>", 
+      vous pouvez afficher ou non les différents marqueurs présents sur la carte.
+      Les pistes cyclables sont représentées par le bouton "<ion-icon name="bicycle"></ion-icon>".
     </ion-card-content>
 
   </ion-card>
@@ -105,7 +107,7 @@
     </ion-card-header>
 
     <ion-card-content id="card-bug">
-      Pour reporter un bug, il vous faut une application mail sur votre smartphone avec une adresse configurée.
+      Pour déclarer un bug, il vous faut une application mail sur votre smartphone avec une adresse configurée.
       Remplissez les champs ci-dessous puis cliquez sur "envoyer".
       L'application mail va alors ouvrir une page avec votre message, il ne vous restera plus qu'à l'envoyer.
       <ion-label>Type de bug *</ion-label>
