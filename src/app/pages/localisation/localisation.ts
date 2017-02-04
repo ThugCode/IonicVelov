@@ -219,7 +219,7 @@ export class LocalisationPage implements OnInit {
     fS_MyPosition.push(this.myPosition);
 
     var vS_MyPosition = new ol.source.Vector({ features: fS_MyPosition });
-    this.vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: this.createStyle("blue", 8, "white") });
+    this.vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: this.createUserStyle() });
   }
 
   /***
@@ -283,7 +283,14 @@ export class LocalisationPage implements OnInit {
     this.vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStationStyle("orange") });
     this.vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStationStyle("yellow") });
     this.vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStationStyle("green") });
-    this.vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 3, "black") });
+    this.vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, 
+      style: new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 3,
+          fill: new ol.style.Fill({ color: "black" })
+        })
+      })
+    });
     this.vL_All = new ol.layer.Vector({ source: vS_All });
     
     this.addAllLayerOnMap();
@@ -336,26 +343,6 @@ export class LocalisationPage implements OnInit {
   }
 
   /***
-   * Create style for all station
-   * 
-   * @param color : string
-   * @param taille : int
-   * @return ol.style.Style of the station group
-   ***/
-  createStyle(color, taille, color2) {
-    return new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: taille,
-        stroke: new ol.style.Stroke({
-          color: color2,
-          width: 2
-        }),
-        fill: new ol.style.Fill({ color: color })
-      })
-    });
-  }
-
-  /***
    * Create style for station on ol map
    * 
    * @param color : string
@@ -370,6 +357,21 @@ export class LocalisationPage implements OnInit {
         anchorXUnits: 'pixels',
         anchorYUnits: 'pixels',
         src: 'assets/img/station_pin/'+color+'.png'
+      }))
+    });
+  }
+
+  createUserStyle() {
+    var image = this.useCompass ? "user_view" : "user";
+
+    return new ol.style.Style({
+      image: new ol.style.Icon(({
+        anchor: [11, 25],
+        scale: 1,
+        anchorOrigin: "top-left",
+        anchorXUnits: 'pixels',
+        anchorYUnits: 'pixels',
+        src: 'assets/img/'+image+'.png'
       }))
     });
   }
@@ -687,12 +689,13 @@ export class LocalisationPage implements OnInit {
 
   /***
    * Change using of compass
+   * Change user icon (add arrow when using compass)
    * 
    ***/
   displayOrientation() {
 
     this.useCompass = !this.useCompass;
-
+    this.vL_MyPosition.setStyle(this.createUserStyle());
     this.deviceOrientation.setTracking(this.useCompass);
   }
 }
