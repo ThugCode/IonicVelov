@@ -30,14 +30,18 @@
   <div id="map" #map class="map" (click)="clickMap($event)"></div>
   
   <div class="ol-zoom-extent ol-unselectable ol-control" *ngIf="initialised && hasPosition">
-    <button type="button" (click)="centerOnMyPosition()"><ion-icon name="md-pin"></ion-icon></button>
+    <button type="button" (click)="centerOnMyPosition()"><ion-icon name="ios-locate-outline"></ion-icon></button>
   </div>
 
-  <div class="ol-overviewmap ol-unselectable ol-control ol-collapsed" *ngIf="initialised">
+  <div class="ol-overviewmap ol-unselectable ol-control ol-collapsed" *ngIf="initialised && !notConnected">
     <button type="button" (click)="refreshData()"><ion-icon name="md-refresh"></ion-icon></button>
   </div>
   
-  <ion-fab class="ol-control ol-mapImage" *ngIf="initialised">
+  <div class="ol-control ol-orientation" *ngIf="initialised && hasPosition">
+    <button type="button" [ngClass]="{'selected': useCompass}" (click)="displayOrientation()"><ion-icon name="md-compass"></ion-icon></button>
+  </div>
+
+  <ion-fab class="ol-control ol-mapimage" *ngIf="initialised">
     <button ion-fab><ion-icon name="map"></ion-icon></button>
     <ion-fab-list side="bottom" class="fab-map">
       <button ion-fab (click)="changeMapImage(1)"><img src="assets/img/map_back/map_back_1.png"></button>
@@ -46,17 +50,15 @@
     </ion-fab-list>
   </ion-fab>
 
-  <ion-fab bottom right class="ol-control" *ngIf="initialised">
-    <button ion-fab>
-      <ion-icon name="map"></ion-icon>
-    </button>
-    <ion-fab-list side="top">
+  <ion-fab class="ol-control ol-buffer" *ngIf="initialised">
+    <button ion-fab><ion-icon name="logo-buffer"></ion-icon></button>
+    <ion-fab-list side="bottom">
       <button ion-fab [ngClass]="{'selected': displayedLayer[0]}" (click)="displayOrHideLayer(0)"><ion-icon name="bicycle"></ion-icon></button>
-      <button ion-fab [ngClass]="{'selected': displayedLayer[1]}" (click)="displayOrHideLayer(1)"><img src="assets/img/station_pin/red.png"></button>
-      <button ion-fab [ngClass]="{'selected': displayedLayer[2]}" (click)="displayOrHideLayer(2)"><img src="assets/img/station_pin/orange.png"></button>
-      <button ion-fab [ngClass]="{'selected': displayedLayer[3]}" (click)="displayOrHideLayer(3)"><img src="assets/img/station_pin/yellow.png"></button>
-      <button ion-fab [ngClass]="{'selected': displayedLayer[4]}" (click)="displayOrHideLayer(4)"><img src="assets/img/station_pin/green.png"></button>
-      <button ion-fab [ngClass]="{'selected': displayedLayer[5]}" (click)="displayOrHideLayer(5)"><ion-icon name="md-radio-button-on"></ion-icon></button>
+      <button ion-fab class="smallPin" [ngClass]="{'selected': displayedLayer[1]}" (click)="displayOrHideLayer(1)"><img src="assets/img/station_pin/red.png"></button>
+      <button ion-fab class="smallPin" [ngClass]="{'selected': displayedLayer[2]}" (click)="displayOrHideLayer(2)"><img src="assets/img/station_pin/orange.png"></button>
+      <button ion-fab class="smallPin" [ngClass]="{'selected': displayedLayer[3]}" (click)="displayOrHideLayer(3)"><img src="assets/img/station_pin/yellow.png"></button>
+      <button ion-fab class="smallPin" [ngClass]="{'selected': displayedLayer[4]}" (click)="displayOrHideLayer(4)"><img src="assets/img/station_pin/green.png"></button>
+      <button ion-fab [ngClass]="{'selected': displayedLayer[5]}" (click)="displayOrHideLayer(5)"><ion-icon name="logo-usd"></ion-icon></button>
     </ion-fab-list>
   </ion-fab>
 

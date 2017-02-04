@@ -49,8 +49,9 @@ export class LocalisationPage implements OnInit {
   myCoordinate      : any;              //Position of user on earth
   searchVisible     : boolean = false;  //Is search field visible ?
   stationFilter     : String;           //Search filter
-  
-  displayedLayer    : boolean[]         //Is layer displayed ?
+  useCompass        : boolean;           //Is user using compass ?
+  deviceOrientation : ol.DeviceOrientation;//Subscription to compass service
+  displayedLayer    : boolean[];         //Is layer displayed ?
 
   mapImg            : ol.layer.Tile;    //Layer for map image
   vL_All            : ol.layer.Vector;  //Layer for searching
@@ -81,6 +82,7 @@ export class LocalisationPage implements OnInit {
     this.notConnected = Network.connection === "none";
     this.stationFilter = "";
     this.displayedLayer = [false, true, true, true, true, true];
+    this.useCompass = false;
     this.presentLoader();
     this.getStations();
   }
@@ -145,22 +147,34 @@ export class LocalisationPage implements OnInit {
       source: new ol.source.OSM()
     });
 
-    this.mapOl = new ol.Map({
-      target: "map",
-      layers: [this.mapImg],
-      overlays: [new ol.Overlay({ element: document.getElementById('popup') })],
-      view: new ol.View({
+    var view = new ol.View({
         center: ol.proj.fromLonLat([long, lat]),
         zoom: 15,
         minZoom: 6,
         maxZoom: 18
-      }),
+    });
+
+    this.mapOl = new ol.Map({
+      target: "map",
+      layers: [this.mapImg],
+      overlays: [new ol.Overlay({ element: document.getElementById('popup') })],
+      view: view,
       controls : ol.control.defaults({
           zoom          : true,
           attribution   : false,
           rotate        : true
         })
     });
+
+    // rotate the view to match the device orientation
+    this.deviceOrientation = new ol.DeviceOrientation({
+      tracking : false
+    });
+    this.deviceOrientation.on('change:heading', onChangeHeading);
+    function onChangeHeading(event) {
+      var heading = event.target.getHeading();
+      view.setRotation(-heading);
+    }
 
     this.buildTargetLayer();
     this.buildMyPositionLayer(coords);
@@ -669,5 +683,16 @@ export class LocalisationPage implements OnInit {
     this.mapOl.addLayer(this.vL_MyPosition);
     this.mapOl.addLayer(this.vL_MyTarget);
     if(this.displayedLayer[5]) { this.mapOl.addLayer(this.vL_Bonus); }
+  }
+
+  /***
+   * Change using of compass
+   * 
+   ***/
+  displayOrientation() {
+
+    this.useCompass = !this.useCompass;
+
+    this.deviceOrientation.setTracking(this.useCompass);
   }
 }

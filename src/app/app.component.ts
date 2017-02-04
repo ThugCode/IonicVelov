@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Platform, MenuController, Nav } from 'ionic-angular';
-import { StatusBar, ScreenOrientation } from 'ionic-native';
+import { StatusBar } from 'ionic-native';
 
 import { LocalisationPage } from './pages/localisation/localisation';
 import { AlertesPage } from './pages/alertes/alertes';
@@ -40,7 +40,6 @@ export class MyApp {
     this.platform.ready().then(() => {
 
       this.menu.swipeEnable(false, 'menu1');            //Disable menu swiping
-      ScreenOrientation.lockOrientation('portrait');    //Disable screen orientation changing
       StatusBar.styleLightContent();                    //Set status bar font to white
     });
   }
