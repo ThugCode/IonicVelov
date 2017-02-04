@@ -16,12 +16,20 @@ export class StationService {
         private fileService: FileService
     ) { }
 
+    /***
+     * Get all station
+     * - if no connection -> from file 
+     * - Else -> from http service 
+     * @return Observable<Station[]> : Array of Station
+     ***/
     getStations(): Observable<Station[]> {
 
         if (Network.connection === "none") {
-            return Observable.fromPromise(this.fileService.readSationOffline().then(stations => {
-                return stations;
-            }));
+            return Observable.fromPromise(
+                this.fileService.readSationOffline().then(stations => {
+                    return stations;
+                })
+            );
         } else {
             return this.http.get(this.url).map(res => {
                 var obStations = res.json().values;

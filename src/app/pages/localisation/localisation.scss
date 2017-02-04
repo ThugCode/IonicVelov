@@ -1,6 +1,6 @@
 /******************************
 * dev     : IonicVelov - Polytech Lyon
-* version : 1.2
+* version : 1.3
 * author  : GERLAND Loïc - LETOURNEUR Léo
 *******************************/
 localisation-page {
@@ -63,9 +63,9 @@ localisation-page {
       font-size                     : 20px!important;
       color                         : $white-color;
       float                         : right;
-      margin-left                   : 5px;
+      //margin-left                   : 5px;
       margin-top                    : -5px;
-      width                         : 20px;
+      width                         : 30px;
     }
 
     .ol-control button:focus, 
@@ -105,12 +105,12 @@ localisation-page {
     
     /*********** BUTTONS *********/
     .ol-control {
-      background-color              : rgba($white-color,.7);
+      background-color              : rgba($white-color,.7)!important;
       width                         : 40px;
       height                        : 40px;
       button {
-        background-color            : rgba($black-color,0.8);
-        color                       : $white-color;
+        background-color            : rgba($black-color,0.8)!important;
+        color                       : $white-color!important;
         width                       : 34px;
         height                      : 34px;
       }
@@ -124,21 +124,24 @@ localisation-page {
       top                           : 6em;
     }
 
-    .ol-pistes {
-      top                           : 9em;
-      left                          : .5em;
+    .ol-mapimage {
+      right                          : 3.5em;
+      top                           : .5em;
     }
 
-    .ol-pistes.selected {
-      background-color              : rgba($black-color,.7);
-      button {
-        background-color            : rgba($white-color,0.8);
-        color                       : $black-color;
-      }
+    .ol-buffer {
+      right                         : .5em;
+      top                           : .5em;
     }
 
-    .ol-image {
-      top                           : 12em;
+    .ol-rotate {
+      top                           : .5em;
+      left                          : 7em;
+    }
+
+    .ol-orientation {
+      top                           : .5em;
+      left                          : 3.5em;
     }
 
     /*********** BONUS FAB ***********/
@@ -154,5 +157,40 @@ localisation-page {
         margin-top                  : -10px;
         font-size                   : 12px;
       }
+    }
+
+    /*************** FAB LAYOUT *************/
+    ion-fab {
+      .fab {
+        .fab-close-icon {
+          line-height               : 36px;
+        }
+      }
+
+      ion-fab-list {
+        min-width                   : 38px;
+        margin                      : 45px 0px;
+        border-radius               : 5px; 
+        background-color            : rgba($white-color,0.8)!important;
+
+        button {
+          margin                    : 2px 0px 2px 0px!important;
+          border                    : 1px solid $black-color!important;
+        }
+
+        .smallPin {
+          .button-inner {
+              width                 : 75%;
+              height                : 75%;
+              margin                : auto;
+          }
+        }
+      }
+    }
+
+    button.selected, div.selected {
+        background-color            : rgba($white-color,0.8)!important;
+        color                       : $black-color!important;
+        border                      : 1px solid $black-color;
     }
 }

@@ -1,7 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-
 import { Platform, MenuController, Nav } from 'ionic-angular';
-
 import { StatusBar } from 'ionic-native';
 
 import { LocalisationPage } from './pages/localisation/localisation';
@@ -9,20 +7,23 @@ import { AlertesPage } from './pages/alertes/alertes';
 import { FavoritesListPage } from './pages/favorites-list/favorites-list';
 import { HelpPage } from './pages/help/help';
 
-
+/******************************
+* dev     : IonicVelov - Polytech Lyon
+* version : 1.3
+* author  : GERLAND Loïc - LETOURNEUR Léo
+*******************************/
 @Component({
-  templateUrl: 'app.html'
+  templateUrl     : 'app.html'
 })
 export class MyApp {
-  @ViewChild(Nav) nav: Nav;
+  @ViewChild(Nav) nav   : Nav;
 
-  // make HelloIonicPage the root (or first) page
-  rootPage: any = AlertesPage;
-  pages: Array<{title: string, component: any}>;
+  rootPage    : any = AlertesPage;
+  pages       : Array<{title: string, component: any}>;
 
   constructor(
-    public platform: Platform,
-    public menu: MenuController
+    public platform   : Platform,
+    public menu       : MenuController
   ) {
     this.initializeApp();
 
@@ -38,17 +39,14 @@ export class MyApp {
   initializeApp() {
     this.platform.ready().then(() => {
 
-      this.menu.swipeEnable(false, 'menu1');
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      StatusBar.styleLightContent();
+      this.menu.swipeEnable(false, 'menu1');            //Disable menu swiping
+      StatusBar.styleLightContent();                    //Set status bar font to white
     });
   }
 
   openPage(page) {
-    // close the menu when clicking a link from the menu
-    this.menu.close();
-    // navigate to the new page if it is not the current page
-    this.nav.setRoot(page.component);
+  
+    this.menu.close();                  //Close the menu when clicking a link from the menu
+    this.nav.setRoot(page.component);   //Navigate to the new page if it is not the current page
   }
 }

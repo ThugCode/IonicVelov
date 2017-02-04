@@ -28,30 +28,38 @@ const JSON_OPEN = "OPEN";
 
 /******************************
 * dev     : IonicVelov - Polytech Lyon
-* version : 1.2
+* version : 1.3
 * author  : GERLAND Loïc - LETOURNEUR Léo
 *******************************/
 export class LocalisationPage implements OnInit {
   @ViewChild('map') mapChild;                     //Child map in HTML
   @ViewChild('searchbar') searchbar: Searchbar;   //Child searchBar in HTML
 
-  initialised       : boolean;          //Is the view initialised ?
+  
   loader            : any;              //Loader during initilisation
   stations          : Station[];        //Station list
   stationsFiltered  : Station[];        //Station filtered (for search input)
+  stationFilter     : String;           //Search filter
   stationSelected   : any;              //Selected station on the map (for bottom popup)
-  featureSelected   : any;              //Selected feature (for favorite star)
-  mapOl             : any;              //Ol map
-  targetPoint       : ol.Feature;       //Blue point feature on map
+  myCoordinate      : any;              //Position of user on earth
+  
+  initialised       : boolean;          //Is the view initialised ?
   notConnected      : boolean;          //Is the device connected to internet ?
   hasPosition       : boolean;          //Has the device localisation ?
+  searchVisible     : boolean;          //Is search field visible ?
+  useCompass        : boolean;          //Is user using compass ?
+  displayedLayer    : boolean[];        //Is layer displayed ?
+
+  /**** OL3 Variables ****/
+
+  mapBackgrounds    : any;              //All sources for background map
+  mapOl             : any;              //Ol map
+  targetPoint       : ol.Feature;       //Blue point feature on map
+  featureSelected   : ol.Feature;       //Selected feature (for favorite star)
   myPosition        : any;              //Position of user on map
-  myCoordinate      : any;              //Position of user on earth
-  searchVisible     : boolean = false;  //Is search field visible ?
-  stationFilter     : String;           //Search filter
-  displayedPiste    : boolean           //Is pistes cyclables displayed ?
-  
-  mapImg            : ol.layer.Tile;    //Layer for map image
+  deviceOrientation : ol.DeviceOrientation;//Subscription to compass service
+
+  vL_map            : ol.layer.Tile;    //Layer for map image
   vL_All            : ol.layer.Vector;  //Layer for searching
   vL_Closed         : ol.layer.Vector;  //Layer for closed station
   vL_Empty          : ol.layer.Vector;  //Layer for empty station
@@ -79,7 +87,9 @@ export class LocalisationPage implements OnInit {
   ngOnInit() {
     this.notConnected = Network.connection === "none";
     this.stationFilter = "";
-    this.displayedPiste = false;
+    this.displayedLayer = [false, true, true, true, true, true];
+    this.useCompass = false;
+    this.searchVisible = false;
     this.presentLoader();
     this.getStations();
   }
@@ -139,27 +149,41 @@ export class LocalisationPage implements OnInit {
     var long = coords[0];
     var lat = coords[1];
 
+    this.mapBackgrounds = [];
+    this.mapBackgrounds.push(new ol.source.OSM());
+    this.mapBackgrounds.push(new ol.source.TileArcGISRest({ url: "http://server.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer" }));
+    this.mapBackgrounds.push(new ol.source.TileArcGISRest({ url: "http://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer" }));
 
-    this.mapImg = new ol.layer.Tile({
-      source: new ol.source.OSM()
+    this.vL_map = new ol.layer.Tile({
+      source: this.mapBackgrounds[0]
     });
 
-    this.mapOl = new ol.Map({
-      target: "map",
-      layers: [this.mapImg],
-      overlays: [new ol.Overlay({ element: document.getElementById('popup') })],
-      view: new ol.View({
+    var view = new ol.View({
         center: ol.proj.fromLonLat([long, lat]),
         zoom: 15,
         minZoom: 6,
         maxZoom: 18
-      }),
+    });
+
+    this.mapOl = new ol.Map({
+      target: "map",
+      layers: [this.vL_map],
+      overlays: [new ol.Overlay({ element: document.getElementById('popup') })],
+      view: view,
       controls : ol.control.defaults({
           zoom          : true,
           attribution   : false,
           rotate        : true
         })
     });
+
+    //Rotate the view to match the device orientation
+    this.deviceOrientation = new ol.DeviceOrientation({ tracking : false });
+    this.deviceOrientation.on('change:heading', onChangeHeading);
+    function onChangeHeading(event) {
+      var heading = event.target.getHeading();
+      view.setRotation(-heading);
+    }
 
     this.buildTargetLayer();
     this.buildMyPositionLayer(coords);
@@ -177,12 +201,10 @@ export class LocalisationPage implements OnInit {
    ***/
   buildTargetLayer() {
     var fS_Target = [];
-    this.targetPoint = new ol.Feature({
-      selectable : false
-    });
+    this.targetPoint = new ol.Feature({ selectable : false });
     fS_Target.push(this.targetPoint);
     var vS_Target = new ol.source.Vector({ features: fS_Target });
-    this.vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStyle("blue", 14) });
+    this.vL_MyTarget = new ol.layer.Vector({ source: vS_Target, style: this.createStationStyle("blue") });
   }
 
   /***
@@ -195,16 +217,12 @@ export class LocalisationPage implements OnInit {
     var fS_MyPosition = [];
     this.myPosition = new ol.Feature({
       selectable : false,
-      geometry: new ol.geom.Point(ol.proj.fromLonLat([coords[0], coords[1]]))
+      geometry: this.hasPosition ? new ol.geom.Point(ol.proj.fromLonLat([coords[0], coords[1]])) : null
     });
-
-    //If no position don't print pin
-    if(!this.hasPosition) { this.myPosition.setGeometry(null); }
-
     fS_MyPosition.push(this.myPosition);
 
     var vS_MyPosition = new ol.source.Vector({ features: fS_MyPosition });
-    this.vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: this.createPinStyle() });
+    this.vL_MyPosition = new ol.layer.Vector({ source: vS_MyPosition, style: this.createUserStyle() });
   }
 
   /***
@@ -264,12 +282,19 @@ export class LocalisationPage implements OnInit {
     var vS_Bonus = new ol.source.Vector({ features: fS_Bonus });
     var vS_All = new ol.source.Vector({ features: fS_All });
 
-    this.vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStyle("red", 9) });
-    this.vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStyle("orange", 9) });
-    this.vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStyle("yellow", 9) });
-    this.vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStyle("green", 9) });
-    this.vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, style: this.createStyle("black", 2) });
     this.vL_All = new ol.layer.Vector({ source: vS_All });
+    this.vL_Closed = new ol.layer.Vector({ source: vS_Closed, style: this.createStationStyle("red") });
+    this.vL_Empty = new ol.layer.Vector({ source: vS_Empty, style: this.createStationStyle("orange") });
+    this.vL_Full = new ol.layer.Vector({ source: vS_Full, style: this.createStationStyle("yellow") });
+    this.vL_Available = new ol.layer.Vector({ source: vS_Available, style: this.createStationStyle("green") });
+    this.vL_Bonus = new ol.layer.Vector({ source: vS_Bonus, 
+      style: new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 3,
+          fill: new ol.style.Fill({ color: "black" })
+        })
+      })
+    });
     
     this.addAllLayerOnMap();
   }
@@ -286,17 +311,14 @@ export class LocalisationPage implements OnInit {
   /***
    * Display or hide pistes when clicking on button
    * 
+   * @param layerId : Int
    ***/
-  displayPistes() {
+  displayOrHideLayer(layerId) {
 
-    this.displayedPiste = !this.displayedPiste;
+    this.displayedLayer[layerId] = !this.displayedLayer[layerId];
 
-    if(!this.displayedPiste)
-      this.mapOl.removeLayer(this.vL_Piste);
-    else {
-      this.removeAllLayerOnMap();
-      this.addAllLayerOnMap();
-    }
+    this.removeAllLayerOnMap();
+    this.addAllLayerOnMap();
   }
 
   /***
@@ -325,39 +347,40 @@ export class LocalisationPage implements OnInit {
   }
 
   /***
-   * Create style for all station
+   * Create style for station on ol map
    * 
    * @param color : string
-   * @param taille : int
-   * @return ol.style.Style of the station group
+   * @return ol.style.Style with image
    ***/
-  createStyle(color, taille) {
+  createStationStyle(color) {
     return new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: taille,
-        stroke: new ol.style.Stroke({
-          color: 'black',
-          width: 3
-        }),
-        fill: new ol.style.Fill({ color: color })
-      })
+      image: new ol.style.Icon(({
+        anchor: [16, 36],
+        scale: 0.8,
+        anchorOrigin: "top-left",
+        anchorXUnits: 'pixels',
+        anchorYUnits: 'pixels',
+        src: 'assets/img/station_pin/'+color+'.png'
+      }))
     });
   }
 
   /***
-   * Create style for pin image on ol map
+   * Create style for user position
    * 
-   * @return ol.style.Style with pin image
+   * @return ol.style.Style with image
    ***/
-  createPinStyle() {
+  createUserStyle() {
+    var image = this.useCompass ? "user_view" : "user";
+
     return new ol.style.Style({
       image: new ol.style.Icon(({
-        anchor: [128, 20],
-        scale: 0.2,
-        anchorOrigin: "bottom-left",
+        anchor: [11, 25],
+        scale: 1,
+        anchorOrigin: "top-left",
         anchorXUnits: 'pixels',
         anchorYUnits: 'pixels',
-        src: 'assets/img/pin.png'
+        src: 'assets/img/'+image+'.png'
       }))
     });
   }
@@ -532,25 +555,12 @@ export class LocalisationPage implements OnInit {
   }
 
   changeMapImage(num :number) {
-    this.mapOl.removeLayer(this.mapImg);
+    this.mapOl.removeLayer(this.vL_map);
 
-    switch(num) {
-      case 1:
-      this.mapImg.setSource(new ol.source.OSM());
-      break;
-      case 2:
-      this.mapImg.setSource(new ol.source.TileArcGISRest({
-        url: "http://server.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer"
-      }));
-      break;
-      case 3:
-      this.mapImg.setSource(new ol.source.TileArcGISRest({
-        url: "http://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer"
-      }));
-      break;
-    }
-
-    this.mapOl.getLayers().insertAt(0,this.mapImg);
+    if(num < 0 || num > 2) num = 0;
+    this.vL_map.setSource(this.mapBackgrounds[num]);
+    
+    this.mapOl.getLayers().insertAt(0,this.vL_map);
   }
 
   /***
@@ -663,15 +673,25 @@ export class LocalisationPage implements OnInit {
    * 
    ***/
   addAllLayerOnMap() {
-    if(this.displayedPiste) {
-      this.mapOl.addLayer(this.vL_Piste);
-    }
-    this.mapOl.addLayer(this.vL_Closed);
-    this.mapOl.addLayer(this.vL_Empty);
-    this.mapOl.addLayer(this.vL_Full);
-    this.mapOl.addLayer(this.vL_Available);
+    if(this.displayedLayer[0]) { this.mapOl.addLayer(this.vL_Piste); }
+    if(this.displayedLayer[1]) { this.mapOl.addLayer(this.vL_Closed); }
+    if(this.displayedLayer[2]) { this.mapOl.addLayer(this.vL_Empty); }
+    if(this.displayedLayer[3]) { this.mapOl.addLayer(this.vL_Full); }
+    if(this.displayedLayer[4]) { this.mapOl.addLayer(this.vL_Available); }
     this.mapOl.addLayer(this.vL_MyPosition);
     this.mapOl.addLayer(this.vL_MyTarget);
-    this.mapOl.addLayer(this.vL_Bonus);
+    if(this.displayedLayer[5]) { this.mapOl.addLayer(this.vL_Bonus); }
+  }
+
+  /***
+   * Change using of compass
+   * Change user icon (add arrow when using compass)
+   * 
+   ***/
+  displayOrientation() {
+
+    this.useCompass = !this.useCompass;
+    this.vL_MyPosition.setStyle(this.createUserStyle());
+    this.deviceOrientation.setTracking(this.useCompass);
   }
 }
