@@ -16,4 +16,5 @@
 
 </ion-menu>
 
-<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>
+<ion-nav [root]="rootPage" [ngClass]="{'notConnected': notConnected}" #content swipeBackEnabled="false"></ion-nav>
+<ion-toolbar class="offline-toolbar" *ngIf="notConnected">Hors ligne</ion-toolbar>

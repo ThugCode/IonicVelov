@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ItemSliding } from 'ionic-angular';
-import { Network } from 'ionic-native';
 import { FavoritesDetailPage } from '../favorites-detail/favorites-detail';
 import { StationService } from '../../services/station.service';
 import { FileService } from '../../services/file.service';
@@ -17,7 +16,7 @@ const JSON_OPEN = "OPEN";
 
 /******************************
 * dev     : IonicVelov - Polytech Lyon
-* version : 1.2
+* version : 1.3
 * author  : GERLAND Loïc - LETOURNEUR Léo
 *******************************/
 export class FavoritesListPage implements OnInit {
@@ -25,7 +24,6 @@ export class FavoritesListPage implements OnInit {
   selectedItem                    : any;              //Selected station in list
   items                           : Station[];        //Array of stations
   length                          : any;              //Number of favorite stations
-  notConnected                    : boolean;          //Devise is connected to internet ?
 
   constructor(
     private navCtrl         : NavController,
@@ -73,17 +71,6 @@ export class FavoritesListPage implements OnInit {
    ***/
   ngOnInit() {
     this.getStations();
-    this.updateScreen();
-  }
-
-  /***
-   * Update connection bar every 2s
-   ***/
-  updateScreen() {
-    this.notConnected = Network.connection === "none";
-    setTimeout(() => {  
-      this.updateScreen();
-    }, 2000);
   }
 
   /***

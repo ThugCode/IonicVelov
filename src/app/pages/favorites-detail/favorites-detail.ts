@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { Network } from 'ionic-native';
 
 @Component({
   selector            : 'favorites-detail-page',
@@ -9,12 +8,11 @@ import { Network } from 'ionic-native';
 
 /******************************
 * dev     : IonicVelov - Polytech Lyon
-* version : 1.2
+* version : 1.3
 * author  : GERLAND Loïc - LETOURNEUR Léo
 *******************************/
 export class FavoritesDetailPage {
   selectedItem        : any;                      //Station to display
-  notConnected        : boolean;                  //Devise is connected to internet ?
 
   constructor(
     public navCtrl: NavController, 
@@ -22,16 +20,5 @@ export class FavoritesDetailPage {
   ) {
     this.selectedItem = navParams.get('item');
     this.selectedItem.bonus = this.selectedItem.bonus == "Oui";
-    this.updateScreen();
-  }
-
-  /***
-   * Update connection bar every 2s
-   ***/
-  updateScreen() {
-    this.notConnected = Network.connection === "none";
-    setTimeout(() => {  
-      this.updateScreen();
-    }, 2000);
   }
 }

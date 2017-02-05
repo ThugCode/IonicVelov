@@ -1,21 +1,16 @@
 <ion-header>
+
   <ion-navbar *ngIf="!searchVisible">
-    <button ion-button menuToggle>
-        <ion-icon name="menu"></ion-icon>
-      </button>
-    <ion-title>Localisation</ion-title>
-    <ion-buttons end>
-      <button ion-button icon-only (click)="showSearchList()">
-          <ion-icon name="search"></ion-icon>
-        </button>
+    <button ion-button menuToggle><ion-icon name="menu"></ion-icon></button>
+    <ion-buttons>
+      <button ion-button icon-only (click)="showSearchList()"><ion-icon name="search"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
+
   <ion-navbar *ngIf="searchVisible">
     <ion-searchbar #searchbar (ionCancel)="hideSearchList()" [(ngModel)]="stationFilter" (ionInput)="searchStations()" showCancelButton="true"></ion-searchbar>
   </ion-navbar>
-  <ion-toolbar class="offline-toolbar" *ngIf="notConnected">
-    <ion-title>Mode hors ligne</ion-title>
-  </ion-toolbar>
+  
 </ion-header>
 
 <ion-content class="content no-scroll">

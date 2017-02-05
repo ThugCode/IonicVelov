@@ -13,7 +13,7 @@ const TEXT_MISSING_ARGUMENT = "Veuillez saisir un type de bug et l'incident que 
 
 /******************************
 * dev     : IonicVelov - Polytech Lyon
-* version : 1.2
+* version : 1.3
 * author  : GERLAND Loïc - LETOURNEUR Léo
 *******************************/
 export class HelpPage {
