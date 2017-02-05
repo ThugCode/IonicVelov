@@ -3,6 +3,13 @@
 * version : 1.3
 * author  : GERLAND Loïc - LETOURNEUR Léo
 *******************************/
+
+.notConnected {
+    ion-searchbar {
+      width                         : calc(100% - 50px);
+    }
+}
+
 localisation-page {
 
   #map {
@@ -15,6 +22,7 @@ localisation-page {
   }
   
   /************** SEARCH ****************/
+
   .searchbar-input {
     background                      : $white-color!important;
   }

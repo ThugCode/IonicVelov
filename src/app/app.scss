@@ -17,11 +17,10 @@
 
 $black-color             : #02232E;
 $white-color             : #EBE7DC;
-$whsm-color             : #BB0B0B;
+$whsm-color              : #BB0B0B;
 
 .fixed-content {
     background              : url('../assets/img/background.jpg') no-repeat center center fixed;
-    //background-color        : $gold-color;
     -webkit-background-size : cover;
     -moz-background-size    : cover;
     background-size         : cover;
@@ -37,6 +36,10 @@ $whsm-color             : #BB0B0B;
 }
 
 .offline-toolbar {
+    float                   : right;
+    width                   : 50px;
+    color                   : white;
+
     .toolbar-background {
         background-color    : $whsm-color;
     }
@@ -46,16 +49,22 @@ $whsm-color             : #BB0B0B;
     }
 }
 
+.ios {
+    .offline-toolbar {
+        margin-top              : 20px;
+    }
+}
+
 .bar-button {
     color                   : $white-color;
 }
 
 .toolbar-title {
-    color: $white-color!important;
+    color                   : $white-color!important;
 }
 
 .item {
-    color: $black-color!important;
+    color                   : $black-color!important;
 }
 
 .center {

@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { Geolocation, Keyboard, Clipboard, Network, Vibration } from 'ionic-native';
+import { Geolocation, Keyboard, Clipboard, Vibration } from 'ionic-native';
 import { LoadingController, ToastController, Searchbar, AlertController  } from 'ionic-angular';
 import { FileService } from '../../services/file.service';
 import { StationService } from '../../services/station.service';
@@ -44,7 +44,6 @@ export class LocalisationPage implements OnInit {
   myCoordinate      : any;              //Position of user on earth
   
   initialised       : boolean;          //Is the view initialised ?
-  notConnected      : boolean;          //Is the device connected to internet ?
   hasPosition       : boolean;          //Has the device localisation ?
   searchVisible     : boolean;          //Is search field visible ?
   useCompass        : boolean;          //Is user using compass ?
@@ -85,7 +84,6 @@ export class LocalisationPage implements OnInit {
    * Get all needed informations at initialisation
    ***/
   ngOnInit() {
-    this.notConnected = Network.connection === "none";
     this.stationFilter = "";
     this.displayedLayer = [false, true, true, true, true, true];
     this.useCompass = false;
@@ -375,9 +373,9 @@ export class LocalisationPage implements OnInit {
 
     return new ol.style.Style({
       image: new ol.style.Icon(({
-        anchor: [11, 25],
+        anchor: [11, 12],
         scale: 1,
-        anchorOrigin: "top-left",
+        anchorOrigin: "bottom-left",
         anchorXUnits: 'pixels',
         anchorYUnits: 'pixels',
         src: 'assets/img/'+image+'.png'
@@ -431,9 +429,8 @@ export class LocalisationPage implements OnInit {
    * Update connection bar and geoposition every seconde
    ***/
   updateScreen() {
-    setTimeout(() => {  
-      this.notConnected = Network.connection === "none";
-
+    setTimeout(() => {
+      
       Geolocation.getCurrentPosition().then((resp) => {
         this.hasPosition = true;
         this.myCoordinate = resp.coords;
