@@ -373,9 +373,9 @@ export class LocalisationPage implements OnInit {
 
     return new ol.style.Style({
       image: new ol.style.Icon(({
-        anchor: [11, 25],
+        anchor: [11, 12],
         scale: 1,
-        anchorOrigin: "top-left",
+        anchorOrigin: "bottom-left",
         anchorXUnits: 'pixels',
         anchorYUnits: 'pixels',
         src: 'assets/img/'+image+'.png'
