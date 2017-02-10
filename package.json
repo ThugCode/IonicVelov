@@ -43,7 +43,7 @@
     "cordova-plugin-network-information",
     "cordova-plugin-vibration",
     "https://github.com/VersoSolutions/CordovaClipboard.git",
-    "cordova-plugin-nativestorage"
+    "cordova-sqlite-storage"
   ],
   "cordovaPlatforms": [
     "ios",

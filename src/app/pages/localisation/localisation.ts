@@ -1,5 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { Geolocation, Keyboard, Clipboard, Vibration, NativeStorage } from 'ionic-native';
+import { Geolocation, Keyboard, Clipboard, Vibration } from 'ionic-native';
+import { Storage } from '@ionic/storage';
 import { LoadingController, ToastController, Searchbar, AlertController  } from 'ionic-angular';
 import { FileService } from '../../services/file.service';
 import { StationService } from '../../services/station.service';
@@ -53,7 +54,7 @@ export class LocalisationPage implements OnInit {
 
   mapBackgrounds    : any;              //All sources for background map
   mapOl             : any;              //Ol map
-  numMap            : number;           //Number map background
+  mapBackgroundSaved: number;           //Map background select by the user
   targetPoint       : ol.Feature;       //Blue point feature on map
   featureSelected   : ol.Feature;       //Selected feature (for favorite star)
   myPosition        : any;              //Position of user on map
@@ -76,7 +77,8 @@ export class LocalisationPage implements OnInit {
     private fileService     : FileService,
     private toastCtrl       : ToastController,
     private alertCtrl       : AlertController,
-    private pisteService    : PisteService
+    private pisteService    : PisteService,
+    private storage         : Storage
   ) { 
     this.initialised = false;
   }
@@ -86,17 +88,12 @@ export class LocalisationPage implements OnInit {
    ***/
   ngOnInit() {
     this.stationFilter = "";
-    this.displayedLayer = [false, true, true, true, true, true];
     this.useCompass = false;
     this.searchVisible = false;
-    this.numMap = 0;
-
-    NativeStorage.getItem('mapBackground')
-      .then(
-      data => { console.log(data), this.numMap = data },
-      error => { console.error(error) }
-      );
-      
+    this.mapBackgroundSaved = 0;
+    this.displayedLayer = [false, true, true, true, true, true];
+    
+    this.getSavedFilters();
     this.presentLoader();
     this.getStations();
   }
@@ -145,6 +142,22 @@ export class LocalisationPage implements OnInit {
     });
   }
 
+  getSavedFilters() {
+    this.storage.get('mapBackground')
+      .then(
+      data => {
+        data == null ? this.mapBackgrounds = 0 : this.mapBackgroundSaved = data,
+          console.log(data)
+      }).catch(() => console.log("error get mapBackground"));
+
+    this.storage.get('filters')
+      .then(
+      data => {
+        data == null ? this.displayedLayer = [false, true, true, true, true, true] : this.displayedLayer = data,
+          console.log(data)
+      }).catch(() => console.log("error get filters"));
+  }
+
   /***
    * Create openlayer map with all station
    * 
@@ -161,10 +174,8 @@ export class LocalisationPage implements OnInit {
     this.mapBackgrounds.push(new ol.source.TileArcGISRest({ url: "http://server.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer" }));
     this.mapBackgrounds.push(new ol.source.TileArcGISRest({ url: "http://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer" }));
 
-    console.log("Num : " + this.numMap);
-
     this.vL_map = new ol.layer.Tile({
-      source: this.mapBackgrounds[this.numMap]
+      source: this.mapBackgrounds[this.mapBackgroundSaved]
     });
 
     var view = new ol.View({
@@ -325,6 +336,7 @@ export class LocalisationPage implements OnInit {
   displayOrHideLayer(layerId) {
 
     this.displayedLayer[layerId] = !this.displayedLayer[layerId];
+    this.saveFilters();
 
     this.removeAllLayerOnMap();
     this.addAllLayerOnMap();
@@ -520,9 +532,10 @@ export class LocalisationPage implements OnInit {
    ***/
   showSearchList() {
     this.searchVisible = true;
-    /*setTimeout(() => {
+    let timeoutID = setTimeout(() => {
       this.searchbar.setFocus();
-    });*/
+      clearTimeout(timeoutID);
+    }, 200)
   }
 
   /***
@@ -562,19 +575,38 @@ export class LocalisationPage implements OnInit {
     this.showPopup(feature);
   }
 
+  /*** 
+   * Change the map image background
+   * 
+   * @param num : number 
+   ***/
   changeMapImage(num :number) {
     this.mapOl.removeLayer(this.vL_map);
 
     if(num < 0 || num > 2) num = 0;
     this.vL_map.setSource(this.mapBackgrounds[num]);
 
-    NativeStorage.setItem('mapBackground', num)
+    this.mapBackgroundSaved = num;
+    this.saveFilters();
+    
+    this.mapOl.getLayers().insertAt(0,this.vL_map);
+  }
+
+  /***
+  * Save the filter set by the user
+  ***/
+  saveFilters() {
+    this.storage.set('filters', this.displayedLayer)
       .then(
       () => console.log('Stored item!'),
       error => console.error('Error storing item', error)
       );
-    
-    this.mapOl.getLayers().insertAt(0,this.vL_map);
+
+    this.storage.set('mapBackground', this.mapBackgroundSaved)
+      .then(
+      () => console.log('Stored item!'),
+      error => console.error('Error storing item', error)
+      );
   }
 
   /***

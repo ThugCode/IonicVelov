@@ -16,12 +16,21 @@ Ajout de plateformes
 * ionic platform add android
 * ionic platform add ios
 
-Ajout de plugins
+Plugins utilisés
 -------
-* cordova plugin add cordova-plugin-geolocation
-* cordova plugin add cordova-plugin-file
-* ionic plugin add cordova-plugin-email
-* ionic plugin add https://github.com/VersoSolutions/CordovaClipboard.git;
+* cordova-plugin-whitelist
+* cordova-plugin-console
+* cordova-plugin-statusbar
+* cordova-plugin-device
+* cordova-plugin-splashscreen
+* ionic-plugin-keyboard
+* cordova-plugin-file
+* cordova-plugin-email
+* cordova-plugin-geolocation
+* cordova-plugin-network-information
+* cordova-plugin-vibration
+* https://github.com/VersoSolutions/CordovaClipboard.git
+* cordova-plugin-nativestorage
 
 MAJ splashscreen & icone
 -------
