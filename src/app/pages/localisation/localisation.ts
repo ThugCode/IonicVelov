@@ -145,15 +145,15 @@ export class LocalisationPage implements OnInit {
   getSavedFilters() {
     this.storage.get('mapBackground')
       .then(
-      data => {
+      (data) => {
         data == null ? this.mapBackgrounds = 0 : this.mapBackgroundSaved = data,
           console.log(data)
       }).catch(() => console.log("error get mapBackground"));
 
     this.storage.get('filters')
       .then(
-      data => {
-        data == null ? this.displayedLayer = [false, true, true, true, true, true] : this.displayedLayer = data,
+      (data) => {
+        data == null ? this.displayedLayer = [false, true, true, true, true, true] :  (this.displayedLayer = data, this.displayedLayer[0] = false),
           console.log(data)
       }).catch(() => console.log("error get filters"));
   }
@@ -174,6 +174,7 @@ export class LocalisationPage implements OnInit {
     this.mapBackgrounds.push(new ol.source.TileArcGISRest({ url: "http://server.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer" }));
     this.mapBackgrounds.push(new ol.source.TileArcGISRest({ url: "http://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer" }));
 
+    console.log(this.mapBackgroundSaved);
     this.vL_map = new ol.layer.Tile({
       source: this.mapBackgrounds[this.mapBackgroundSaved]
     });
