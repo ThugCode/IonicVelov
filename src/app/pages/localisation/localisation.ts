@@ -142,6 +142,9 @@ export class LocalisationPage implements OnInit {
     });
   }
 
+  /***
+   * Get save filters set by the user
+   ***/
   getSavedFilters() {
     this.storage.get('mapBackground')
       .then(
