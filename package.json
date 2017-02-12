@@ -42,7 +42,8 @@
     "cordova-plugin-geolocation",
     "cordova-plugin-network-information",
     "cordova-plugin-vibration",
-    "https://github.com/VersoSolutions/CordovaClipboard.git"
+    "https://github.com/VersoSolutions/CordovaClipboard.git",
+    "cordova-sqlite-storage"
   ],
   "cordovaPlatforms": [
     "ios",
